@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - Cricinfo api (unofficial) for Python</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
+
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25990753-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1>Codeception</h1>
+  <p>Yet another Dev Blog</p>
+  <p>I'm Sreejith Kesavan, a passionate Developer and an Opensource enthusiast who is into Virtualization and Cloud Computing.</p>
+  <a href="/">Home</a><br/>
+  <a href="/lab">Lab</a><br/>
+  <a href="/archive">Archive</a><br/>
+  <a href="/about">About</a><br/>
+</header>
+
+      <section>
+        
+<h1>Cricinfo api (unofficial) for Python</h1>
+
+<time datetime="2010-11-30">
+  Nov 30, 2010
+</time>
+
+<p></p>
+
+<p>Recently I started developing a Python <a href="https://github.com/semk/cricinfo">library</a> for accessing live information from <a href="http://espncricinfo.com">ESPN Cricinfo</a> like live scores, innings details and player profiles. Currently, it only fetches live match information using a simple Python iterator.</p>
+<div class="codehilite"><pre><span class="c"># instantiate</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">CricInfo</span><span class="p">()</span>
+<span class="c"># iterate though matches</span>
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+    <span class="c"># match title</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">title</span>
+    <span class="c"># a short desciption for the match</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">description</span>
+    <span class="c"># url to live scorecard</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">link</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">guid</span>
+</pre></div>
+
+
+<p>I wish to add features for every match like full scorecard, innings details etc in a similar manner. A plan for getting player profile is also in my mind. I'd like to make this as human-readable as possible. For example, innings information can be fetched by an iteration over the Match object. </p>
+<div class="codehilite"><pre><span class="c"># getting innings info</span>
+<span class="k">for</span> <span class="n">innings</span> <span class="ow">in</span> <span class="n">match</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">score</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">current_batsmen</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">overs</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">wickets</span>
+</pre></div>
+
+
+<p>I'll update about the changes being done for the api. So keep reading my blog. I need your suggestions to make it a useful one. </p>
+
+<div>
+  Tagged under  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/cricinfo">Cricinfo</a></em>,  <em><a href="/tag/api">API</a></em> 
+<div>
+
+<div class="blog-nav">
+  
+  <div class="blog-prev">
+    <a href="/2010/11/07/ubuntu-maverick-meerkat">Older</a>
+  </div>
+  
+  
+  <div class="blog-next">
+    <a href="/2010/12/12/factory-service-mode-om-playstation-3">Newer</a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"><a id="comments" /></div>
+<script type="text/javascript">
+	/**
+	* var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
+	*/
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://foobarnbaz.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=foobarnbaz">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+      </section>
+
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
+</html>

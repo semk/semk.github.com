@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - Codeception</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
+
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25990753-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1>Codeception</h1>
+  <p>Yet another Dev Blog</p>
+  <p>I'm Sreejith Kesavan, a passionate Developer and an Opensource enthusiast who is into Virtualization and Cloud Computing.</p>
+  <a href="/">Home</a><br/>
+  <a href="/lab">Lab</a><br/>
+  <a href="/archive">Archive</a><br/>
+  <a href="/about">About</a><br/>
+</header>
+
+      <section>
+        
+
+
+<h1><a href="/2010/12/31/reads-for-the-new-year">Reads for the New Year</a></h1>
+<time datetime="2010-12-31">
+  Dec 31, 2010
+</time>
+<p></p>
+<p>Now I have two new good books to read for this New Year. The classic <a href="http://mitpress.mit.edu/sicp/full-text/book/book.html">Structure and Interpretation of Computer Programs/SICP</a> and <a href="http://www.amazon.com/Mock-Mockingbird-Other-Logic-Puzzles/dp/0394534913">To Mock a Mockingbird</a> (<a href="http://en.wikipedia.org/wiki/Raymond_Smullyan">Raymond Smullyan</a>), a humorous introduction to <a href="http://en.wikipedia.org/wiki/Combinatory_logic">combinatory logic</a> with the help of <a href="http://www.codinghorror.com/blog/2007/09/classic-computer-science-puzzles.html">interesting puzzles</a>.</p>
+<p>SICP was used as the textbook of MIT's old introductory programming class <a href="http://sicp.ai.mit.edu/Spring-2007/">6.001</a>. Later this class has been replaced by <a href="http://mit.edu/6.01/mercurial/spring10/www/index.html">6.01</a>, which uses Python. It is also known as the wizard book beacause it features the image of a wizard on its cover page.</p>
+<p><img alt="Books" src="/images/posts/2010-12-31-reads-for-the-new-year/books.png" /></p>
+<p>To Mock a Mockingbird contains numerous logical puzzles and by solving them, you will eventually learn some theories and concepts in combinatorics and <a href="http://en.wikipedia.org/wiki/Lambda_calculus">lambda calulus</a>, the base of <a href="http://en.wikipedia.org/wiki/Lisp_programming_language">Lisp</a> programming.</p>
+<p>Well. Afterall, its time to say good bye to 2010 and welcome 2011.</p>
+<p><a href="/2010/12/31/reads-for-the-new-year#comments">comments...</a></p>
+
+<h1><a href="/2010/12/25/learn-web-development-with-flask">Learn web development with Flask</a></h1>
+<time datetime="2010-12-25">
+  Dec 25, 2010
+</time>
+<p></p>
+<p>I've seen many people jumping into web development with feature-complete frameworks like <a href="http://www.djangoproject.com/">Django</a> and <a href="http://rubyonrails.org/">Rails</a>. But most of them will find it difficult to assimilate the web development concepts because of cluttered documentation (incase of Rails) or complexity (incase of Django). One might need to look at a simpler microframework to learn from scratch. And yes, <a href="http://flask.pocoo.org/">Flask</a> is the one you'd want to have a look at.</p>
+<p>Flask is a microframework for Python based on <a href="http://www.pocoo.org/projects/werkzeug/">Werkzeug</a>, and <a href="http://www.pocoo.org/projects/jinja2/">Jinja 2</a>. It is developed by the same guys at <a href="http://www.pocoo.org/">Pocoo</a> who gave us <a href="http://www.pocoo.org/projects/sphinx/">Sphinx</a> and <a href="http://www.pocoo.org/projects/pygments/">Pygments</a> (a Python based syntax highlighter which beautifies the codes shown in this website). If you are new to the world of web development, with Flask you'd find it easier to understand the basics concepts like <em>sessions</em>, <em>cookie</em>, <em>templates</em> etc.</p>
+<p>Flask provides a more developer friendly routing mechanism. You can define the routes to handlers with the help of a simple python decorator. That means no pain-in-the-ass for defining routes and writing handlers separately. Let's have a look at a sample <em>Hello World</em> application in Flask. I don't think you might need an explanation to this code :-)</p>
+<div class="codehilite"><pre><span class="c"># Hello World in Flask</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World!&quot;</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+
+<p>If you want to look at some really cool applications using Flask, never hesitate to checkout the code from <a href="https://github.com/mitsuhiko/flask/tree/master/examples">here</a>.</p>
+<p><a href="/2010/12/25/learn-web-development-with-flask#comments">comments...</a></p>
+
+<h1><a href="/2010/12/12/factory-service-mode-om-playstation-3">Factory/Service mode on PlayStation 3</a></h1>
+<time datetime="2010-12-12">
+  Dec 12, 2010
+</time>
+<p></p>
+<p>Here is a happy news for those who updated to firmware <code>&gt;3.41</code> and didn't get a chance to enjoy the homwbrews for PS3. Yes, atlast we'll be able to downgrade the PS3 firmware to any version <code>&lt;3.50</code>. The actual PSJailbreak team were the first team to release the downgrade. But many thanks to <a href="https://github.com/zAxis">zAxis</a> who created <a href="https://github.com/zAxis/PSGrade">PSGrade</a>, an opensouce version of PSDowngrade. Using this we can put the PS3 into Factory/Service mode (Downgrade) using popular development boards like Teensy and AT90USBKEY.</p>
+<p>We should also be thankful to <a href="https://github.com/kakaroto">KaKaRaTo</a> who reversed the PS3Yes Key and made it available for PSGrade. Here is PS3Yes key which he reversed from its hex.</p>
+<blockquote>
+<p>0×04, 0x4E, 0×61, 0x1B, 0xA6, 0xA6, 0xE3, 0x9A, 0×98, 0xCF, 0×35, 0×81, 0x2C, 0×80, 0×68, 0xC7, 0xFC, 0x5F, 0x7A, 0xE8</p>
+</blockquote>
+<p>You'll need to specify this key in PSGrade sources (key.c as shown below) for the service mode hack to work. But now zAxis has updated the code with this key. So all you have to do is download the souces and compile the hex for your board.</p>
+<div class="codehilite"><pre><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">jig_key</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="mh">0x04</span><span class="p">,</span> <span class="mh">0x4E</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0x1B</span><span class="p">,</span> <span class="mh">0xA6</span><span class="p">,</span> <span class="mh">0xA6</span><span class="p">,</span> <span class="mh">0xE3</span><span class="p">,</span> <span class="mh">0x9A</span><span class="p">,</span> <span class="mh">0x98</span><span class="p">,</span> <span class="mh">0xCF</span><span class="p">,</span> 
+<span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x81</span><span class="p">,</span> <span class="mh">0x2C</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mh">0x68</span><span class="p">,</span> <span class="mh">0xC7</span><span class="p">,</span> <span class="mh">0xFC</span><span class="p">,</span> <span class="mh">0x5F</span><span class="p">,</span> <span class="mh">0x7A</span><span class="p">,</span> <span class="mh">0xE8</span> 
+<span class="p">};</span>
+</pre></div>
+
+
+<p>As I was already there in firmware 3.50, I had a chance to test PSGrade. I compiled the sources for my Teensy 2.0 board and wrote the hex files to it. Using the same PSJailbreak methods I booted the PS3 with the Teensy board in the usb port and rebooted after the hack got executed (Teensy LED will glow). It booted into the service mode quickly and I got a screen as shown below.</p>
+<p><img alt="Service Mode" src="http://www.ps3hax.net/wp-content/uploads/2010/12/SERVICE.jpg" /></p>
+<p>For exiting from the service mode you need to copy a special file (Lv2diag.self) to a usb storage drive and boot the PS3. Otherwise your PS3 will still be on service mode.</p>
+<p>If you wish to downgrade the firmware (which I haven't performed yet) follow these downgrade steps from <a href="http://psgroove.com/content.php?501-PS3Yes-Release-Free-PSGRADE-Downgrade-Hex-Works-on-All-AT90usb162-Boards">here</a>.</p>
+<p><a href="/2010/12/12/factory-service-mode-om-playstation-3#comments">comments...</a></p>
+
+<h1><a href="/2010/11/30/cricinfo-api-for-python">Cricinfo api (unofficial) for Python</a></h1>
+<time datetime="2010-11-30">
+  Nov 30, 2010
+</time>
+<p></p>
+<p>Recently I started developing a Python <a href="https://github.com/semk/cricinfo">library</a> for accessing live information from <a href="http://espncricinfo.com">ESPN Cricinfo</a> like live scores, innings details and player profiles. Currently, it only fetches live match information using a simple Python iterator.</p>
+<div class="codehilite"><pre><span class="c"># instantiate</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">CricInfo</span><span class="p">()</span>
+<span class="c"># iterate though matches</span>
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+    <span class="c"># match title</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">title</span>
+    <span class="c"># a short desciption for the match</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">description</span>
+    <span class="c"># url to live scorecard</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">link</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">guid</span>
+</pre></div>
+
+
+<p>I wish to add features for every match like full scorecard, innings details etc in a similar manner. A plan for getting player profile is also in my mind. I'd like to make this as human-readable as possible. For example, innings information can be fetched by an iteration over the Match object. </p>
+<div class="codehilite"><pre><span class="c"># getting innings info</span>
+<span class="k">for</span> <span class="n">innings</span> <span class="ow">in</span> <span class="n">match</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">score</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">current_batsmen</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">overs</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">wickets</span>
+</pre></div>
+
+
+<p>I'll update about the changes being done for the api. So keep reading my blog. I need your suggestions to make it a useful one. </p>
+<p><a href="/2010/11/30/cricinfo-api-for-python#comments">comments...</a></p>
+
+<h1><a href="/2010/11/07/ubuntu-maverick-meerkat">Ubuntu Maverick Meerkat</a></h1>
+<time datetime="2010-11-07">
+  Nov 07, 2010
+</time>
+<p></p>
+<p>I installed the new <a href="http://www.ubuntu.com/desktop">Ubuntu 10.10 Maverick Meerkat</a> on my Laptop and on my Desktop at home. Now both systems doesn't have Windows in it. My family is now very comfortable with Ubuntu and they use the Ubuntu machine for working with <a href="http://www.openoffice.org">OpenOffice</a>, watching movies, playing <a href="http://2dboy.com/games.php">games</a> and for using Internet.</p>
+<p>BTW, I really like the new Ubuntu font which gives Ubuntu a brandish look. I mean like Mac :-)</p>
+<p><a href="/2010/11/07/ubuntu-maverick-meerkat#comments">comments...</a></p>
+
+
+<div class="blog-nav">
+  
+  <div class="blog-prev">
+    <a href="/page3">Newer</a>
+  </div>
+  
+  
+  <div class="blog-next">
+    <a href="/page5">Older</a>
+  </div>
+  
+</div>
+
+<div>
+  <p><em>Tag Cloud</em>:</p>
+  <p>
+    
+    <a href="/tag/tux+paint">Tux Paint</a>
+    
+    <a href="/tag/java">Java</a>
+    
+    <a href="/tag/preforking">Preforking</a>
+    
+    <a href="/tag/design+pattern">Design Pattern</a>
+    
+    <a href="/tag/ubuntu">Ubuntu</a>
+    
+    <a href="/tag/flask">Flask</a>
+    
+    <a href="/tag/app+engine">App Engine</a>
+    
+    <a href="/tag/magic+tool">Magic Tool</a>
+    
+    <a href="/tag/debian">Debian</a>
+    
+    <a href="/tag/service+mode">Service Mode</a>
+    
+    <a href="/tag/internet">Internet</a>
+    
+    <a href="/tag/borg">BORG</a>
+    
+    <a href="/tag/tips">Tips</a>
+    
+    <a href="/tag/riak">Riak</a>
+    
+    <a href="/tag/android">Android</a>
+    
+    <a href="/tag/gaming">Gaming</a>
+    
+    <a href="/tag/shell">Shell</a>
+    
+    <a href="/tag/lg+optimus+one">LG Optimus One</a>
+    
+    <a href="/tag/parallels">Parallels</a>
+    
+    <a href="/tag/borg+pattern">Borg Pattern</a>
+    
+    <a href="/tag/python">Python</a>
+    
+    <a href="/tag/gaesessions">GAESessions</a>
+    
+    <a href="/tag/scalability">Scalability</a>
+    
+    <a href="/tag/raspberry+pi">Raspberry Pi</a>
+    
+    <a href="/tag/computer">Computer</a>
+    
+    <a href="/tag/jinja2">Jinja2</a>
+    
+    <a href="/tag/custom+firmware">Custom Firmware</a>
+    
+    <a href="/tag/nosql">NoSQL</a>
+    
+    <a href="/tag/books">Books</a>
+    
+    <a href="/tag/blogging">Blogging</a>
+    
+    <a href="/tag/c">C</a>
+    
+    <a href="/tag/stdeb">stdeb</a>
+    
+    <a href="/tag/socket">Socket</a>
+    
+    <a href="/tag/cricinfo">Cricinfo</a>
+    
+    <a href="/tag/xargs">xargs</a>
+    
+    <a href="/tag/voldemort">Voldemort</a>
+    
+    <a href="/tag/github">GitHub</a>
+    
+    <a href="/tag/teensy">Teensy</a>
+    
+    <a href="/tag/hypergae">HyperGAE</a>
+    
+    <a href="/tag/debug">Debug</a>
+    
+    <a href="/tag/firefox">Firefox</a>
+    
+    <a href="/tag/multiprocessing">Multiprocessing</a>
+    
+    <a href="/tag/packaging">Packaging</a>
+    
+    <a href="/tag/singleton">Singleton</a>
+    
+    <a href="/tag/playstation+3">Playstation 3</a>
+    
+    <a href="/tag/scratch">Scratch</a>
+    
+    <a href="/tag/variables">Variables</a>
+    
+    <a href="/tag/mac+osx">Mac OSX</a>
+    
+    <a href="/tag/hacks">Hacks</a>
+    
+    <a href="/tag/hardware">Hardware</a>
+    
+    <a href="/tag/lion">Lion</a>
+    
+    <a href="/tag/api">API</a>
+    
+    <a href="/tag/ui">UI</a>
+    
+    <a href="/tag/setuptools">setuptools</a>
+    
+    <a href="/tag/linux">Linux</a>
+    
+    <a href="/tag/hypertable">Hypertable</a>
+    
+    <a href="/tag/memory+management">Memory Management</a>
+    
+  </p>
+</div>
+
+<form action="//www.google.com/cse">
+	<div>
+		<input type="hidden" name="cx" value="008366686725858774687:1xm9cqc7b0c">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="search" name="q" size="25" placeholder="powered by Google™">&nbsp;
+		<input type="submit" name="sa" value="Search">
+	</div>
+</form>
+
+      </section>
+
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
+</html>

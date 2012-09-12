@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - Understanding Python variables and Memory Management</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
+
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25990753-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1>Codeception</h1>
+  <p>Yet another Dev Blog</p>
+  <p>I'm Sreejith Kesavan, a passionate Developer and an Opensource enthusiast who is into Virtualization and Cloud Computing.</p>
+  <a href="/">Home</a><br/>
+  <a href="/lab">Lab</a><br/>
+  <a href="/archive">Archive</a><br/>
+  <a href="/about">About</a><br/>
+</header>
+
+      <section>
+        
+<h1>Understanding Python variables and Memory Management</h1>
+
+<time datetime="2012-07-08">
+  Jul 08, 2012
+</time>
+
+<p></p>
+
+<p>Have you ever noticed any difference between variables in Python and C? For example, when you do an assignment like the following in C, it actually creates a block of memory space so that it can hold the value for that variable.</p>
+<div class="codehilite"><pre><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+
+
+<p>You can think of it as putting the value assigned in a box with the variable name as shown below.</p>
+<p><img alt="int a =1;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1box.png" /></p>
+<p>And for all the variables you create a new box is created with the variable name to hold the value. If you change the value of the variable the box will be updated with the new value. That means doing</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</pre></div>
+
+
+<p>will result in</p>
+<p><img alt="a = 2;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p>Assigning one variable to another makes a copy of the value and put that value in the new box.</p>
+<div class="codehilite"><pre><span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+</pre></div>
+
+
+<p><img alt="int b = a;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p>But in Python variables work more like tags unlike the boxes you have seen before. When you do an assignment in Python, it tags the value with the variable name.</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+
+
+<p><img alt="a = 1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1tag.png" /></p>
+<p>and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory. </p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+
+
+<p><img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2tag.png" /> <img alt="1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/1.png" /></p>
+<p>Assigning one variable to another makes a new tag bound to the same value as show below.</p>
+<div class="codehilite"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+</pre></div>
+
+
+<p><img alt="b = a" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/ab2tag.png" /></p>
+<p>Other languages have 'variables'. Python has 'names'.</p>
+<h3>A bit about Python's memory management</h3>
+<p>As you have seen before, a value will have only one copy in memory and all the variables having this value will refer to this memory location. For example when you have variables <code>a</code>, <code>b</code>, <code>c</code> having a value 10, it doesn't mean that there will be 3 copy of <code>10</code>s in memory. There will be only one <code>10</code> and all the variables <code>a</code>, <code>b</code>, <code>c</code> will point to this value. Once a variable is updated, say you are doing <code>a += 1</code> a new value <code>11</code> will be allocated in memory and <code>a</code> will be pointing to this.</p>
+<p>Let's check this behaviour with Python Interpreter. Start the Python Shell and try the following for yourselves.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a_list</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">a_list</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">]</span>
+</pre></div>
+
+
+<p><code>id()</code> will return an objects memory address (object's identity). As you have noticed, when you create a list with same values, the values are not copied in memory. In fact, you are getting a list with references to the value <code>1</code>; not a list with 10 copies of <code>1</code>.</p>
+<p>Now we will try to create custom objects and try to find their identities.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">pass</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">baz</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="mi">140730612513248</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">baz</span><span class="p">)</span>
+<span class="mi">140730612513320</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c"># lists are mutable objects</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_a</span><span class="p">)</span>
+<span class="mi">140116233272136</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_b</span><span class="p">)</span>
+<span class="mi">140116233272064</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_a</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># `int` is immutable</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_b</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># same as above</span>
+</pre></div>
+
+
+<p>As you can see, the two instances have different identities. That means, there are two different copies of the same object in memory. This behaviour is different from what you have seen before. When you are creating objects they will have unique identities unless you are using <a href="http://foobarnbaz.com/2010/10/06/borg-pattern/">Singleton Pattern</a>. All <a href="http://en.wikipedia.org/wiki/Immutable_object">immutable</a> objects like <code>str</code>, <code>int</code>, <code>float</code> will have same identities when objects are created simultaneously.</p>
+
+<div>
+  Tagged under  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/c">C</a></em>,  <em><a href="/tag/variables">Variables</a></em>,  <em><a href="/tag/memory+management">Memory Management</a></em> 
+<div>
+
+<div class="blog-nav">
+  
+  <div class="blog-prev">
+    <a href="/2012/05/31/the-era-of-online-payments">Older</a>
+  </div>
+  
+  
+</div>
+
+<div id="disqus_thread"><a id="comments" /></div>
+<script type="text/javascript">
+	/**
+	* var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
+	*/
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://foobarnbaz.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=foobarnbaz">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+      </section>
+
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
+</html>

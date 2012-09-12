@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - Multiple Index queries in Riak using Python</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
+
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25990753-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1>Codeception</h1>
+  <p>Yet another Dev Blog</p>
+  <p>I'm Sreejith Kesavan, a passionate Developer and an Opensource enthusiast who is into Virtualization and Cloud Computing.</p>
+  <a href="/">Home</a><br/>
+  <a href="/lab">Lab</a><br/>
+  <a href="/archive">Archive</a><br/>
+  <a href="/about">About</a><br/>
+</header>
+
+      <section>
+        
+<h1>Multiple Index queries in Riak using Python</h1>
+
+<time datetime="2012-02-25">
+  Feb 25, 2012
+</time>
+
+<p></p>
+
+<p><img alt="Riak Logo" src="http://wiki.basho.com/images/riaklogo.png" /></p>
+<p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast too. The Data retrieval operations in Riak are basically using methods like Get (by key), MapReduce and Key Filters.</p>
+<p>Riak also supports multiple backends for Key-value store. And Google's own <a href="code.google.com/p/leveldb">LevelDB</a> is one of them. One of the advantage of using LevelDB with Riak is that they support Secondary Indexes. This is a way to retrieve data faster when you want to use an SQL like Query interface. But the problem is that Riak only supports single index queries. That means, you will be able to query only one field at a time.</p>
+<p>I wrote a Python wrapper that allows multiple index queries using Secondary indexes and MapReduce. The basic steps are</p>
+<ol>
+<li>Query Multiple Indexes and get the associated keys</li>
+<li>Pass the keys to a MapReduce job where Multiple filters are again evaluated. The map phase applies all the conditions to individual keys.</li>
+</ol>
+<blockquote>
+<p><em>As suggested by Elias Levy, it is ideal to compute the intersection of all the index queries rather than evaluating filters on Map Phase as this involves parsing the data and validating filters. This could become very slow when the number of keys returned by a single index query is larger compared to other indexes. The sources are updated to reflect this change.</em></p>
+</blockquote>
+<p>So the new steps are</p>
+<ol>
+<li>Query Indexes and get the key sets</li>
+<li>Find the intersection of these key sets</li>
+<li>Pass the resulting keys to MapReduce where we fetch and sort the data.</li>
+</ol>
+<p>Using this, you can write queries like</p>
+<div class="codehilite"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">riak</span><span class="o">.</span><span class="n">RiakClient</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8091</span><span class="p">)</span>
+<span class="n">bucket</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">bucket</span><span class="p">(</span><span class="s">&#39;test_multi_index&#39;</span><span class="p">)</span>
+
+<span class="n">bucket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;sree&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">})</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;name_bin&#39;</span><span class="p">,</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">)</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;age_int&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+<span class="n">bucket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;vishnu&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">})</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;name_bin&#39;</span><span class="p">,</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">)</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;age_int&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">RiakMultiIndexQuery</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s">&#39;test_multi_index&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">,</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">,</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;ASC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;ASC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+</pre></div>
+
+
+<p>You can find the full source code at <a href="https://github.com/semk/utils/blob/master/riak_multi_query.py">GitHub</a>.</p>
+
+<div>
+  Tagged under  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/riak">Riak</a></em>,  <em><a href="/tag/nosql">NoSQL</a></em> 
+<div>
+
+<div class="blog-nav">
+  
+  <div class="blog-prev">
+    <a href="/2011/10/05/voldemort-a-jinja-powered-static-site-generator">Older</a>
+  </div>
+  
+  
+  <div class="blog-next">
+    <a href="/2012/04/06/pagination-tags-and-more-in-voldemort">Newer</a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"><a id="comments" /></div>
+<script type="text/javascript">
+	/**
+	* var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
+	*/
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://foobarnbaz.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=foobarnbaz">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+      </section>
+
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
+</html>

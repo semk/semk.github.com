@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - Tags</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
+
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25990753-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1>Codeception</h1>
+  <p>Yet another Dev Blog</p>
+  <p>I'm Sreejith Kesavan, a passionate Developer and an Opensource enthusiast who is into Virtualization and Cloud Computing.</p>
+  <a href="/">Home</a><br/>
+  <a href="/lab">Lab</a><br/>
+  <a href="/archive">Archive</a><br/>
+  <a href="/about">About</a><br/>
+</header>
+
+      <section>
+        
+
+
+
+<h1><a href="/2012/07/08/understanding-python-variables">Understanding Python variables and Memory Management</a></h1>
+<time datetime="2012-07-08" pubdate="pubdate">
+Jul 08, 2012
+</time>
+<p></p>
+<p>Have you ever noticed any difference between variables in Python and C? For example, when you do an assignment like the following in C, it actually creates a block of memory space so that it can hold the value for that variable.</p>
+<div class="codehilite"><pre><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+
+
+<p>You can think of it as putting the value assigned in a box with the variable name as shown below.</p>
+<p><img alt="int a =1;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1box.png" /></p>
+<p>And for all the variables ...</p>
+<p class="full-post"><a href="/2012/07/08/understanding-python-variables">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2012/04/06/pagination-tags-and-more-in-voldemort">Pagination, Tags and more in Voldemort</a></h1>
+<time datetime="2012-04-06" pubdate="pubdate">
+Apr 06, 2012
+</time>
+<p></p>
+<p><img alt="Voldemort" src="/images/posts/2012-04-06-pagination-tags-and-more-in-voldemort/term.png" /></p>
+<p>I have been adding a few useul features to <a href="https://github.com/semk/voldemort">Voldemort</a> for the last few months and it did come out pretty good. It now sports automatic Atom Feed and sitemap generation, thanks to the contibutions from my friend <a href="http://endlessinsomnia.com">Stanislav Yudin</a>. Here are the highlights.</p>
+<ul>
+<li>Generates Atom Feed automatically for your blog</li>
+<li>Generates sitemap.xml</li>
+<li>Pagination supported. Just add <code>paginate: True</code> in the page metadata section.</li>
+<li>You can tag posts using ...</li></ul>
+<p class="full-post"><a href="/2012/04/06/pagination-tags-and-more-in-voldemort">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2012/02/25/multi-index-queries-in-riak">Multiple Index queries in Riak using Python</a></h1>
+<time datetime="2012-02-25" pubdate="pubdate">
+Feb 25, 2012
+</time>
+<p></p>
+<p><img alt="Riak Logo" src="http://wiki.basho.com/images/riaklogo.png" /></p>
+<p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast ...</p>
+<p class="full-post"><a href="/2012/02/25/multi-index-queries-in-riak">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2011/10/05/voldemort-a-jinja-powered-static-site-generator">Voldemort: A Jinja2 powered static site generator</a></h1>
+<time datetime="2011-10-05" pubdate="pubdate">
+Oct 05, 2011
+</time>
+<p></p>
+<p><a href="https://github.com/semk/voldemort">Voldemort</a> is a blog-aware static site generator inspired by <a href="http://jinja.pocoo.org/2/">Jinja2</a>. All these times this blog was generated using <a href="https://github.com/mojombo/jekyll">Jekyll</a> and I always wanted to use something Pythonic. <a href="http://ringce.com/hyde">Hyde</a> was there, but the awesomeness of Jinja2 forced me to write Voldemort on my own.</p>
+<p><img alt="Voldemort" src="/images/posts/2011-10-05-voldemort-a-jinja-powered-static-site-generator/voldemort.jpg" /></p>
+<p>Voldemort has its own advantages. You can templatize your HTML pages using Jinja and write posts using <a href="http://daringfireball.net/projects/markdown">Markdown</a>. And if you like this website, then you've ...</p>
+<p class="full-post"><a href="/2011/10/05/voldemort-a-jinja-powered-static-site-generator">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2011/10/02/packaging-python-applications">Packaging Python Applications</a></h1>
+<time datetime="2011-10-02" pubdate="pubdate">
+Oct 02, 2011
+</time>
+<p></p>
+<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This ...</p>
+<p class="full-post"><a href="/2011/10/02/packaging-python-applications">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2011/08/30/developing-scalable-services-with-python">Developing scalable services with Python</a></h1>
+<time datetime="2011-08-30" pubdate="pubdate">
+Aug 30, 2011
+</time>
+<p></p>
+<p>Developing multi-threaded applications in python is a "Pain In The Ass". And the <a href="http://wiki.python.org/moin/GlobalInterpreterLock">GIL</a> (Global Interpreter Lock) takes away the advantage of utilizing multiple cores in a machine. It doesn't matter how many cores a CPU have, GIL prevents threads from running in multiple cores. So python programs would't get the maximum performance out of the CPU when they use threads in their services.</p>
+<p>In many cases you ...</p>
+<p class="full-post"><a href="/2011/08/30/developing-scalable-services-with-python">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2011/07/31/custom-authentication-on-gae">Custom Authentication for Google App Engine apps</a></h1>
+<time datetime="2011-07-31" pubdate="pubdate">
+Jul 31, 2011
+</time>
+<p></p>
+<p><img alt="Google App Engine" src="http://upload.wikimedia.org/wikipedia/en/3/38/Google_App_Engine_Logo.png" /></p>
+<p><a href="http://code.google.com/appengine">Google App Engine</a> is a widely used and most popular <a href="en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a> solution provided by Google. App Engine provides the developer with a wide range of apis which can be used to develop web applications using any <a href="http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface">WSGI</a> compliant Frameworks (<a href="http://code.google.com/appengine/docs/python/tools/webapp/">Webapp</a>, <a href="http://www.tipfy.org">Tipfy</a>, <a href="http://www.django.org">Django</a>, <a href="http://bottlepy.org">Bottle</a>, <a href="http://www.tornadoweb.org">Tornado</a> etc.). One of the apis App Engine provides is the <a href="http://code.google.com/appengine/docs/python/users/overview.html">users api</a>, which most of the developers confuses for an api which provides user creation, authentication ...</p>
+<p class="full-post"><a href="/2011/07/31/custom-authentication-on-gae">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2011/01/08/hypergae-use-hypertable-for-appengine-datastore">HyperGAE - Use Hypertable for App Engine Datastore</a></h1>
+<time datetime="2011-01-08" pubdate="pubdate">
+Jan 08, 2011
+</time>
+<p></p>
+<p>After few days of hacking on the <a href="http://code.google.com/appengine/docs/python/overview.html">Google App Engine SDK</a> and <a href="http://code.google.com/apis/protocolbuffers/docs/pythontutorial.html">ProtocolBuffers</a>, finally I succeeded in creating a datastore driver for GAE that talks to <a href="http://hypertable.org">Hypertable</a> and stores the data there <em>fully protocol buffer encoded</em>. If you want to checkout this implementation head to <a href="https://github.com/semk/hypergae">HyperGAE</a> repository and see <a href="https://github.com/semk/hypergae/tree/master/google/appengine/datastore">files</a> <code>datastore_hypertable_ht.py</code> and <code>datastore_hypertable_thrift.py</code>. HyperGAE basically uses two methods to connect to hypertable. Using the thrift api and using ...</p>
+<p class="full-post"><a href="/2011/01/08/hypergae-use-hypertable-for-appengine-datastore">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2010/12/25/learn-web-development-with-flask">Learn web development with Flask</a></h1>
+<time datetime="2010-12-25" pubdate="pubdate">
+Dec 25, 2010
+</time>
+<p></p>
+<p>I've seen many people jumping into web development with feature-complete frameworks like <a href="http://www.djangoproject.com/">Django</a> and <a href="http://rubyonrails.org/">Rails</a>. But most of them will find it difficult to assimilate the web development concepts because of cluttered documentation (incase of Rails) or complexity (incase of Django). One might need to look at a simpler microframework to learn from scratch. And yes, <a href="http://flask.pocoo.org/">Flask</a> is the one you'd want to have a look at.</p>
+<p>Flask ...</p>
+<p class="full-post"><a href="/2010/12/25/learn-web-development-with-flask">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2010/11/30/cricinfo-api-for-python">Cricinfo api (unofficial) for Python</a></h1>
+<time datetime="2010-11-30" pubdate="pubdate">
+Nov 30, 2010
+</time>
+<p></p>
+<p>Recently I started developing a Python <a href="https://github.com/semk/cricinfo">library</a> for accessing live information from <a href="http://espncricinfo.com">ESPN Cricinfo</a> like live scores, innings details and player profiles. Currently, it only fetches live match information using a simple Python iterator.</p>
+<div class="codehilite"><pre><span class="c"># instantiate</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">CricInfo</span><span class="p">()</span>
+<span class="c"># iterate though matches</span>
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+    <span class="c"># match title</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">title</span>
+    <span class="c"># a short desciption for the match</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">description</span>
+    <span class="c"># url to live scorecard</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">link</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">guid</span>
+</pre></div>
+
+
+<p>I wish ...</p>
+<p class="full-post"><a href="/2010/11/30/cricinfo-api-for-python">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2010/10/06/borg-pattern">Borg Pattern</a></h1>
+<time datetime="2010-10-06" pubdate="pubdate">
+Oct 06, 2010
+</time>
+<p></p>
+<p>Singleton Design Patterns create all sorts of problems as you have exactly one instance for the singleton class throughout the program.</p>
+<div class="codehilite"><pre><span class="c"># Singleton implementation using new-style classes</span>
+<span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;_the_instance&#39;</span> <span class="ow">in</span> <span class="nb">type</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="nb">type</span><span class="o">.</span><span class="n">_the_instance</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">_the_instance</span>
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">Singleton</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">foo</span><span class="p">),</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">10049912</span><span class="p">,</span> <span class="mi">10049912</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Usually programmers use Singleton Patterns as a global entry point ...</p>
+<p class="full-post"><a href="/2010/10/06/borg-pattern">Continue Reading...</a></p>
+
+
+
+<h1><a href="/2010/10/02/commandline-mapper">A commandline mapper</a></h1>
+<time datetime="2010-10-02" pubdate="pubdate">
+Oct 02, 2010
+</time>
+<p></p>
+<p>Python provides a builtin <code>map</code> function which applies a method over a list of entities. This function comes handy in a lot of situations as in</p>
+<div class="codehilite"><pre><span class="c"># find the square of all integers in a list</span>
+<span class="c"># Eg: </span>
+<span class="c">#   input: [1, 2, 3, 4]</span>
+<span class="c">#   return: [1, 4, 9, 16]</span>
+<span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="n">list_of_integers</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Similar functionality can be achieved in linux commandline using a combination of unix pipe <code>|</code> and <code>xargs</code> command. For ...</p>
+<p class="full-post"><a href="/2010/10/02/commandline-mapper">Continue Reading...</a></p>
+
+
+
+<form action="//www.google.com/cse">
+	<div>
+		<input type="hidden" name="cx" value="008366686725858774687:1xm9cqc7b0c">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="search" name="q" size="25" placeholder="powered by Google™">&nbsp;
+		<input type="submit" name="sa" value="Search">
+	</div>
+</form>
+
+      </section>
+
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - Borg Pattern</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
+
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25990753-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1>Codeception</h1>
+  <p>Yet another Dev Blog</p>
+  <p>I'm Sreejith Kesavan, a passionate Developer and an Opensource enthusiast who is into Virtualization and Cloud Computing.</p>
+  <a href="/">Home</a><br/>
+  <a href="/lab">Lab</a><br/>
+  <a href="/archive">Archive</a><br/>
+  <a href="/about">About</a><br/>
+</header>
+
+      <section>
+        
+<h1>Borg Pattern</h1>
+
+<time datetime="2010-10-06">
+  Oct 06, 2010
+</time>
+
+<p></p>
+
+<p>Singleton Design Patterns create all sorts of problems as you have exactly one instance for the singleton class throughout the program.</p>
+<div class="codehilite"><pre><span class="c"># Singleton implementation using new-style classes</span>
+<span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;_the_instance&#39;</span> <span class="ow">in</span> <span class="nb">type</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="nb">type</span><span class="o">.</span><span class="n">_the_instance</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">_the_instance</span>
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">Singleton</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">foo</span><span class="p">),</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">10049912</span><span class="p">,</span> <span class="mi">10049912</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Usually programmers use Singleton Patterns as a global entry point to database connections. This is a bad programming habit. This will also break tests as most unittests use dummy implementations of real objects that emulate real objects. Suppose you have protected your class to instantiate only once using this pattern, then it would become impossible for him to stub/mock this class for tests. In short, Singleton patterns are not recommended for test driven development.</p>
+<p>What we really care about class objects are its identity/state and behaviour, not the number of instances; unless you really need that kind of implementation. This is where Borg pattern comes as useful. Borg pattern share the same state across all its class instances. Its fairly easy to implement a Borg pattern in python. Just initialize the class <code>__dict__</code> with a class attribute in its <code>__init__</code>.</p>
+<div class="codehilite"><pre><span class="c"># Borg Pattern</span>
+<span class="k">class</span> <span class="nc">Borg</span><span class="p">:</span>
+    <span class="n">__shared_state</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__shared_state</span>
+</pre></div>
+
+
+<p>Subclass this <em>Borg</em> class and you can have a shared-state class implementation and all the instances will have the same state. For more information about different patterns in python, checkout this <a href="http://www.suttoncourtenay.org.uk/duncan/accu/pythonpatterns.html">link</a>.</p>
+
+<div>
+  Tagged under  <em><a href="/tag/design+pattern">Design Pattern</a></em>,  <em><a href="/tag/borg">BORG</a></em>,  <em><a href="/tag/borg+pattern">Borg Pattern</a></em>,  <em><a href="/tag/singleton">Singleton</a></em>,  <em><a href="/tag/python">Python</a></em> 
+<div>
+
+<div class="blog-nav">
+  
+  <div class="blog-prev">
+    <a href="/2010/10/02/commandline-mapper">Older</a>
+  </div>
+  
+  
+  <div class="blog-next">
+    <a href="/2010/11/07/ubuntu-maverick-meerkat">Newer</a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"><a id="comments" /></div>
+<script type="text/javascript">
+	/**
+	* var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
+	*/
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://foobarnbaz.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=foobarnbaz">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+      </section>
+
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
+</html>
