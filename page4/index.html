@@ -61,6 +61,48 @@
         
 
 
+<h1><a href="/2011/01/05/building-custom-firmware-for-ps3">Building Custom Firmware for PS3</a></h1>
+<time datetime="2011-01-05">
+  Jan 05, 2011
+</time>
+<p></p>
+<p>The 27th <a href="http://events.ccc.de/congress/2010/wiki/Welcome">Chaos Communication Congress</a> revealed the <a href="http://www.engadget.com/2010/12/29/hackers-obtain-ps3-private-cryptography-key-due-to-epic-programm/"><em>Epic Programming Fail</em></a> on the PlayStation 3 security. Finally it turned  out that Sony's ECDSA algorithm for signing apps use a random number generator which always returns the same number (No, I'm not kidding). The <a href="http://fail0verflow.com">fail0verflow</a> team, who found out this fail, used the following famous <a href="http://xkcd.com">xkcd</a> comic to describe Sony's ECDSA algorithm.</p>
+<p><img alt="Random Number" src="http://imgs.xkcd.com/comics/random_number.png" /></p>
+<p><em>fail0verflow</em> demonstrated their work on <a href="http://marcansoft.com/blog/2010/10/asbestos-running-linux-as-gameos/">AsbestOS</a>, which is a bootloader for ps3 using which you can boot <em>Linux</em> on it. Currently this needs some wiring and soldering works but they have promised to release an easy to use tool sometime next month.</p>
+<p>But <a href="https://github.com/kakaroto">kakaroto</a>(the hacker behind aMsn and PL3 payload for <em>psgroove</em>) wasn't patient enough. He went on to develop some tools to create <em>custom firmware</em> for ps3. You can find the custom firmware generator code from <a href="https://github.com/kakaroto/ps3utils">here</a>. Currently it works on Linux and Mac. For those who doesn't know how to use these tools, the following steps would help.</p>
+<p>First of all checkout the tools developed by <em>fail0verflow</em> team and build it. You might need to install <code>build-essential</code> and <code>zlib1g-dev</code> packages if you are using Ubuntu (use <code>sudo apt-get install</code>).</p>
+<div class="codehilite"><pre>mkdir ~/src
+<span class="nb">cd</span> ~/src
+git clone git://git.fail0verflow.com/ps3tools.git
+<span class="nb">cd </span>ps3tools
+make
+</pre></div>
+
+
+<p>Now checkout the firmware generator code from kakaroto's GitHub repository and use the official firmware update (PS3UPDAT.PUP) to create the CFW.</p>
+<div class="codehilite"><pre>mkdir ~/.ps3
+<span class="nb">cd</span> ~/.ps3
+git clone https://github.com/kakaroto/ps3keys.git .
+<span class="nb">cd</span> ~/src
+git clone https://github.com/kakaroto/ps3utils.git
+<span class="nb">cd </span>ps3utils
+make
+./create_cfw.sh PS3UPDAT.PUP CFW.PUP
+</pre></div>
+
+
+<p>You can rename this CFW.PUP to PS3UPDAT.PUP and copy it to PS3-&gt;UPDATE directory of your pendrive and update the ps3 from the XMB. Still, this CFW does nothing but shows the <em>Install Application</em> option on XMB. You still have to wait until the homebrews are signed and repackaged with the retail <code>.pkg</code> format to install on this firmware.</p>
+<h4>Links</h4>
+<ul>
+<li>
+<p><a href="http://events.ccc.de/congress/2010/Fahrplan/attachments/1780_27c3_console_hacking_2010.pdf">fail0verflow's presentation on Console Hacking</a> - 27th Chaos Communication Congress</p>
+</li>
+<li>
+<p><a href="http://www.bbc.co.uk/news/technology-12116051">fail0verflow and Geohot Interview with BBC</a></p>
+</li>
+</ul>
+<p><a href="/2011/01/05/building-custom-firmware-for-ps3#comments">comments...</a></p>
+
 <h1><a href="/2010/12/31/reads-for-the-new-year">Reads for the New Year</a></h1>
 <time datetime="2010-12-31">
   Dec 31, 2010
@@ -154,15 +196,6 @@
 <p>I'll update about the changes being done for the api. So keep reading my blog. I need your suggestions to make it a useful one. </p>
 <p><a href="/2010/11/30/cricinfo-api-for-python#comments">comments...</a></p>
 
-<h1><a href="/2010/11/07/ubuntu-maverick-meerkat">Ubuntu Maverick Meerkat</a></h1>
-<time datetime="2010-11-07">
-  Nov 07, 2010
-</time>
-<p></p>
-<p>I installed the new <a href="http://www.ubuntu.com/desktop">Ubuntu 10.10 Maverick Meerkat</a> on my Laptop and on my Desktop at home. Now both systems doesn't have Windows in it. My family is now very comfortable with Ubuntu and they use the Ubuntu machine for working with <a href="http://www.openoffice.org">OpenOffice</a>, watching movies, playing <a href="http://2dboy.com/games.php">games</a> and for using Internet.</p>
-<p>BTW, I really like the new Ubuntu font which gives Ubuntu a brandish look. I mean like Mac :-)</p>
-<p><a href="/2010/11/07/ubuntu-maverick-meerkat#comments">comments...</a></p>
-
 
 <div class="blog-nav">
   
@@ -193,6 +226,10 @@
     
     <a href="/tag/flask">Flask</a>
     
+    <a href="/tag/gui">GUI</a>
+    
+    <a href="/tag/voldemort">Voldemort</a>
+    
     <a href="/tag/app+engine">App Engine</a>
     
     <a href="/tag/magic+tool">Magic Tool</a>
@@ -207,9 +244,11 @@
     
     <a href="/tag/tips">Tips</a>
     
-    <a href="/tag/riak">Riak</a>
+    <a href="/tag/qprogressdialog">QProgressDialog</a>
     
     <a href="/tag/android">Android</a>
+    
+    <a href="/tag/qt">Qt</a>
     
     <a href="/tag/gaming">Gaming</a>
     
@@ -251,7 +290,9 @@
     
     <a href="/tag/xargs">xargs</a>
     
-    <a href="/tag/voldemort">Voldemort</a>
+    <a href="/tag/urllib2">urllib2</a>
+    
+    <a href="/tag/riak">Riak</a>
     
     <a href="/tag/github">GitHub</a>
     
@@ -271,11 +312,15 @@
     
     <a href="/tag/playstation+3">Playstation 3</a>
     
+    <a href="/tag/stringio">StringIO</a>
+    
     <a href="/tag/scratch">Scratch</a>
     
     <a href="/tag/variables">Variables</a>
     
     <a href="/tag/mac+osx">Mac OSX</a>
+    
+    <a href="/tag/pyqt">PyQt</a>
     
     <a href="/tag/hacks">Hacks</a>
     

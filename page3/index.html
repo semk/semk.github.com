@@ -61,6 +61,27 @@
         
 
 
+<h1><a href="/2011/07/27/fix-parallels-desktop-on-lion">Fix Parallels Desktop on Mac OSX Lion</a></h1>
+<time datetime="2011-07-27">
+  Jul 27, 2011
+</time>
+<p></p>
+<p><img alt="Parallels Desktop" src="http://cdn2.digitaltrends.com/wp-content/uploads/2010/09/pdfm-box-278x266.jpg" /></p>
+<p>Most of the <a href="www.parallels.com/products/desktop/">Parallels Desktop 6</a> users are experiencing an <a href="http://www.youtube.com/watch?v=g4yhICBqpfk">issue</a> not finding the virtual machine windows after upgrading to <a href="www.apple.com/macosx/">Mac OSX Lion</a>. This might be caused by the Desktop (inwhich Parallels to run on) being set to <code>None</code> during upgrade. <a href="http://www.apple.com/macosx/whats-new/mission-control.html">Mission Control</a> to blame? But this can be fixed very easily. Follow these steps,</p>
+<ol>
+<li>Create a Dock Icon for Parallels Desktop if not</li>
+<li>Launch Parallels Desktop</li>
+<li>Right click the Parallels Dock Icon and go to <code>Options</code>. Then set <code>Assign To</code> to <code>This Desktop</code>.</li>
+<li>Done.</li>
+</ol>
+<p>According to Parallels FAQ, there is one more workaround to fix this issue,</p>
+<ol>
+<li>Delete all the spaces except the default one</li>
+<li>Reboot and restart Parallels</li>
+</ol>
+<p>I hope this will be helpful for those struggling to get around this issue.</p>
+<p><a href="/2011/07/27/fix-parallels-desktop-on-lion#comments">comments...</a></p>
+
 <h1><a href="/2011/05/07/cheapest-personal-computer-on-a-usb">Meet Raspberry Pi, the $25 computer</a></h1>
 <time datetime="2011-05-07">
   May 07, 2011
@@ -130,48 +151,6 @@
 <p><em>UPDATE:</em> The drivers api has been modified to accommodate the new Hypertable and Thrift api changes. You must install Hypertable version <a href="http://www.hypertable.com/download/">0.9.4.3</a> for HyperGAE to work. More updates to follow.</p>
 <p><a href="/2011/01/08/hypergae-use-hypertable-for-appengine-datastore#comments">comments...</a></p>
 
-<h1><a href="/2011/01/05/building-custom-firmware-for-ps3">Building Custom Firmware for PS3</a></h1>
-<time datetime="2011-01-05">
-  Jan 05, 2011
-</time>
-<p></p>
-<p>The 27th <a href="http://events.ccc.de/congress/2010/wiki/Welcome">Chaos Communication Congress</a> revealed the <a href="http://www.engadget.com/2010/12/29/hackers-obtain-ps3-private-cryptography-key-due-to-epic-programm/"><em>Epic Programming Fail</em></a> on the PlayStation 3 security. Finally it turned  out that Sony's ECDSA algorithm for signing apps use a random number generator which always returns the same number (No, I'm not kidding). The <a href="http://fail0verflow.com">fail0verflow</a> team, who found out this fail, used the following famous <a href="http://xkcd.com">xkcd</a> comic to describe Sony's ECDSA algorithm.</p>
-<p><img alt="Random Number" src="http://imgs.xkcd.com/comics/random_number.png" /></p>
-<p><em>fail0verflow</em> demonstrated their work on <a href="http://marcansoft.com/blog/2010/10/asbestos-running-linux-as-gameos/">AsbestOS</a>, which is a bootloader for ps3 using which you can boot <em>Linux</em> on it. Currently this needs some wiring and soldering works but they have promised to release an easy to use tool sometime next month.</p>
-<p>But <a href="https://github.com/kakaroto">kakaroto</a>(the hacker behind aMsn and PL3 payload for <em>psgroove</em>) wasn't patient enough. He went on to develop some tools to create <em>custom firmware</em> for ps3. You can find the custom firmware generator code from <a href="https://github.com/kakaroto/ps3utils">here</a>. Currently it works on Linux and Mac. For those who doesn't know how to use these tools, the following steps would help.</p>
-<p>First of all checkout the tools developed by <em>fail0verflow</em> team and build it. You might need to install <code>build-essential</code> and <code>zlib1g-dev</code> packages if you are using Ubuntu (use <code>sudo apt-get install</code>).</p>
-<div class="codehilite"><pre>mkdir ~/src
-<span class="nb">cd</span> ~/src
-git clone git://git.fail0verflow.com/ps3tools.git
-<span class="nb">cd </span>ps3tools
-make
-</pre></div>
-
-
-<p>Now checkout the firmware generator code from kakaroto's GitHub repository and use the official firmware update (PS3UPDAT.PUP) to create the CFW.</p>
-<div class="codehilite"><pre>mkdir ~/.ps3
-<span class="nb">cd</span> ~/.ps3
-git clone https://github.com/kakaroto/ps3keys.git .
-<span class="nb">cd</span> ~/src
-git clone https://github.com/kakaroto/ps3utils.git
-<span class="nb">cd </span>ps3utils
-make
-./create_cfw.sh PS3UPDAT.PUP CFW.PUP
-</pre></div>
-
-
-<p>You can rename this CFW.PUP to PS3UPDAT.PUP and copy it to PS3-&gt;UPDATE directory of your pendrive and update the ps3 from the XMB. Still, this CFW does nothing but shows the <em>Install Application</em> option on XMB. You still have to wait until the homebrews are signed and repackaged with the retail <code>.pkg</code> format to install on this firmware.</p>
-<h4>Links</h4>
-<ul>
-<li>
-<p><a href="http://events.ccc.de/congress/2010/Fahrplan/attachments/1780_27c3_console_hacking_2010.pdf">fail0verflow's presentation on Console Hacking</a> - 27th Chaos Communication Congress</p>
-</li>
-<li>
-<p><a href="http://www.bbc.co.uk/news/technology-12116051">fail0verflow and Geohot Interview with BBC</a></p>
-</li>
-</ul>
-<p><a href="/2011/01/05/building-custom-firmware-for-ps3#comments">comments...</a></p>
-
 
 <div class="blog-nav">
   
@@ -202,6 +181,10 @@ make
     
     <a href="/tag/flask">Flask</a>
     
+    <a href="/tag/gui">GUI</a>
+    
+    <a href="/tag/voldemort">Voldemort</a>
+    
     <a href="/tag/app+engine">App Engine</a>
     
     <a href="/tag/magic+tool">Magic Tool</a>
@@ -216,9 +199,11 @@ make
     
     <a href="/tag/tips">Tips</a>
     
-    <a href="/tag/riak">Riak</a>
+    <a href="/tag/qprogressdialog">QProgressDialog</a>
     
     <a href="/tag/android">Android</a>
+    
+    <a href="/tag/qt">Qt</a>
     
     <a href="/tag/gaming">Gaming</a>
     
@@ -260,7 +245,9 @@ make
     
     <a href="/tag/xargs">xargs</a>
     
-    <a href="/tag/voldemort">Voldemort</a>
+    <a href="/tag/urllib2">urllib2</a>
+    
+    <a href="/tag/riak">Riak</a>
     
     <a href="/tag/github">GitHub</a>
     
@@ -280,11 +267,15 @@ make
     
     <a href="/tag/playstation+3">Playstation 3</a>
     
+    <a href="/tag/stringio">StringIO</a>
+    
     <a href="/tag/scratch">Scratch</a>
     
     <a href="/tag/variables">Variables</a>
     
     <a href="/tag/mac+osx">Mac OSX</a>
+    
+    <a href="/tag/pyqt">PyQt</a>
     
     <a href="/tag/hacks">Hacks</a>
     

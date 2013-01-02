@@ -7,50 +7,55 @@
     
     <url>
         <loc>/about</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/archive</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/atom</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/games</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/index</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/lab</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/not-found-404</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/robots</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/sitemap</loc>
-        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+        <lastmod>2013-01-02T00:00:00+5:30</lastmod>
     </url>
     
 
+    
+    <url>
+        <loc>/2012/12/31/file-upload-progressbar-in-pyqt</loc>
+        <lastmod>2012-12-31T00:00:00+5:30</lastmod>
+    </url>
     
     <url>
         <loc>/2012/07/08/understanding-python-variables</loc>

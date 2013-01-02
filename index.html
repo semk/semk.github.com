@@ -61,6 +61,104 @@
         
 
 
+<h1><a href="/2012/12/31/file-upload-progressbar-in-pyqt">Simple file upload progressbar in PyQt</a></h1>
+<time datetime="2012-12-31">
+  Dec 31, 2012
+</time>
+<p></p>
+<p>I've been learning the <a href="http://qt-project.org/">Qt</a> Framework for the last few months and righfully it took 
+the honour of being my favourite GUI toolkit ;-). But still I don't like KDE. I have used 
+<a href="http://wiki.python.org/moin/TkInter">Tkinter</a> for quite some time when I was studying engineering. But Qt is 
+much more powerful than Tkinter and comes with an enormous bundle of GUI widgets and elements. Qt documentation
+is one of the best documentations available for a GUI framework. I must admit that I started liking Qt even more 
+as soon as I started reading the documentation and trying out sample programs.</p>
+<p>I encountered a challenge of displaying a progress dialog for files being uploaded to a central server. In this 
+case the files were uploaded using sending a POST request to the server using the <code>urllib2</code> library. The data was 
+multipart encoded. The problem here was, when you send the data to the server, how would you show the incremental 
+progress of how much data got uploaded in the progress dialog view? The <code>urllib2</code> library doesn't provide any special 
+methods to help in this situation. Neither does <code>Qt</code>. But we know the upper and lower limits of the progress bar: 0 to 
+size of the file. But how would you tell Qt that how much data is uploaded at a given time?</p>
+<p>Well, I found a tricky way to let Qt know about the file upload status using the <code>StringIO</code> module. The solution is to give 
+<code>urllib2</code> a custom <code>StringIO</code> instance that will periodically alert <code>QProgressDialog</code> about the status of the upload. 
+Checkout my approach to this problem.</p>
+<div class="codehilite"><pre><span class="k">class</span> <span class="nc">CancelledError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Error denoting user interruption.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span>
+
+    <span class="n">__repr__</span> <span class="o">=</span> <span class="n">__str__</span>
+
+<span class="k">class</span> <span class="nc">BufferReader</span><span class="p">(</span><span class="n">StringIO</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;StringIO with a callback.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> 
+                 <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> 
+                 <span class="n">cb_args</span><span class="o">=</span><span class="p">(),</span> 
+                 <span class="n">cb_kwargs</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_args</span> <span class="o">=</span> <span class="n">cb_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span> <span class="o">=</span> <span class="n">cb_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">StringIO</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the chunk. Alert the callback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;progress&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span> <span class="c"># catches exception from the callback</span>
+                <span class="k">raise</span> <span class="n">CancelledError</span><span class="p">(</span><span class="s">&#39;The upload was cancelled.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">chunk</span>
+</pre></div>
+
+
+<p>We can use the <code>BufferReader</code> instance as the input to the <code>urlllib2.Request</code>. It takes the actual data to be
+sent as the input and registers a callback function which will be periodically called whenever a read occurs from
+the <code>urllib2</code> module. Let's create a progress dialog box in Qt which shows the progress.</p>
+<div class="codehilite"><pre><span class="c"># create the progress dialog</span>
+<span class="n">progressDialog</span> <span class="o">=</span> <span class="n">QProgressDialog</span><span class="p">(</span><span class="s">&#39;Uploading </span><span class="si">%s</span><span class="s"> ...&#39;</span> <span class="o">%</span> <span class="n">file_path</span><span class="p">,</span>
+                                 <span class="n">QString</span><span class="p">(</span><span class="s">&quot;Cancel&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">file_size</span><span class="p">)</span>
+<span class="n">progressDialog</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s">&#39;Upload status&#39;</span><span class="p">)</span>
+<span class="c"># create a file stream that supports callback</span>
+<span class="n">databuf</span> <span class="o">=</span> <span class="n">BufferReader</span><span class="p">(</span><span class="n">buf</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">update_progress</span><span class="p">,</span>
+                       <span class="n">cb_args</span><span class="o">=</span><span class="p">(</span><span class="n">progressDialog</span><span class="p">,</span> <span class="n">file_size</span><span class="p">))</span>
+
+<span class="c"># upload the file using the databuf</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">databuf</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+<span class="n">urlobj</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">urlobj</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+
+<p>And we can use the callback function <code>update_progress</code> to update the progressbar with additional <code>progress</code> keyword argument 
+which reports the bytes uploaded/read by the <code>urllib2</code> library.</p>
+<div class="codehilite"><pre><span class="k">def</span> <span class="nf">update_progress</span><span class="p">(</span><span class="n">progressbar</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Callback method for reporting upload status.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">progressbar</span><span class="o">.</span><span class="n">wasCanceled</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="c"># notify uploader and stop file upload</span>
+
+    <span class="n">progressbar</span><span class="o">.</span><span class="n">setLabelText</span><span class="p">(</span><span class="s">&#39;Uploading </span><span class="si">%d</span><span class="s"> KB of </span><span class="si">%d</span><span class="s"> KB&#39;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="n">progress</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span> <span class="n">size</span><span class="o">/</span><span class="mi">1024</span><span class="p">))</span>
+    <span class="n">progressbar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">progress</span><span class="p">)</span>
+    <span class="n">QApplication</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+</pre></div>
+
+
+<p>And this happens to be my last blog post of 2012. Happy to have survived the apocalypse, no zombies, earthquakes or Tsunamis. 
+Wishing you all a prosperous and happy new year. Welcome 2K13.</p>
+<p><a href="/2012/12/31/file-upload-progressbar-in-pyqt#comments">comments...</a></p>
+
 <h1><a href="/2012/07/08/understanding-python-variables">Understanding Python variables and Memory Management</a></h1>
 <time datetime="2012-07-08">
   Jul 08, 2012
@@ -189,64 +287,6 @@
 <p>You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.</p>
 <p><a href="/2012/04/06/pagination-tags-and-more-in-voldemort#comments">comments...</a></p>
 
-<h1><a href="/2012/02/25/multi-index-queries-in-riak">Multiple Index queries in Riak using Python</a></h1>
-<time datetime="2012-02-25">
-  Feb 25, 2012
-</time>
-<p></p>
-<p><img alt="Riak Logo" src="http://wiki.basho.com/images/riaklogo.png" /></p>
-<p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast too. The Data retrieval operations in Riak are basically using methods like Get (by key), MapReduce and Key Filters.</p>
-<p>Riak also supports multiple backends for Key-value store. And Google's own <a href="code.google.com/p/leveldb">LevelDB</a> is one of them. One of the advantage of using LevelDB with Riak is that they support Secondary Indexes. This is a way to retrieve data faster when you want to use an SQL like Query interface. But the problem is that Riak only supports single index queries. That means, you will be able to query only one field at a time.</p>
-<p>I wrote a Python wrapper that allows multiple index queries using Secondary indexes and MapReduce. The basic steps are</p>
-<ol>
-<li>Query Multiple Indexes and get the associated keys</li>
-<li>Pass the keys to a MapReduce job where Multiple filters are again evaluated. The map phase applies all the conditions to individual keys.</li>
-</ol>
-<blockquote>
-<p><em>As suggested by Elias Levy, it is ideal to compute the intersection of all the index queries rather than evaluating filters on Map Phase as this involves parsing the data and validating filters. This could become very slow when the number of keys returned by a single index query is larger compared to other indexes. The sources are updated to reflect this change.</em></p>
-</blockquote>
-<p>So the new steps are</p>
-<ol>
-<li>Query Indexes and get the key sets</li>
-<li>Find the intersection of these key sets</li>
-<li>Pass the resulting keys to MapReduce where we fetch and sort the data.</li>
-</ol>
-<p>Using this, you can write queries like</p>
-<div class="codehilite"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">riak</span><span class="o">.</span><span class="n">RiakClient</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8091</span><span class="p">)</span>
-<span class="n">bucket</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">bucket</span><span class="p">(</span><span class="s">&#39;test_multi_index&#39;</span><span class="p">)</span>
-
-<span class="n">bucket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;sree&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">})</span><span class="o">.</span>\
-    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;name_bin&#39;</span><span class="p">,</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">)</span><span class="o">.</span>\
-    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;age_int&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
-<span class="n">bucket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;vishnu&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">})</span><span class="o">.</span>\
-    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;name_bin&#39;</span><span class="p">,</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">)</span><span class="o">.</span>\
-    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;age_int&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
-
-<span class="n">query</span> <span class="o">=</span> <span class="n">RiakMultiIndexQuery</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s">&#39;test_multi_index&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">,</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
-    <span class="k">print</span> <span class="n">res</span>
-
-<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">,</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
-    <span class="k">print</span> <span class="n">res</span>
-
-<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;ASC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
-    <span class="k">print</span> <span class="n">res</span>
-
-<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
-    <span class="k">print</span> <span class="n">res</span>
-
-<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;ASC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
-    <span class="k">print</span> <span class="n">res</span>
-</pre></div>
-
-
-<p>You can find the full source code at <a href="https://github.com/semk/utils/blob/master/riak_multi_query.py">GitHub</a>.</p>
-<p><a href="/2012/02/25/multi-index-queries-in-riak#comments">comments...</a></p>
-
 
 <div class="blog-nav">
   
@@ -273,6 +313,10 @@
     
     <a href="/tag/flask">Flask</a>
     
+    <a href="/tag/gui">GUI</a>
+    
+    <a href="/tag/voldemort">Voldemort</a>
+    
     <a href="/tag/app+engine">App Engine</a>
     
     <a href="/tag/magic+tool">Magic Tool</a>
@@ -287,9 +331,11 @@
     
     <a href="/tag/tips">Tips</a>
     
-    <a href="/tag/riak">Riak</a>
+    <a href="/tag/qprogressdialog">QProgressDialog</a>
     
     <a href="/tag/android">Android</a>
+    
+    <a href="/tag/qt">Qt</a>
     
     <a href="/tag/gaming">Gaming</a>
     
@@ -331,7 +377,9 @@
     
     <a href="/tag/xargs">xargs</a>
     
-    <a href="/tag/voldemort">Voldemort</a>
+    <a href="/tag/urllib2">urllib2</a>
+    
+    <a href="/tag/riak">Riak</a>
     
     <a href="/tag/github">GitHub</a>
     
@@ -351,11 +399,15 @@
     
     <a href="/tag/playstation+3">Playstation 3</a>
     
+    <a href="/tag/stringio">StringIO</a>
+    
     <a href="/tag/scratch">Scratch</a>
     
     <a href="/tag/variables">Variables</a>
     
     <a href="/tag/mac+osx">Mac OSX</a>
+    
+    <a href="/tag/pyqt">PyQt</a>
     
     <a href="/tag/hacks">Hacks</a>
     
