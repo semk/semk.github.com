@@ -67,6 +67,7 @@
 
 <p></p>
 
+
 <p><img alt="Google App Engine" src="http://upload.wikimedia.org/wikipedia/en/3/38/Google_App_Engine_Logo.png" /></p>
 <p><a href="http://code.google.com/appengine">Google App Engine</a> is a widely used and most popular <a href="en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a> solution provided by Google. App Engine provides the developer with a wide range of apis which can be used to develop web applications using any <a href="http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface">WSGI</a> compliant Frameworks (<a href="http://code.google.com/appengine/docs/python/tools/webapp/">Webapp</a>, <a href="http://www.tipfy.org">Tipfy</a>, <a href="http://www.django.org">Django</a>, <a href="http://bottlepy.org">Bottle</a>, <a href="http://www.tornadoweb.org">Tornado</a> etc.). One of the apis App Engine provides is the <a href="http://code.google.com/appengine/docs/python/users/overview.html">users api</a>, which most of the developers confuses for an api which provides user creation, authentication for the application. But this api only authenticates Google Accounts (can be the application developer or any third-party Google Account) using <a href="http://oauth.net/">OAuth</a>. You can't really user this api to create or manage users for your application.</p>
 <p>Remember when I told you that every application you write for GAE is a WSGI Application? WSGI is just a standard for the web application to talk to the backend HTTP server. That means a WSGI application can't run by itself. It needs an HTTP server to listen on and execute the code you have written. Its the HTTP Server which handles all the server stuffs used for authentication such as setting cookies. Now, GAE has a <a href="code.google.com/appengine/docs/python/runtime.html">sandbox</a>, which is a restrictive environment for your application code to run. For example, your application is restricted for file operations and certain modules are restricted from importing. So you can't really set up a cookie from your application code since its not an HTTP Server code. Here is our problem now. How do you do a custom authentication for a Google App Engine application?</p>
@@ -108,6 +109,7 @@
 
 
 <p>You can find a complete sample application <a href="https://github.com/dound/gae-sessions/blob/master/demo">here</a>.</p>
+
 
 <div>
   <strong>Tagged under</strong>  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/tips">Tips</a></em>,  <em><a href="/tag/app+engine">App Engine</a></em>,  <em><a href="/tag/gaesessions">GAESessions</a></em> 

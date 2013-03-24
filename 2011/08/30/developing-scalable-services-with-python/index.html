@@ -67,6 +67,7 @@
 
 <p></p>
 
+
 <p>Developing multi-threaded applications in python is a "Pain In The Ass". And the <a href="http://wiki.python.org/moin/GlobalInterpreterLock">GIL</a> (Global Interpreter Lock) takes away the advantage of utilizing multiple cores in a machine. It doesn't matter how many cores a CPU have, GIL prevents threads from running in multiple cores. So python programs would't get the maximum performance out of the CPU when they use threads in their services.</p>
 <p>In many cases you might need to write services where you need to listen on a port and wait for the client connection to do some task. If multiple clients are connecting to this service simultaneously then you might need to spawn threads to handle the requests. Considering the fact that GIL introduces a performance bottleneck, the best way to solve this situation is to use python's <a href="http://docs.python.org/library/multiprocessing.html">multiprocessing</a> capabilities. This library provides almost <code>threading</code> like class implementations. </p>
 <p>Then a question might arise. How do you share a socket created by the server process to the newly spawned processes? It is possible since all the <code>fork</code>ed processes will have the parent's file descriptors. <code>multiprocessing</code> library already has this package named <code>multiprocessing.reduction</code> that provides a method <code>reduce_handle</code> which can serialize a socket and you can send this socket to another process using pipes. The child processes can read from the pipe and re-create the socket using <code>rebuild_handle</code>. The following example will make this idea clear to you.</p>
@@ -161,6 +162,7 @@
 
 
 <p>I wrote a simple wrapper for this kind of services which can be scaled. You can find it <a href="http://github.com/semk/utils/prefork_server.py">here</a>.</p>
+
 
 <div>
   <strong>Tagged under</strong>  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/scalability">Scalability</a></em>,  <em><a href="/tag/multiprocessing">Multiprocessing</a></em>,  <em><a href="/tag/socket">Socket</a></em>,  <em><a href="/tag/preforking">Preforking</a></em> 

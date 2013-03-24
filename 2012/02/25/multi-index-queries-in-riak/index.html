@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="en-US">
@@ -68,6 +67,7 @@
 
 <p></p>
 
+
 <p><img alt="Riak Logo" src="http://upload.wikimedia.org/wikipedia/en/5/53/Riak_product_logo.png" /></p>
 <p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast too. The Data retrieval operations in Riak are basically using methods like Get (by key), MapReduce and Key Filters.</p>
 <p>Riak also supports multiple backends for Key-value store. And Google's own <a href="code.google.com/p/leveldb">LevelDB</a> is one of them. One of the advantage of using LevelDB with Riak is that they support Secondary Indexes. This is a way to retrieve data faster when you want to use an SQL like Query interface. But the problem is that Riak only supports single index queries. That means, you will be able to query only one field at a time.</p>
@@ -119,6 +119,7 @@
 
 
 <p>You can find the full source code at <a href="https://github.com/semk/utils/blob/master/riak_multi_query.py">GitHub</a>.</p>
+
 
 <div>
   <strong>Tagged under</strong>  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/riak">Riak</a></em>,  <em><a href="/tag/nosql">NoSQL</a></em> 

@@ -67,6 +67,7 @@
 
 <p></p>
 
+
 <p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This situation made us to build <code>.deb</code> packages for our Python software as well.</p>
 <p>The real challenge here was packaging all the dependencies our Python application has brought in, as most of the dependencies were having only <code>egg</code> distributions. Luckily there was an extension to setuptools called <a href="https://github.com/astraw/stdeb">stdeb</a> which will allow you to generate debian packages using your setup.py script. It'll automatically add the dependencies in the <code>debian/control</code> file after searching for the dependencies using <code>apt-cache</code>. stdeb will do something like <code>apt-cache dump | grep &lt;package&gt;</code> to find whether there is a proper debian package for the dependencies. If they found the correct one in apt-cache, <code>debian/control</code> file will be updated with that information. But as I said, most of the dependencies were not packaged as <code>.deb</code>. So we downloaded all the dependencies using the <code>easy_install</code> command and created <code>.deb</code> packages for them using <code>stdeb</code>.</p>
 <p>I will demonstrate the procedure with the <a href="https://github.com/semk/voldemort">Voldemort</a> project from my GitHub Repo. The <code>setup.py</code> looks like this,</p>
@@ -123,6 +124,7 @@ jinja2   markdown pygments pyyaml
 
 
 <p>Now you can build the main application debs by editing the control file manually since stdeb won't add the dependencies. But you know you have them in your hand :-).</p>
+
 
 <div>
   <strong>Tagged under</strong>  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/packaging">Packaging</a></em>,  <em><a href="/tag/stdeb">stdeb</a></em>,  <em><a href="/tag/setuptools">setuptools</a></em>,  <em><a href="/tag/debian">Debian</a></em>,  <em><a href="/tag/linux">Linux</a></em> 

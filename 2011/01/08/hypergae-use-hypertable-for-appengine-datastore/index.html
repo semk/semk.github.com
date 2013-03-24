@@ -67,6 +67,7 @@
 
 <p></p>
 
+
 <p>After few days of hacking on the <a href="http://code.google.com/appengine/docs/python/overview.html">Google App Engine SDK</a> and <a href="http://code.google.com/apis/protocolbuffers/docs/pythontutorial.html">ProtocolBuffers</a>, finally I succeeded in creating a datastore driver for GAE that talks to <a href="http://hypertable.org">Hypertable</a> and stores the data there <em>fully protocol buffer encoded</em>. If you want to checkout this implementation head to <a href="https://github.com/semk/hypergae">HyperGAE</a> repository and see <a href="https://github.com/semk/hypergae/tree/master/google/appengine/datastore">files</a> <code>datastore_hypertable_ht.py</code> and <code>datastore_hypertable_thrift.py</code>. HyperGAE basically uses two methods to connect to hypertable. Using the thrift api and using the boost-python library <a href="http://code.google.com/p/python-hypertable/">ht</a>. The mentioned drivers provides these api connections to hypertable.</p>
 <p>To run App Engine sdk with hypertable support, do</p>
 <div class="codehilite"><pre>python dev_appserver.py demos/guestbook/ --use_hypertable
@@ -75,6 +76,7 @@
 
 <p>The above command assumes hypertable <a href="http://www.hypertable.com/download/0.9.3.4.html">0.9.3.4</a> installed and running on your machine. It uses the thrift connection by default. I need to add support for configuring hypertable options though <code>dev_appserver.py</code> script. Suggestions and patches are always welcome.</p>
 <p><em>UPDATE:</em> The drivers api has been modified to accommodate the new Hypertable and Thrift api changes. You must install Hypertable version <a href="http://www.hypertable.com/download/">0.9.4.3</a> for HyperGAE to work. More updates to follow.</p>
+
 
 <div>
   <strong>Tagged under</strong>  <em><a href="/tag/app+engine">App Engine</a></em>,  <em><a href="/tag/hypergae">HyperGAE</a></em>,  <em><a href="/tag/hypertable">Hypertable</a></em>,  <em><a href="/tag/python">Python</a></em> 
