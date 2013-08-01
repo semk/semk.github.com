@@ -61,6 +61,19 @@
         
 
 
+<h1><a href="/2011/01/08/hypergae-use-hypertable-for-appengine-datastore">HyperGAE - Use Hypertable for App Engine Datastore</a></h1>
+<time datetime="2011-01-08">
+  Jan 08, 2011
+</time>
+<p></p>
+<p>After few days of hacking on the <a href="http://code.google.com/appengine/docs/python/overview.html">Google App Engine SDK</a> and <a href="http://code.google.com/apis/protocolbuffers/docs/pythontutorial.html">ProtocolBuffers</a>, finally I succeeded in creating a datastore driver for GAE that talks to <a href="http://hypertable.org">Hypertable</a> and stores the data there <em>fully protocol buffer encoded</em>. If you want to checkout this implementation head to <a href="https://github.com/semk/hypergae">HyperGAE</a> repository and see <a href="https://github.com/semk/hypergae/tree/master/google/appengine/datastore">files</a> <code>datastore_hypertable_ht.py</code> and <code>datastore_hypertable_thrift.py</code>. HyperGAE basically uses two methods to connect to hypertable. Using the thrift api and using ...</p>
+<div class="post-excerpt">
+  <p class="alignleft"><a href="/2011/01/08/hypergae-use-hypertable-for-appengine-datastore">Read more...</a></p> 
+  <p class="alignright"><a href="/2011/01/08/hypergae-use-hypertable-for-appengine-datastore#comments">Comments...</a></p>
+  <div style="clear: both;"></div>
+</div>
+<hr>
+
 <h1><a href="/2011/01/05/building-custom-firmware-for-ps3">Building Custom Firmware for PS3</a></h1>
 <time datetime="2011-01-05">
   Jan 05, 2011
@@ -117,34 +130,6 @@
 </div>
 <hr>
 
-<h1><a href="/2010/11/30/cricinfo-api-for-python">Cricinfo api (unofficial) for Python</a></h1>
-<time datetime="2010-11-30">
-  Nov 30, 2010
-</time>
-<p></p>
-<p>Recently I started developing a Python <a href="https://github.com/semk/cricinfo">library</a> for accessing live information from <a href="http://espncricinfo.com">ESPN Cricinfo</a> like live scores, innings details and player profiles. Currently, it only fetches live match information using a simple Python iterator.</p>
-<div class="codehilite"><pre><span class="c"># instantiate</span>
-<span class="n">matches</span> <span class="o">=</span> <span class="n">CricInfo</span><span class="p">()</span>
-<span class="c"># iterate though matches</span>
-<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
-    <span class="c"># match title</span>
-    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">title</span>
-    <span class="c"># a short desciption for the match</span>
-    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">description</span>
-    <span class="c"># url to live scorecard</span>
-    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">link</span>
-    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">guid</span>
-</pre></div>
-
-
-<p>I wish ...</p>
-<div class="post-excerpt">
-  <p class="alignleft"><a href="/2010/11/30/cricinfo-api-for-python">Read more...</a></p> 
-  <p class="alignright"><a href="/2010/11/30/cricinfo-api-for-python#comments">Comments...</a></p>
-  <div style="clear: both;"></div>
-</div>
-<hr>
-
 
 <div class="blog-nav">
   
@@ -160,6 +145,8 @@
   <p><strong>Tag Cloud</strong>:</p>
   <p>
     
+    <a href="/tag/api">API</a>
+    
     <a href="/tag/tux+paint">Tux Paint</a>
     
     <a href="/tag/java">Java</a>
@@ -167,8 +154,6 @@
     <a href="/tag/preforking">Preforking</a>
     
     <a href="/tag/design+pattern">Design Pattern</a>
-    
-    <a href="/tag/ubuntu">Ubuntu</a>
     
     <a href="/tag/flask">Flask</a>
     
@@ -180,7 +165,7 @@
     
     <a href="/tag/magic+tool">Magic Tool</a>
     
-    <a href="/tag/debian">Debian</a>
+    <a href="/tag/emacs">Emacs</a>
     
     <a href="/tag/service+mode">Service Mode</a>
     
@@ -194,7 +179,7 @@
     
     <a href="/tag/android">Android</a>
     
-    <a href="/tag/qt">Qt</a>
+    <a href="/tag/socket">Socket</a>
     
     <a href="/tag/gaming">Gaming</a>
     
@@ -208,19 +193,21 @@
     
     <a href="/tag/python">Python</a>
     
+    <a href="/tag/org-mode">Org-mode</a>
+    
     <a href="/tag/gaesessions">GAESessions</a>
     
     <a href="/tag/scalability">Scalability</a>
     
-    <a href="/tag/raspberry+pi">Raspberry Pi</a>
+    <a href="/tag/ubuntu">Ubuntu</a>
     
-    <a href="/tag/computer">Computer</a>
+    <a href="/tag/raspberry+pi">Raspberry Pi</a>
     
     <a href="/tag/jinja2">Jinja2</a>
     
     <a href="/tag/custom+firmware">Custom Firmware</a>
     
-    <a href="/tag/nosql">NoSQL</a>
+    <a href="/tag/qt">Qt</a>
     
     <a href="/tag/books">Books</a>
     
@@ -228,9 +215,9 @@
     
     <a href="/tag/c">C</a>
     
-    <a href="/tag/stdeb">stdeb</a>
+    <a href="/tag/nosql">NoSQL</a>
     
-    <a href="/tag/socket">Socket</a>
+    <a href="/tag/mindmaps">Mindmaps</a>
     
     <a href="/tag/cricinfo">Cricinfo</a>
     
@@ -244,6 +231,8 @@
     
     <a href="/tag/teensy">Teensy</a>
     
+    <a href="/tag/debian">Debian</a>
+    
     <a href="/tag/hypergae">HyperGAE</a>
     
     <a href="/tag/debug">Debug</a>
@@ -253,6 +242,8 @@
     <a href="/tag/multiprocessing">Multiprocessing</a>
     
     <a href="/tag/packaging">Packaging</a>
+    
+    <a href="/tag/stdeb">stdeb</a>
     
     <a href="/tag/singleton">Singleton</a>
     
@@ -274,7 +265,7 @@
     
     <a href="/tag/lion">Lion</a>
     
-    <a href="/tag/api">API</a>
+    <a href="/tag/computer">Computer</a>
     
     <a href="/tag/ui">UI</a>
     

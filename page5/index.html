@@ -61,6 +61,34 @@
         
 
 
+<h1><a href="/2010/11/30/cricinfo-api-for-python">Cricinfo api (unofficial) for Python</a></h1>
+<time datetime="2010-11-30">
+  Nov 30, 2010
+</time>
+<p></p>
+<p>Recently I started developing a Python <a href="https://github.com/semk/cricinfo">library</a> for accessing live information from <a href="http://espncricinfo.com">ESPN Cricinfo</a> like live scores, innings details and player profiles. Currently, it only fetches live match information using a simple Python iterator.</p>
+<div class="codehilite"><pre><span class="c"># instantiate</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">CricInfo</span><span class="p">()</span>
+<span class="c"># iterate though matches</span>
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+    <span class="c"># match title</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">title</span>
+    <span class="c"># a short desciption for the match</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">description</span>
+    <span class="c"># url to live scorecard</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">link</span>
+    <span class="k">print</span> <span class="n">match</span><span class="o">.</span><span class="n">guid</span>
+</pre></div>
+
+
+<p>I wish ...</p>
+<div class="post-excerpt">
+  <p class="alignleft"><a href="/2010/11/30/cricinfo-api-for-python">Read more...</a></p> 
+  <p class="alignright"><a href="/2010/11/30/cricinfo-api-for-python#comments">Comments...</a></p>
+  <div style="clear: both;"></div>
+</div>
+<hr>
+
 <h1><a href="/2010/11/07/ubuntu-maverick-meerkat">Ubuntu Maverick Meerkat</a></h1>
 <time datetime="2010-11-07">
   Nov 07, 2010
@@ -141,24 +169,13 @@
 </div>
 <hr>
 
-<h1><a href="/2010/09/23/github-powered-blogging">GitHub powered blogging</a></h1>
-<time datetime="2010-09-23">
-  Sep 23, 2010
-</time>
-<p></p>
-<p>I have learned a big lesson from losing all the blog archives from my previous blog <a href="http://semk.in">semk.in</a>, that never ever host a blog without any backups. I didn't pay any attention to domain/hosting expiration date since I was busy working at that time. But finally everything was deleted in a matter of seconds. I never blamed the hosting provider for this. They kept mailing me all the ...</p>
-<div class="post-excerpt">
-  <p class="alignleft"><a href="/2010/09/23/github-powered-blogging">Read more...</a></p> 
-  <p class="alignright"><a href="/2010/09/23/github-powered-blogging#comments">Comments...</a></p>
-  <div style="clear: both;"></div>
-</div>
-<hr>
-
 
 <div class="blog-nav">
   
   <p class="alignleft"><a href="/page4">&larr; Previous Page</a></p>
   
+  
+  <p class="alignright"><a href="/page6">Next Page &rarr;</a></p>
   
   <div style="clear: both;"></div>
 </div>
@@ -167,6 +184,8 @@
   <p><strong>Tag Cloud</strong>:</p>
   <p>
     
+    <a href="/tag/api">API</a>
+    
     <a href="/tag/tux+paint">Tux Paint</a>
     
     <a href="/tag/java">Java</a>
@@ -174,8 +193,6 @@
     <a href="/tag/preforking">Preforking</a>
     
     <a href="/tag/design+pattern">Design Pattern</a>
-    
-    <a href="/tag/ubuntu">Ubuntu</a>
     
     <a href="/tag/flask">Flask</a>
     
@@ -187,7 +204,7 @@
     
     <a href="/tag/magic+tool">Magic Tool</a>
     
-    <a href="/tag/debian">Debian</a>
+    <a href="/tag/emacs">Emacs</a>
     
     <a href="/tag/service+mode">Service Mode</a>
     
@@ -201,7 +218,7 @@
     
     <a href="/tag/android">Android</a>
     
-    <a href="/tag/qt">Qt</a>
+    <a href="/tag/socket">Socket</a>
     
     <a href="/tag/gaming">Gaming</a>
     
@@ -215,19 +232,21 @@
     
     <a href="/tag/python">Python</a>
     
+    <a href="/tag/org-mode">Org-mode</a>
+    
     <a href="/tag/gaesessions">GAESessions</a>
     
     <a href="/tag/scalability">Scalability</a>
     
-    <a href="/tag/raspberry+pi">Raspberry Pi</a>
+    <a href="/tag/ubuntu">Ubuntu</a>
     
-    <a href="/tag/computer">Computer</a>
+    <a href="/tag/raspberry+pi">Raspberry Pi</a>
     
     <a href="/tag/jinja2">Jinja2</a>
     
     <a href="/tag/custom+firmware">Custom Firmware</a>
     
-    <a href="/tag/nosql">NoSQL</a>
+    <a href="/tag/qt">Qt</a>
     
     <a href="/tag/books">Books</a>
     
@@ -235,9 +254,9 @@
     
     <a href="/tag/c">C</a>
     
-    <a href="/tag/stdeb">stdeb</a>
+    <a href="/tag/nosql">NoSQL</a>
     
-    <a href="/tag/socket">Socket</a>
+    <a href="/tag/mindmaps">Mindmaps</a>
     
     <a href="/tag/cricinfo">Cricinfo</a>
     
@@ -251,6 +270,8 @@
     
     <a href="/tag/teensy">Teensy</a>
     
+    <a href="/tag/debian">Debian</a>
+    
     <a href="/tag/hypergae">HyperGAE</a>
     
     <a href="/tag/debug">Debug</a>
@@ -260,6 +281,8 @@
     <a href="/tag/multiprocessing">Multiprocessing</a>
     
     <a href="/tag/packaging">Packaging</a>
+    
+    <a href="/tag/stdeb">stdeb</a>
     
     <a href="/tag/singleton">Singleton</a>
     
@@ -281,7 +304,7 @@
     
     <a href="/tag/lion">Lion</a>
     
-    <a href="/tag/api">API</a>
+    <a href="/tag/computer">Computer</a>
     
     <a href="/tag/ui">UI</a>
     

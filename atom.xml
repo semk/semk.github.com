@@ -4,13 +4,75 @@
     <title>Codeception</title>
     <link href="http://foobarnbaz.com/atom.xml" rel="self"/>
     <link href="http://foobarnbaz.com"/>
-    <updated>2013-07-09T00:00:00+5:30</updated>
+    <updated>2013-08-02T00:00:00+5:30</updated>
     <id></id>
     <author>
         <name>Sreejith Kesavan</name>
         <email>sreejithemk@gmail.com</email>
     </author>
 
+    
+    <entry>
+        <title>Org2OPML - Make awesome mindmaps using Emacs Org mode and Mindnode</title>
+        <link href="http://foobarnbaz.com/2013/08/02/awesome-mindmaps-using-org"/>
+        <updated>2013-08-02T00:00:00+5:30</updated>
+        <id>http://foobarnbaz.com/2013/08/02/awesome-mindmaps-using-org</id>
+        <content type="html">&lt;p&gt;Whoever using &lt;a href="http://www.gnu.org/software/emacs/"&gt;Emacs&lt;/a&gt; as their primary text-editor would have liked the &lt;a href="http://orgmode.org/"&gt;Org mode&lt;/a&gt;. As the Org website puts it:-&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Org mode allows you to create documents with a simple syntax. Different headers/sections in the document can be represented by a &lt;code&gt;*&lt;/code&gt; symbol. A single &lt;code&gt;*&lt;/code&gt; corresponds to an &lt;code&gt;&amp;lt;h1&amp;gt;&lt;/code&gt; block in HTML and &lt;code&gt;**&lt;/code&gt; represents a &lt;code&gt;&amp;lt;h2&amp;gt;&lt;/code&gt;. Look at the following sample for example:-&lt;/p&gt;
+&lt;p&gt;Org mode has the capability to export documents to various formats like ASCII text, PDF, LaTeX, XOXO, HTML, Freemind Mindmap etc. I was not quite happy with the output produced by &lt;a href="http://freemind.sourceforge.net/wiki/index.php/Main_Page"&gt;Freemind&lt;/a&gt; from the &lt;code&gt;.mm&lt;/code&gt; files exported by Org mode. So I switched to &lt;a href="http://mindnode.com/"&gt;Mindnode&lt;/a&gt;, another mindmapping software which is available for Mac OSX and produces visually pleasing mindmaps. But the &lt;code&gt;.mm&lt;/code&gt; exports from Org mode doesn't work pretty well with Mindnode. So I wrote a simple &lt;a href="https://github.com/semk/Org2OPML"&gt;Org2OPML&lt;/a&gt; converter that converts &lt;code&gt;.org&lt;/code&gt; files to &lt;code&gt;.opml&lt;/code&gt; files. OPML is another formats for mindmps/outlining and well supported by Mindnode. Have a look at the output:-&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;.org&lt;/code&gt; representation of the mindmap&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#+TITLE: Windows Versions&lt;/span&gt;
+&lt;span class="cp"&gt;#+AUTHOR: Sreejith Kesavan&lt;/span&gt;
+&lt;span class="cp"&gt;#+ROOT: Windows Versions&lt;/span&gt;
+
+&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="n"&gt;Enterprise&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;RT&lt;/span&gt;
+
+&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Starter&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Basic&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Premium&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Professional&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Enterprise&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Ultimate&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Service&lt;/span&gt; &lt;span class="n"&gt;Pack&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+
+&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Starter&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Basic&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Premium&lt;/span&gt; 
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Business&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Enterprise&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Ultimate&lt;/span&gt;
+
+&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Starter&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Professional&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Professional&lt;/span&gt; &lt;span class="n"&gt;x64&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;specialized&lt;/span&gt; &lt;span class="n"&gt;hardware&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
+&lt;span class="o"&gt;***&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
+&lt;span class="o"&gt;***&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="mi"&gt;2003&lt;/span&gt;
+&lt;span class="o"&gt;***&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="mi"&gt;2004&lt;/span&gt;
+&lt;span class="o"&gt;***&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="mi"&gt;2005&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="mi"&gt;64&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;bit&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Tablet&lt;/span&gt; &lt;span class="n"&gt;PC&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
+&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Fundamentals&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;Legacy&lt;/span&gt; &lt;span class="n"&gt;PCs&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Have a look at the mindmap generated by Mindnode once the &lt;code&gt;.org&lt;/code&gt; file is converted to OPML using Org2OPML script.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Windows Versions" src="/images/posts/awesome-mindmaps-using-org/mindmap.png" /&gt;&lt;/p&gt;</content>
+    </entry>
     
     <entry>
         <title>Simple file upload progressbar in PyQt</title>
