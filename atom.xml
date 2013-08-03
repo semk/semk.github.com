@@ -4,13 +4,23 @@
     <title>Codeception</title>
     <link href="http://foobarnbaz.com/atom.xml" rel="self"/>
     <link href="http://foobarnbaz.com"/>
-    <updated>2013-08-02T00:00:00+5:30</updated>
+    <updated>2013-08-03T00:00:00+5:30</updated>
     <id></id>
     <author>
         <name>Sreejith Kesavan</name>
         <email>sreejithemk@gmail.com</email>
     </author>
 
+    
+    <entry>
+        <title>RegexMate - A visual Regular Expression testing toolkit</title>
+        <link href="http://foobarnbaz.com/2013/08/03/regexmate-the-visual-regular-expression-tester"/>
+        <updated>2013-08-03T00:00:00+5:30</updated>
+        <id>http://foobarnbaz.com/2013/08/03/regexmate-the-visual-regular-expression-tester</id>
+        <content type="html">&lt;p&gt;I have been doing a lot of regular expression parsing at work. Writing regular expressions are hard, and testing it is even harder. &lt;a href="http://regexpal.com/"&gt;Regexpal&lt;/a&gt; and &lt;a href="http://www.debuggex.com/"&gt;Debuggex&lt;/a&gt; are some of the popular web based Regular expression testing tools available. Inspired by the idea behind these tools, I wrote a simple cross-platform regular expression tester, &lt;a href=""&gt;RegexMate&lt;/a&gt; in PyQt. Initial version of RegexMate can highlight matches, groups and supports some regex flags as well.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="RegexMate" src="https://raw.github.com/semk/RegexMate/master/screenshots/RegexMate.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I'm planning to add syntax highlighting for the regex pattern and additional options like replace and split in the upcoming releases. Stay tuned.&lt;/p&gt;</content>
+    </entry>
     
     <entry>
         <title>Org2OPML - Make awesome mindmaps using Emacs Org mode and Mindnode</title>
