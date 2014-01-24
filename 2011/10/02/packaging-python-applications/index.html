@@ -1,23 +1,23 @@
 <!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-<html lang="en-US">
-  <head>
-    <title>foobarnbaz.com - Packaging Python Applications</title>
-    <meta charset="UTF-8" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="author" content="Sreejith K" />
+    <title>Packaging Python Applications - Sreejith Kesavan</title>
+    <meta name="description" content="A blog by Sreejith Kesavan" />
 
-<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
-  title="Codeception" type="application/atom+xml" />
-<link rel="stylesheet" href="/stylesheets/styles.css">
-<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<!--[if lt IE 9]>
-<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<script type="text/javascript">
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/pygment_trac.css">
+    <link href="/images/layout/favicon.gif" rel="shortcut icon" type="image/ico" />
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+
+    <script type="text/javascript">
 
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-25990753-1']);
@@ -30,44 +30,30 @@
   })();
 
 </script>
-<!--[if lte IE 8]>
-<script type="text/javascript">
-  // Create elements here allows IE8 to style them when it sees the real thing.
-  document.createElement('article');
-  document.createElement('aside');
-  document.createElement('footer');
-  document.createElement('header');
-  document.createElement('hgroup');
-  document.createElement('menu');
-  document.createElement('nav');
-  document.createElement('section');
-</script>
-<![endif]-->
-  </head>
 
-  <body>
-    <div class="wrapper">
-      <header>
-  <h1><a href="/">Codeception</a></h1>
-  <p>Musings & ramblings of a Pythonista</p>
-  <ul>
-    <li><a href="/about">Read about <strong>Me</strong></a></li>
-    <li><a href="/lab">Checkout my <strong>Lab</strong></a></li>
-    <li><a href="/archive">Browse the <strong>Archive</strong></a></li>
-  </ul>
-</header>
+</head>
+<body class="home_template">
 
-      <section>
-        
-<h1>Packaging Python Applications</h1>
+    
+<main class="content" role="main">
 
-<time datetime="2011-10-02">
-  Oct 02, 2011
-</time>
+    <article class="post">
 
-<p></p>
+        <header class="post-header">
+            <a id="blog-logo" href="/">
+            	<img src="/images/logo.png" alt="Blog Logo" />
+            </a>
+        </header>
 
-<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This situation made us to build <code>.deb</code> packages for our Python software as well.</p>
+	<p></p>
+
+        <span class="post-meta"><time datetime="2011-10-02">Oct 02, 2011</time></span>
+	<span class="post-meta"> <a href="/tag/python">Python</a>,  <a href="/tag/packaging">Packaging</a>,  <a href="/tag/stdeb">stdeb</a>,  <a href="/tag/setuptools">setuptools</a>,  <a href="/tag/debian">Debian</a>,  <a href="/tag/linux">Linux</a> </span>
+
+        <h1 class="post-title">Packaging Python Applications</h1>
+
+        <section class="post-content">
+            <p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This situation made us to build <code>.deb</code> packages for our Python software as well.</p>
 <p>The real challenge here was packaging all the dependencies our Python application has brought in, as most of the dependencies were having only <code>egg</code> distributions. Luckily there was an extension to setuptools called <a href="https://github.com/astraw/stdeb">stdeb</a> which will allow you to generate debian packages using your setup.py script. It'll automatically add the dependencies in the <code>debian/control</code> file after searching for the dependencies using <code>apt-cache</code>. stdeb will do something like <code>apt-cache dump | grep &lt;package&gt;</code> to find whether there is a proper debian package for the dependencies. If they found the correct one in apt-cache, <code>debian/control</code> file will be updated with that information. But as I said, most of the dependencies were not packaged as <code>.deb</code>. So we downloaded all the dependencies using the <code>easy_install</code> command and created <code>.deb</code> packages for them using <code>stdeb</code>.</p>
 <p>I will demonstrate the procedure with the <a href="https://github.com/semk/voldemort">Voldemort</a> project from my GitHub Repo. The <code>setup.py</code> looks like this,</p>
 <div class="codehilite"><pre><span class="k">try</span><span class="p">:</span>
@@ -123,24 +109,10 @@ jinja2   markdown pygments pyyaml
 
 
 <p>Now you can build the main application debs by editing the control file manually since stdeb won't add the dependencies. But you know you have them in your hand :-).</p>
+        </section>
 
-<div>
-  <strong>Tagged under</strong>  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/packaging">Packaging</a></em>,  <em><a href="/tag/stdeb">stdeb</a></em>,  <em><a href="/tag/setuptools">setuptools</a></em>,  <em><a href="/tag/debian">Debian</a></em>,  <em><a href="/tag/linux">Linux</a></em> 
-<div>
-
-<br/>
-
-<div class="blog-nav">
-  
-  <p class="alignleft"><a href="/2011/08/30/developing-scalable-services-with-python">&larr; Previous Post</a></p>
-  
-  
-  <p class="alignright"><a href="/2011/10/05/voldemort-a-jinja-powered-static-site-generator">Next Post &rarr;</a></p>
-  
-  <div style="clear: both;"></div>
-</div>
-
-<div id="disqus_thread"><a id="comments" /></div>
+        <section class="comment">
+	  <div id="disqus_thread"><a id="comments" /></div>
 <script type="text/javascript">
 	/**
 	* var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
@@ -154,22 +126,39 @@ jinja2   markdown pygments pyyaml
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=foobarnbaz">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 
+        </section>
 
-      </section>
+    </article>
 
-      <footer>
-  <ul>
-    <li><a href="http://github.com/semk">GitHub</a></li>
-    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
-    <li><a href="http://twitter.com/splusk">Twitter</a></li>
-    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
-    <li><a href="http://www.linkedin.com/in/sreejithemk">LinkedIn</a></li>
-    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
-  </ul>
-  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
-  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-</footer>
-    </div>
-    <script src="/javascripts/scale.fix.js"></script>
-  </body>
+    <nav class="pagination" role="navigation">
+      
+      <a class="older-posts" href="/2011/08/30/developing-scalable-services-with-python">&larr; Previous Post</a>
+      
+      
+      <a class="newer-posts" href="/2011/10/05/voldemort-a-jinja-powered-static-site-generator">Next Post &rarr;</a>
+      
+    </nav>
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="http://feeds2.feedburner.com/foobarnbaz"><span class="tooltip">Subscribe!</span></a>
+        <div class="inner">
+             <section class="copyright">All content copyright <a href="/">@semk</a> &copy; 2014 &bull; All rights reserved.</section>
+             <section class="poweredby">Proudly published with <a class="icon-ghost" href="https://github.com/semk/voldemort">Voldemort</a></section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.parallax-1.1.3.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Target your .container, .wrapper, .post, etc.
+            $(".post-content").fitVids();
+            $('#site-head').parallax("70%", 0.1);
+        });
+    </script>
+
+</body>
 </html>

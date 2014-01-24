@@ -1,23 +1,23 @@
 <!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-<html lang="en-US">
-  <head>
-    <title>foobarnbaz.com - Cricinfo api (unofficial) for Python</title>
-    <meta charset="UTF-8" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="author" content="Sreejith K" />
+    <title>Cricinfo api (unofficial) for Python - Sreejith Kesavan</title>
+    <meta name="description" content="A blog by Sreejith Kesavan" />
 
-<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
-  title="Codeception" type="application/atom+xml" />
-<link rel="stylesheet" href="/stylesheets/styles.css">
-<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<!--[if lt IE 9]>
-<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<script type="text/javascript">
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/pygment_trac.css">
+    <link href="/images/layout/favicon.gif" rel="shortcut icon" type="image/ico" />
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+
+    <script type="text/javascript">
 
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-25990753-1']);
@@ -30,44 +30,30 @@
   })();
 
 </script>
-<!--[if lte IE 8]>
-<script type="text/javascript">
-  // Create elements here allows IE8 to style them when it sees the real thing.
-  document.createElement('article');
-  document.createElement('aside');
-  document.createElement('footer');
-  document.createElement('header');
-  document.createElement('hgroup');
-  document.createElement('menu');
-  document.createElement('nav');
-  document.createElement('section');
-</script>
-<![endif]-->
-  </head>
 
-  <body>
-    <div class="wrapper">
-      <header>
-  <h1><a href="/">Codeception</a></h1>
-  <p>Musings & ramblings of a Pythonista</p>
-  <ul>
-    <li><a href="/about">Read about <strong>Me</strong></a></li>
-    <li><a href="/lab">Checkout my <strong>Lab</strong></a></li>
-    <li><a href="/archive">Browse the <strong>Archive</strong></a></li>
-  </ul>
-</header>
+</head>
+<body class="home_template">
 
-      <section>
-        
-<h1>Cricinfo api (unofficial) for Python</h1>
+    
+<main class="content" role="main">
 
-<time datetime="2010-11-30">
-  Nov 30, 2010
-</time>
+    <article class="post">
 
-<p></p>
+        <header class="post-header">
+            <a id="blog-logo" href="/">
+            	<img src="/images/logo.png" alt="Blog Logo" />
+            </a>
+        </header>
 
-<p>Recently I started developing a Python <a href="https://github.com/semk/cricinfo">library</a> for accessing live information from <a href="http://espncricinfo.com">ESPN Cricinfo</a> like live scores, innings details and player profiles. Currently, it only fetches live match information using a simple Python iterator.</p>
+	<p></p>
+
+        <span class="post-meta"><time datetime="2010-11-30">Nov 30, 2010</time></span>
+	<span class="post-meta"> <a href="/tag/python">Python</a>,  <a href="/tag/cricinfo">Cricinfo</a>,  <a href="/tag/api">API</a> </span>
+
+        <h1 class="post-title">Cricinfo api (unofficial) for Python</h1>
+
+        <section class="post-content">
+            <p>Recently I started developing a Python <a href="https://github.com/semk/cricinfo">library</a> for accessing live information from <a href="http://espncricinfo.com">ESPN Cricinfo</a> like live scores, innings details and player profiles. Currently, it only fetches live match information using a simple Python iterator.</p>
 <div class="codehilite"><pre><span class="c"># instantiate</span>
 <span class="n">matches</span> <span class="o">=</span> <span class="n">CricInfo</span><span class="p">()</span>
 <span class="c"># iterate though matches</span>
@@ -93,24 +79,10 @@
 
 
 <p>I'll update about the changes being done for the api. So keep reading my blog. I need your suggestions to make it a useful one.</p>
+        </section>
 
-<div>
-  <strong>Tagged under</strong>  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/cricinfo">Cricinfo</a></em>,  <em><a href="/tag/api">API</a></em> 
-<div>
-
-<br/>
-
-<div class="blog-nav">
-  
-  <p class="alignleft"><a href="/2010/11/07/ubuntu-maverick-meerkat">&larr; Previous Post</a></p>
-  
-  
-  <p class="alignright"><a href="/2010/12/12/factory-service-mode-om-playstation-3">Next Post &rarr;</a></p>
-  
-  <div style="clear: both;"></div>
-</div>
-
-<div id="disqus_thread"><a id="comments" /></div>
+        <section class="comment">
+	  <div id="disqus_thread"><a id="comments" /></div>
 <script type="text/javascript">
 	/**
 	* var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
@@ -124,22 +96,39 @@
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=foobarnbaz">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 
+        </section>
 
-      </section>
+    </article>
 
-      <footer>
-  <ul>
-    <li><a href="http://github.com/semk">GitHub</a></li>
-    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
-    <li><a href="http://twitter.com/splusk">Twitter</a></li>
-    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
-    <li><a href="http://www.linkedin.com/in/sreejithemk">LinkedIn</a></li>
-    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
-  </ul>
-  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
-  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-</footer>
-    </div>
-    <script src="/javascripts/scale.fix.js"></script>
-  </body>
+    <nav class="pagination" role="navigation">
+      
+      <a class="older-posts" href="/2010/11/07/ubuntu-maverick-meerkat">&larr; Previous Post</a>
+      
+      
+      <a class="newer-posts" href="/2010/12/12/factory-service-mode-om-playstation-3">Next Post &rarr;</a>
+      
+    </nav>
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="http://feeds2.feedburner.com/foobarnbaz"><span class="tooltip">Subscribe!</span></a>
+        <div class="inner">
+             <section class="copyright">All content copyright <a href="/">@semk</a> &copy; 2014 &bull; All rights reserved.</section>
+             <section class="poweredby">Proudly published with <a class="icon-ghost" href="https://github.com/semk/voldemort">Voldemort</a></section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.parallax-1.1.3.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Target your .container, .wrapper, .post, etc.
+            $(".post-content").fitVids();
+            $('#site-head').parallax("70%", 0.1);
+        });
+    </script>
+
+</body>
 </html>
