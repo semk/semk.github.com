@@ -6,6 +6,11 @@
 
     
     <url>
+        <loc>/404</loc>
+        <lastmod>2014-01-24T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
         <loc>/about</loc>
         <lastmod>2014-01-24T00:00:00+5:30</lastmod>
     </url>
@@ -32,11 +37,6 @@
     
     <url>
         <loc>/lab</loc>
-        <lastmod>2014-01-24T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/not-found-404</loc>
         <lastmod>2014-01-24T00:00:00+5:30</lastmod>
     </url>
     
