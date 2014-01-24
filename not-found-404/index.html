@@ -35,13 +35,26 @@
 <body class="home_template">
 
     
-<h2>No donut for you &ndash; 404 Error</h2>
+<main class="content" role="main">
 
-<img src="/images/layout/404.jpg">
+  <article class="post">
 
-<p>The file or page you're looking for does not exist. Try searching.</p>
+    <header class="post-header">
+      <a id="blog-logo" href="/">
+        <img src="/images/logo.png" alt="Blog Logo" />
+      </a>
+    </header>
 
-<div id="cse" style="width: 100%;">Loading</div>
+    <h1 class="post-title">404 Not Found</h1><br/>
+
+    <section class="post-content">
+
+      <img src="/images/layout/404.jpg">
+
+      <p>The file or page you're looking for does not exist. Try searching.</p>
+    </section>
+
+    <div id="cse" style="width: 100%;">Loading</div>
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript"> 
   google.load('search', '1', {language : 'en'});
@@ -52,6 +65,8 @@
   }, true);
 </script>
 <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  </article>
+</main>
 
 
     <footer class="site-footer">
