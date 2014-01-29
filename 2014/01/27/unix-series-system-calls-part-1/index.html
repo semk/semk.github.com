@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-    <title>RegexMate - A visual Regular Expression testing toolkit - Sreejith Kesavan</title>
+    <title>UNIX Series: System Calls - Part I - Sreejith Kesavan</title>
     <meta name="description" content="A blog by Sreejith Kesavan" />
 
     <meta name="HandheldFriendly" content="True" />
@@ -47,15 +47,29 @@
 
 	<p></p>
 
-        <span class="post-meta"><time datetime="2013-08-03">Aug 03, 2013</time></span>
-	<span class="post-meta"> <a href="/tag/regexmate">RegexMate</a>,  <a href="/tag/regex">regex</a>,  <a href="/tag/pyqt">PyQt</a>,  <a href="/tag/projects">Projects</a> </span>
+        <span class="post-meta"><time datetime="2014-01-27">Jan 27, 2014</time></span>
+	<span class="post-meta"> <a href="/tag/unix">Unix</a>,  <a href="/tag/linux">Linux</a>,  <a href="/tag/system+calls">System Calls</a> </span>
 
-        <h1 class="post-title">RegexMate - A visual Regular Expression testing toolkit</h1>
+        <h1 class="post-title">UNIX Series: System Calls - Part I</h1>
 
         <section class="post-content">
-            <p>I have been doing a lot of regular expression parsing at work. Writing regular expressions are hard, and testing it is even harder. <a href="http://regexpal.com/">Regexpal</a> and <a href="http://www.debuggex.com/">Debuggex</a> are some of the popular web based Regular expression testing tools available. Inspired by the idea behind these tools, I wrote a simple cross-platform regular expression tester, <a href="https://github.com/semk/RegexMate">RegexMate</a> in PyQt. Initial version of RegexMate can highlight matches, groups and supports some regex flags as well.</p>
-<p><img alt="RegexMate" src="https://raw.github.com/semk/RegexMate/master/screenshots/RegexMate.png" /></p>
-<p>I'm planning to add syntax highlighting for the regex pattern and additional options like replace and split in the upcoming releases. Stay tuned.</p>
+            <p>My idea here is to do a series of blog posts on UNIX/Linux system internals for the upcoming weeks.
+I'm doing this as a part of my learnings from <a href="https://www.codeschool.com">CodeSchool</a> and reading
+<em><a href="http://shop.oreilly.com/product/9780596009588.do">Linux System Programming</a></em>. Let's get started
+with UNIX <em>System Calls</em> in the first place.</p>
+<h6>What are <em>System Calls</em>?</h6>
+<p>From <em>Linux System Programming</em> book,</p>
+<blockquote>
+<p>System programming starts and ends with system calls. System calls (often shortened to syscalls)
+are function invocations made from user space—your text editor, favorite game, and so on—into the
+kernel (the core internals of the system) in order to request some service or resource from the
+operating system. System calls range from the familiar, such as read() and write(), to the exotic,
+such as get_thread_area() and set_tid_address().</p>
+</blockquote>
+<h6>Why do we need <em>System Calls</em>?</h6>
+<h6>How <em>System</em> Calls are being called?</h6>
+<h6>UNIX <em>Process Address Space</em></h6>
+<h6>References</h6>
         </section>
 
         <section class="comment">
@@ -79,10 +93,8 @@
 
     <nav class="pagination" role="navigation">
       
-      <a class="older-posts" href="/2013/08/02/awesome-mindmaps-using-org">&larr; Previous Post</a>
+      <a class="older-posts" href="/2014/01/24/text-editors-vs-ides-which-one-to-use">&larr; Previous Post</a>
       
-      
-      <a class="newer-posts" href="/2014/01/24/text-editors-vs-ides-which-one-to-use">Next Post &rarr;</a>
       
     </nav>
 </main>
