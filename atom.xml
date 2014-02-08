@@ -13,30 +13,6 @@
 
     
     <entry>
-        <title>UNIX Series: System Calls - Part I</title>
-        <link href="http://foobarnbaz.com/2014/01/27/unix-series-system-calls-part-1"/>
-        <updated>2014-01-27T00:00:00+5:30</updated>
-        <id>http://foobarnbaz.com/2014/01/27/unix-series-system-calls-part-1</id>
-        <content type="html">&lt;p&gt;My idea here is to do a series of blog posts on UNIX/Linux system internals for the upcoming weeks.
-I'm doing this as a part of my learnings from &lt;a href="https://www.codeschool.com"&gt;CodeSchool&lt;/a&gt; and reading
-&lt;em&gt;&lt;a href="http://shop.oreilly.com/product/9780596009588.do"&gt;Linux System Programming&lt;/a&gt;&lt;/em&gt;. Let's get started
-with UNIX &lt;em&gt;System Calls&lt;/em&gt; in the first place.&lt;/p&gt;
-&lt;h6&gt;What are &lt;em&gt;System Calls&lt;/em&gt;?&lt;/h6&gt;
-&lt;p&gt;From &lt;em&gt;Linux System Programming&lt;/em&gt; book,&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;System programming starts and ends with system calls. System calls (often shortened to syscalls)
-are function invocations made from user space—your text editor, favorite game, and so on—into the
-kernel (the core internals of the system) in order to request some service or resource from the
-operating system. System calls range from the familiar, such as read() and write(), to the exotic,
-such as get_thread_area() and set_tid_address().&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h6&gt;Why do we need &lt;em&gt;System Calls&lt;/em&gt;?&lt;/h6&gt;
-&lt;h6&gt;How &lt;em&gt;System&lt;/em&gt; Calls are being called?&lt;/h6&gt;
-&lt;h6&gt;UNIX &lt;em&gt;Process Address Space&lt;/em&gt;&lt;/h6&gt;
-&lt;h6&gt;References&lt;/h6&gt;</content>
-    </entry>
-    
-    <entry>
         <title>IDEs vs. Text Editors: What should developers use?</title>
         <link href="http://foobarnbaz.com/2014/01/24/text-editors-vs-ides-which-one-to-use"/>
         <updated>2014-01-24T00:00:00+5:30</updated>
