@@ -56,6 +56,35 @@
     
     <article class="post">
         <header class="post-header">
+            <span class="post-meta"><time datetime="2010-10-06">Oct 06, 2010</time></span>
+            <h2 class="post-title"><a href="/2010/10/06/borg-pattern">Borg Pattern</a></h2>
+        </header>
+        <section class="post-excerpt">
+            <p><p>Singleton Design Patterns create all sorts of problems as you have exactly one instance for the singleton class throughout the program.</p>
+<div class="codehilite"><pre><span class="c"># Singleton implementation using new-style classes</span>
+<span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;_the_instance&#39;</span> <span class="ow">in</span> <span class="nb">type</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="nb">type</span><span class="o">.</span><span class="n">_the_instance</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">_the_instance</span>
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">Singleton</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">foo</span><span class="p">),</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">10049912</span><span class="p">,</span> <span class="mi">10049912</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Usually programmers use Singleton Patterns as a global entry point ...</p>&hellip;</p>
+        </section>
+    </article>
+
+    
+    <article class="post">
+        <header class="post-header">
             <span class="post-meta"><time datetime="2010-10-02">Oct 02, 2010</time></span>
             <h2 class="post-title"><a href="/2010/10/02/commandline-mapper">A commandline mapper</a></h2>
         </header>
