@@ -4,13 +4,269 @@
     <title>@semk</title>
     <link href="http://foobarnbaz.com/atom.xml" rel="self"/>
     <link href="http://foobarnbaz.com"/>
-    <updated>2014-02-08T00:00:00+5:30</updated>
+    <updated>2014-02-12T00:00:00+5:30</updated>
     <id></id>
     <author>
         <name>Sreejith Kesavan</name>
         <email>sreejithemk@gmail.com</email>
     </author>
 
+    
+    <entry>
+        <title>UNIX Series: System Calls - Part I</title>
+        <link href="http://foobarnbaz.com/2014/01/27/unix-series-system-calls-part-1"/>
+        <updated>2014-01-27T00:00:00+5:30</updated>
+        <id>http://foobarnbaz.com/2014/01/27/unix-series-system-calls-part-1</id>
+        <content type="html">&lt;p&gt;System programmers must know about &lt;em&gt;system calls&lt;/em&gt; and for for those who are not system programmers,
+it is still good getting to know about how things work under the hood. My idea here is to do a series
+of blog posts on UNIX/Linux system internals for the upcoming weeks. I'm doing this as a part of my
+learnings from &lt;a href="https://www.codeschool.com"&gt;CodeSchool&lt;/a&gt; and reading
+&lt;em&gt;&lt;a href="http://shop.oreilly.com/product/9780596009588.do"&gt;Linux System Programming&lt;/a&gt;&lt;/em&gt;. Let's get started
+with UNIX &lt;em&gt;System Calls&lt;/em&gt; in the first place.&lt;/p&gt;
+&lt;h5&gt;What are System Calls?&lt;/h5&gt;
+&lt;p&gt;From &lt;em&gt;Linux System Programming&lt;/em&gt; book,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;System programming starts and ends with system calls. System calls (often shortened to syscalls)
+are function invocations made from user space—your text editor, favorite game, and so on—into the
+kernel (the core internals of the system) in order to request some service or resource from the
+operating system. System calls range from the familiar, such as read() and write(), to the exotic,
+such as get_thread_area() and set_tid_address().&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;So system calls acts as an intermediary between userspace applications and the kernel space. It
+allows programs to request the operating system to do something on its behalf. The system calls
+are functions used in the kernel itself. If there was no clear distinction between the kernel
+space and user space, then all the user applications will be able to do absolutely anything
+they want to do in the operating system. Now that would be insecure and chaotic. System calls
+exposes only those functionalities of the kernel through an API which will get only that task
+done for the user application. In short, its a secure way of getting things done in the operating
+system.&lt;/p&gt;
+&lt;h5&gt;Some of the popular System Calls&lt;/h5&gt;
+&lt;p&gt;All of us are atleast familiar with the &lt;code&gt;read()&lt;/code&gt; and &lt;code&gt;write()&lt;/code&gt; system calls. But applications need
+even more of these. the following table shows the most commonly used system calls.&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col style="text-align:left;"/&gt;
+&lt;col style="text-align:center;"/&gt;
+&lt;col style="text-align:right;"/&gt;
+&lt;/colgroup&gt;
+
+&lt;thead&gt;
+&lt;tr&gt;
+    &lt;th style="text-align:left;"&gt;General Class&lt;/th&gt;
+    &lt;th style="text-align:center;"&gt;Specific Class&lt;/th&gt;
+    &lt;th style="text-align:right;"&gt;System Call&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;File related&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Creating a Channel&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;creat()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;open()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;open()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Input/Output&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;read()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;write()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Random Access&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;lseek()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Channel duplication&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;dup()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Aliassing Files&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;link()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Removing Files&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;unlink()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;File Status&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;stat()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;fstat()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Access Control&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;access()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;chmod()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;chown()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;umask()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Device Control&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;ioctl()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;Process related&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Process creation&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;exec()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Process creation&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;fork()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Process wait&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;wait()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Process termination&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;exit()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Process Owner &amp;amp; Group&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;getuid()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;geteuid()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;getgid()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;getegid()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Process identity&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;getpid()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;getppid()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Process control&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;signal()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;kill()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;alarm()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Change working directory&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;chdir()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;IPC&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Pipelines&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;pipe()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Messages&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;msgget()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;msgsnd()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;msgrcv()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;msgctl()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Semaphores&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;semget()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;semop()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;Shared memory&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;shmget()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;shmat()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td style="text-align:left;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:center;"&gt;&lt;/td&gt;
+    &lt;td style="text-align:right;"&gt;shmdt()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h5&gt;How System Calls are being called?&lt;/h5&gt;
+&lt;h5&gt;UNIX Process Address Space&lt;/h5&gt;
+&lt;h5&gt;References&lt;/h5&gt;
+&lt;p&gt;&lt;a href="http://www.di.uevora.pt/~lmr/syscalls.html"&gt;syscalls&lt;/a&gt;&lt;/p&gt;</content>
+    </entry>
     
     <entry>
         <title>IDEs vs. Text Editors: What should developers use?</title>
