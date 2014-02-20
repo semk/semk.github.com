@@ -749,7 +749,7 @@ jinja2   markdown pygments pyyaml
 
 
 &lt;h3&gt;Preforking&lt;/h3&gt;
-&lt;p&gt;Another way to solve this issue is by spawning multiple process from the main server which is listening on a socket/port and letting pool of child processes to handle the new socket connections returned by &lt;code&gt;accept()&lt;/code&gt;ing connections from the client. Apache uses this style of process scaling known as "Preforking". A simple example using &lt;code&gt;multiprocessing&lt;/code&gt; module which runs an instance of a &lt;code&gt;BaseHTTPServer.HTTPServer&lt;/code&gt; on a pool of worker processes can be written very easily as follows.&lt;/p&gt;
+&lt;p&gt;Another way to solve this issue is by spawning multiple process from the main server which is listening on a socket/port and letting all the child processes to &lt;code&gt;accept()&lt;/code&gt; connections from the client. Apache uses this style of process scaling known as "Preforking". A simple example using &lt;code&gt;multiprocessing&lt;/code&gt; module which runs an instance of a &lt;code&gt;BaseHTTPServer.HTTPServer&lt;/code&gt; on a pool of worker processes can be written very easily as follows.&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;#&lt;/span&gt;
 &lt;span class="c"&gt;# Example where a pool of http servers share a single listening socket&lt;/span&gt;
 &lt;span class="c"&gt;#&lt;/span&gt;
