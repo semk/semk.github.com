@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-    <title>IDEs vs. Text Editors: What should developers use? - Sreejith Kesavan</title>
-    <meta name="description" content="A blog by Sreejith Kesavan" />
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - IDEs vs. Text Editors: What should developers use?</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
 
-    <meta name="HandheldFriendly" content="True" />
-    <meta name="MobileOptimized" content="320" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
 
-    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
-    <link rel="stylesheet" type="text/css" href="/assets/css/pygment_trac.css">
-    <link href="/images/layout/favicon.gif" rel="shortcut icon" type="image/ico" />
-
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-
-    <script type="text/javascript">
+<script type="text/javascript">
 
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-25990753-1']);
@@ -30,30 +30,44 @@
   })();
 
 </script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
 
-</head>
-<body class="home_template">
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1><a href="/">Codeception</a></h1>
+  <p>Musings & ramblings of a Pythonista</p>
+  <ul>
+    <li><a href="/about">Read about <strong>Me</strong></a></li>
+    <li><a href="/lab">Checkout my <strong>Lab</strong></a></li>
+    <li><a href="/archive">Browse the <strong>Archive</strong></a></li>
+  </ul>
+</header>
 
-    
-<main class="content" role="main">
+      <section>
+        
+<h1>IDEs vs. Text Editors: What should developers use?</h1>
 
-    <article class="post">
+<time datetime="2014-01-24">
+  Jan 24, 2014
+</time>
 
-        <header class="post-header">
-            <a id="blog-logo" href="/">
-            	<img src="/images/logo.png" alt="Blog Logo" />
-            </a>
-        </header>
+<p></p>
 
-	<p></p>
-
-        <span class="post-meta"><time datetime="2014-01-24">Jan 24, 2014</time></span>
-	<span class="post-meta"> <a href="/tag/ide">IDE</a>,  <a href="/tag/python">Python</a> </span>
-
-        <h1 class="post-title">IDEs vs. Text Editors: What should developers use?</h1>
-
-        <section class="post-content">
-            <p>The answer to this question may vary from developers to developers. I truly believe that it also depends on the kind of programming language they use for developing applications. For example, I have heard many times from my fellow Java programmers that they couldn't live without the <a href="http://www.eclipse.org/">Eclipse</a> IDE, that they will not be able to write a working Java program with the help of a simple text editor. Predominantly being a Python developer, I use <a href="http://www.gnu.org/software/emacs/">Emacs</a> for most of my coding. I do not feel code completion or any other fancy IDE features are required for coding in Python, atleast for what I'm doing. The only difficult thing I encountered using just Emacs for coding is <em>debugging</em> the code I've written. For most of the time <code>print</code> statements will do the job fine. But at times I have to manually initialize <code>pdb</code> to debug my code. This could be painful sometimes. Although there are some tricks in Emacs to do the debugging, it didn't seem neat enough to me.</p>
+<p>The answer to this question may vary from developers to developers. I truly believe that it also depends on the kind of programming language they use for developing applications. For example, I have heard many times from my fellow Java programmers that they couldn't live without the <a href="http://www.eclipse.org/">Eclipse</a> IDE, that they will not be able to write a working Java program with the help of a simple text editor. Predominantly being a Python developer, I use <a href="http://www.gnu.org/software/emacs/">Emacs</a> for most of my coding. I do not feel code completion or any other fancy IDE features are required for coding in Python, atleast for what I'm doing. The only difficult thing I encountered using just Emacs for coding is <em>debugging</em> the code I've written. For most of the time <code>print</code> statements will do the job fine. But at times I have to manually initialize <code>pdb</code> to debug my code. This could be painful sometimes. Although there are some tricks in Emacs to do the debugging, it didn't seem neat enough to me.</p>
 <blockquote>
 <p>Then when I started writing C and using GDB inside of Emacs I kind of tried to
 keep up the same way of doing things. That was the model we built Energize
@@ -68,10 +82,24 @@ stuff like that, it's the only choice you have -- There aren't any debuggers.
 <p>That's when I found <a href="http://www.jetbrains.com/pycharm/">PyCharm</a> IDE for Python. They had this program where they provide free licenses for the commercial version of PyCharm for doing opensource projects. I applied for one mentioning my <a href="https://github.com/semk/voldemort">voldemort</a> project and I got one free license.</p>
 <p>PyCharm comes with a brilliant visual Python debugger and I found it really easier to debug the code using breakpoints and variable watchers. I spent a month or two coding on PyCharm and it really helped me code faster. One of the main reasons I love Emacs is that I could do all the tasks just by using the keyboard. Be it cutting &amp; pasting text, switching between buffers it was all easy. There was also this good feeling of using just the keyboard. After using PyCharm for quite some time, I felt like using the mouse a lot for most of these taks. Another advantage of using a text editor is that you will get to know the programming language a lot better since there are no autocompletion or any other IDE features. You have to write the code on your own. Then there are things like version control integration for IDEs which I believe eases the effort for most of the people. But I belive they conceal a lot of activities from the user. I prefer doing the version control activities by myself on a terminal rather than handing it to an IDE. In this pypix <a href="http://pypix.com/roundups/tools-python-super-stars/">article</a> some of the world's top Python developers talk about the tools preferred by them.</p>
 <p>So what developer's should ultimately use? Hmm, I believe, there is no concrete answer. Nowadays, I use Emacs for relatively smaller projects and PyCharm for the behemoths. What do you think? What are you using for development?. Give your opinions/suggestions in the comment section.</p>
-        </section>
 
-        <section class="comment">
-	  <div id="disqus_thread"><a id="comments" /></div>
+<div>
+  <strong>Tagged under</strong>  <em><a href="/tag/ide">IDE</a></em>,  <em><a href="/tag/python">Python</a></em> 
+<div>
+
+<br/>
+
+<div class="blog-nav">
+  
+  <p class="alignleft"><a href="/2013/08/03/regexmate-the-visual-regular-expression-tester">&larr; Previous Post</a></p>
+  
+  
+  <p class="alignright"><a href="/2014/01/27/unix-series-system-calls-part-1">Next Post &rarr;</a></p>
+  
+  <div style="clear: both;"></div>
+</div>
+
+<div id="disqus_thread"><a id="comments" /></div>
 <script type="text/javascript">
 	/**
 	* var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
@@ -85,39 +113,22 @@ stuff like that, it's the only choice you have -- There aren't any debuggers.
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=foobarnbaz">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 
-        </section>
 
-    </article>
+      </section>
 
-    <nav class="pagination" role="navigation">
-      
-      <a class="older-posts" href="/2013/08/03/regexmate-the-visual-regular-expression-tester">&larr; Previous Post</a>
-      
-      
-      <a class="newer-posts" href="/2014/01/27/unix-series-system-calls-part-1">Next Post &rarr;</a>
-      
-    </nav>
-</main>
-
-
-    <footer class="site-footer">
-        <a class="subscribe icon-feed" href="http://feeds2.feedburner.com/foobarnbaz"><span class="tooltip">Subscribe!</span></a>
-        <div class="inner">
-             <section class="copyright">All content copyright <a href="/">@semk</a> &copy; 2014 &bull; All rights reserved.</section>
-             <section class="poweredby">Proudly published with <a class="icon-ghost" href="https://github.com/semk/voldemort">Voldemort</a></section>
-        </div>
-    </footer>
-
-    <script type="text/javascript" src="/assets/js/index.js"></script>
-    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
-    <script type="text/javascript" src="/assets/js/jquery.parallax-1.1.3.js"></script>
-    <script>
-        $(document).ready(function(){
-            // Target your .container, .wrapper, .post, etc.
-            $(".post-content").fitVids();
-            $('#site-head').parallax("70%", 0.1);
-        });
-    </script>
-
-</body>
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://www.linkedin.com/in/sreejithemk">LinkedIn</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
 </html>
