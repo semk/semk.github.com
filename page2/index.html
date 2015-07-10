@@ -61,6 +61,110 @@
         
 
 
+<h1><a href="/2012/12/31/file-upload-progressbar-in-pyqt">Simple file upload progressbar in PyQt</a></h1>
+<time datetime="2012-12-31">
+  Dec 31, 2012
+</time>
+<p></p>
+<p>I've been learning the <a href="http://qt-project.org/">Qt</a> Framework for the last few months and righfully it took 
+the honour of being my favourite GUI toolkit ;-). But still I don't like KDE. I have used 
+<a href="http://wiki.python.org/moin/TkInter">Tkinter</a> for quite some time when I was studying engineering. But Qt is 
+much more powerful than Tkinter and comes with an enormous bundle of GUI widgets and elements. Qt documentation
+is one of the best documentations available for a GUI framework. I must admit that I started liking Qt even more 
+as soon as I started reading the documentation and trying out sample programs.</p>
+<p>I encountered a challenge of displaying a progress dialog for files being uploaded to a central server. In this 
+case the files were uploaded using sending a POST request to the server using the <code>urllib2</code> library. The data was 
+multipart encoded. The problem here was, when you send the data to the server, how would you show the incremental 
+progress of how much data got uploaded in the progress dialog view? The <code>urllib2</code> library doesn't provide any special 
+methods to help in this situation. Neither does <code>Qt</code>. But we know the upper and lower limits of the progress bar: 0 to 
+size of the file. But how would you tell Qt that how much data is uploaded at a given time?</p>
+<p>Well, I found a tricky way to let Qt know about the file upload status using the <code>StringIO</code> module. The solution is to give 
+<code>urllib2</code> a custom <code>StringIO</code> instance that will periodically alert <code>QProgressDialog</code> about the status of the upload. 
+Checkout my approach to this problem.</p>
+<div class="codehilite"><pre><span class="k">class</span> <span class="nc">CancelledError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Error denoting user interruption.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span>
+
+    <span class="n">__repr__</span> <span class="o">=</span> <span class="n">__str__</span>
+
+
+<span class="k">class</span> <span class="nc">BufferReader</span><span class="p">(</span><span class="n">StringIO</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;StringIO with a callback.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> 
+                 <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> 
+                 <span class="n">cb_args</span><span class="o">=</span><span class="p">(),</span> 
+                 <span class="n">cb_kwargs</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_args</span> <span class="o">=</span> <span class="n">cb_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span> <span class="o">=</span> <span class="n">cb_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">StringIO</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the chunk. Alert the callback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;progress&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span> <span class="c"># catches exception from the callback</span>
+                <span class="k">raise</span> <span class="n">CancelledError</span><span class="p">(</span><span class="s">&#39;The upload was cancelled.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">chunk</span>
+</pre></div>
+
+
+<p>We can use the <code>BufferReader</code> instance as the input to the <code>urlllib2.Request</code>. It takes the actual data to be
+sent as the input and registers a callback function which will be periodically called whenever a read occurs from
+the <code>urllib2</code> module. Let's create a progress dialog box in Qt which shows the progress.</p>
+<div class="codehilite"><pre><span class="c"># create the progress dialog</span>
+<span class="n">progressDialog</span> <span class="o">=</span> <span class="n">QProgressDialog</span><span class="p">(</span><span class="s">&#39;Uploading </span><span class="si">%s</span><span class="s"> ...&#39;</span> <span class="o">%</span> <span class="n">file_path</span><span class="p">,</span>
+                                 <span class="n">QString</span><span class="p">(</span><span class="s">&quot;Cancel&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">file_size</span><span class="p">)</span>
+<span class="n">progressDialog</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s">&#39;Upload status&#39;</span><span class="p">)</span>
+<span class="c"># create a file stream that supports callback</span>
+<span class="n">databuf</span> <span class="o">=</span> <span class="n">BufferReader</span><span class="p">(</span><span class="n">buf</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">update_progress</span><span class="p">,</span>
+                       <span class="n">cb_args</span><span class="o">=</span><span class="p">(</span><span class="n">progressDialog</span><span class="p">,</span> <span class="n">file_size</span><span class="p">))</span>
+
+<span class="c"># upload the file using the databuf</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">databuf</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+<span class="n">urlobj</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">urlobj</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+
+<p>And we can use the callback function <code>update_progress</code> to update the progressbar with additional <code>progress</code> keyword argument 
+which reports the bytes uploaded/read by the <code>urllib2</code> library.</p>
+<div class="codehilite"><pre><span class="k">def</span> <span class="nf">update_progress</span><span class="p">(</span><span class="n">progressbar</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Callback method for reporting upload status.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">progressbar</span><span class="o">.</span><span class="n">wasCanceled</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="c"># notify uploader and stop file upload</span>
+
+    <span class="n">progressbar</span><span class="o">.</span><span class="n">setLabelText</span><span class="p">(</span><span class="s">&#39;Uploading </span><span class="si">%d</span><span class="s"> KB of </span><span class="si">%d</span><span class="s"> KB&#39;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="n">progress</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span> <span class="n">size</span><span class="o">/</span><span class="mi">1024</span><span class="p">))</span>
+    <span class="n">progressbar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">progress</span><span class="p">)</span>
+    <span class="n">QApplication</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+</pre></div>
+
+
+<p>And this happens to be my last blog post of 2012. Happy to have survived the apocalypse, no zombies, earthquakes or Tsunamis. 
+Wishing you all a prosperous and happy new year. Welcome 2K13.</p>
+<div class="post-excerpt">
+  <p class="alignleft"><a href="/2012/12/31/file-upload-progressbar-in-pyqt">Read more...</a></p> 
+  <p class="alignright"><a href="/2012/12/31/file-upload-progressbar-in-pyqt#comments">Comments...</a></p>
+  <div style="clear: both;"></div>
+</div>
+<hr>
+
 <h1><a href="/2012/07/08/understanding-python-variables">Understanding Python variables and Memory Management</a></h1>
 <time datetime="2012-07-08">
   Jul 08, 2012
@@ -73,7 +177,74 @@
 
 <p>You can think of it as putting the value assigned in a box with the variable name as shown below.</p>
 <p><img alt="int a =1;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1box.png" /></p>
-<p>And for all the variables ...</p>
+<p>And for all the variables you create a new box is created with the variable name to hold the value. If you change the value of the variable the box will be updated with the new value. That means doing</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</pre></div>
+
+
+<p>will result in</p>
+<p><img alt="a = 2;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p>Assigning one variable to another makes a copy of the value and put that value in the new box.</p>
+<div class="codehilite"><pre><span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+</pre></div>
+
+
+<p><img alt="b=2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/b2box.png" /> <img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p>But in Python variables work more like tags unlike the boxes you have seen before. When you do an assignment in Python, it tags the value with the variable name.</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+
+
+<p><img alt="a = 1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1tag.png" /></p>
+<p>and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory. </p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+
+
+<p><img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2tag.png" /> <img alt="1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/1.png" /></p>
+<p>Assigning one variable to another makes a new tag bound to the same value as show below.</p>
+<div class="codehilite"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+</pre></div>
+
+
+<p><img alt="b = a" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/ab2tag.png" /></p>
+<p>Other languages have 'variables'. Python has 'names'.</p>
+<h3>A bit about Python's memory management</h3>
+<p>As you have seen before, a value will have only one copy in memory and all the variables having this value will refer to this memory location. For example when you have variables <code>a</code>, <code>b</code>, <code>c</code> having a value 10, it doesn't mean that there will be 3 copy of <code>10</code>s in memory. There will be only one <code>10</code> and all the variables <code>a</code>, <code>b</code>, <code>c</code> will point to this value. Once a variable is updated, say you are doing <code>a += 1</code> a new value <code>11</code> will be allocated in memory and <code>a</code> will be pointing to this.</p>
+<p>Let's check this behaviour with Python Interpreter. Start the Python Shell and try the following for yourselves.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a_list</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">a_list</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">]</span>
+</pre></div>
+
+
+<p><code>id()</code> will return an objects memory address (object's identity). As you have noticed, when you create a list with same values, the values are not copied in memory. In fact, you are getting a list with references to the value <code>1</code>; not a list with 10 copies of <code>1</code>.</p>
+<p>Now we will try to create custom objects and try to find their identities.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">pass</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">baz</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="mi">140730612513248</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">baz</span><span class="p">)</span>
+<span class="mi">140730612513320</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c"># lists are mutable objects</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_a</span><span class="p">)</span>
+<span class="mi">140116233272136</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_b</span><span class="p">)</span>
+<span class="mi">140116233272064</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_a</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># `int` is immutable</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_b</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># same as above</span>
+</pre></div>
+
+
+<p>As you can see, the two instances have different identities. That means, there are two different copies of the same object in memory. This behaviour is different from what you have seen before. When you are creating objects they will have unique identities unless you are using <a href="http://foobarnbaz.com/2010/10/06/borg-pattern/">Singleton Pattern</a>. All <a href="http://en.wikipedia.org/wiki/Immutable_object">immutable</a> objects like <code>str</code>, <code>int</code>, <code>float</code> will have same identities when objects are created simultaneously.</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2012/07/08/understanding-python-variables">Read more...</a></p> 
   <p class="alignright"><a href="/2012/07/08/understanding-python-variables#comments">Comments...</a></p>
@@ -87,24 +258,12 @@
 </time>
 <p></p>
 <p>We live in a century defined and driven by technology. Internet has changed the way approach the needs in our life. Very rarely people are going to an Electronic/Computer store to buy stuffs when there is an option to order it online. Now, all of the consumer centric business have an online version too.</p>
-<p>I was using <a href="http://rechargeitnow.com">RechargeItNow</a> for recharging my cell phone and DTH services. But their website ...</p>
+<p>I was using <a href="http://rechargeitnow.com">RechargeItNow</a> for recharging my cell phone and DTH services. But their website was too cluttered and filled with advertisements all over the place. Then I found <a href="https://justrechargeit.com">JustRechargeIt</a>. Their web application was way too better than the RechargeItNow website. They even provided options to save lists of phone numbers and DTH accounts to ease the payment. I was happily using this service for a long time until I found <a href="http://paytm.com">Paytm</a>. Paytm web application is so simle and intuitive. Just have a look.</p>
+<p><img alt="Paytm" src="/images/posts/the-era-of-online-payments/paytm.png" /></p>
+<p>The simplicity and way of presentation is an important aspect when it comes to the web business. And Paytm has succeeded in doing so. I really want to see more and more web applications doing the same like what Paytm did for user experience, hopefully <a href="http://ebay.in">eBay</a> :-)</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2012/05/31/the-era-of-online-payments">Read more...</a></p> 
   <p class="alignright"><a href="/2012/05/31/the-era-of-online-payments#comments">Comments...</a></p>
-  <div style="clear: both;"></div>
-</div>
-<hr>
-
-<h1><a href="/2012/04/06/firefox-developer-tools">New set of Developer Tools in Firefox</a></h1>
-<time datetime="2012-04-06">
-  Apr 06, 2012
-</time>
-<p></p>
-<p>My friends at work were using <a href="http://chrome.google.com">Google Chrome</a> for Debugging web pages saying that Chrome's Developer Tools are superior to Firefox. But starting with the new <a href="http://hacks.mozilla.org/2011/11/developer-tools-in-firefox-aurora-10/">Aurora update</a> Firefox Developer Tools looks way cooler with the new Page Inspector, Style Editor and Scratchpad.</p>
-<p>The all new <code>Right Click -&gt; Inspect Element</code> feature lets you select any HTML element and see the HTML code or Styles associated with it in clean ...</p>
-<div class="post-excerpt">
-  <p class="alignleft"><a href="/2012/04/06/firefox-developer-tools">Read more...</a></p> 
-  <p class="alignright"><a href="/2012/04/06/firefox-developer-tools#comments">Comments...</a></p>
   <div style="clear: both;"></div>
 </div>
 <hr>
@@ -120,7 +279,9 @@
 <li>Generates Atom Feed automatically for your blog</li>
 <li>Generates sitemap.xml</li>
 <li>Pagination supported. Just add <code>paginate: True</code> in the page metadata section.</li>
-<li>You can tag posts using ...</li></ul>
+<li>You can tag posts using metadata. Eg: <code>tags: ['Python', 'Tips']</code>. A special template file named <code>tag.html</code> is used to generate tags on the fly.</li>
+</ul>
+<p>You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2012/04/06/pagination-tags-and-more-in-voldemort">Read more...</a></p> 
   <p class="alignright"><a href="/2012/04/06/pagination-tags-and-more-in-voldemort#comments">Comments...</a></p>
@@ -128,16 +289,26 @@
 </div>
 <hr>
 
-<h1><a href="/2012/02/25/multi-index-queries-in-riak">Multiple Index queries in Riak using Python</a></h1>
-<time datetime="2012-02-25">
-  Feb 25, 2012
+<h1><a href="/2012/04/06/firefox-developer-tools">New set of Developer Tools in Firefox</a></h1>
+<time datetime="2012-04-06">
+  Apr 06, 2012
 </time>
 <p></p>
-<p><img alt="Riak Logo" src="http://upload.wikimedia.org/wikipedia/en/5/53/Riak_product_logo.png" /></p>
-<p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast ...</p>
+<p>My friends at work were using <a href="http://chrome.google.com">Google Chrome</a> for Debugging web pages saying that Chrome's Developer Tools are superior to Firefox. But starting with the new <a href="http://hacks.mozilla.org/2011/11/developer-tools-in-firefox-aurora-10/">Aurora update</a> Firefox Developer Tools looks way cooler with the new Page Inspector, Style Editor and Scratchpad.</p>
+<p>The all new <code>Right Click -&gt; Inspect Element</code> feature lets you select any HTML element and see the HTML code or Styles associated with it in clean Developer-Friendly manner.</p>
+<p><img alt="Inspect Element" src="/images/posts/2012-04-06-firefox-developer-tools/inspect.png" /></p>
+<p>Breadcrumbs of the HTML tags are also provided by the Page Inspector.</p>
+<p><img alt="Breadcrumbs" src="/images/posts/2012-04-06-firefox-developer-tools/breadcrumbs.png" /></p>
+<p>You can also switch to a 3D view of the HTML Document to see how elements are organized.</p>
+<p><img alt="Document View" src="/images/posts/2012-04-06-firefox-developer-tools/view.png" /></p>
+<p>Using the Style Editor, you can edit the CSS dynamically and see the effect instantaneously without reloading your web service.</p>
+<p><img alt="Style Editor" src="/images/posts/2012-04-06-firefox-developer-tools/style_editor.png" /></p>
+<p>And finally for testing Javascript code snippets, there is Scratchpad which also sports code highlighting.</p>
+<p><img alt="Scratchpad" src="/images/posts/2012-04-06-firefox-developer-tools/scratchpad.png" /></p>
+<p>I find it quite useful and intuitive. How about you?</p>
 <div class="post-excerpt">
-  <p class="alignleft"><a href="/2012/02/25/multi-index-queries-in-riak">Read more...</a></p> 
-  <p class="alignright"><a href="/2012/02/25/multi-index-queries-in-riak#comments">Comments...</a></p>
+  <p class="alignleft"><a href="/2012/04/06/firefox-developer-tools">Read more...</a></p> 
+  <p class="alignright"><a href="/2012/04/06/firefox-developer-tools#comments">Comments...</a></p>
   <div style="clear: both;"></div>
 </div>
 <hr>
@@ -165,21 +336,23 @@
     
     <a href="/tag/preforking">Preforking</a>
     
-    <a href="/tag/design+pattern">Design Pattern</a>
+    <a href="/tag/nosql">NoSQL</a>
     
     <a href="/tag/flask">Flask</a>
     
+    <a href="/tag/mac+osx">Mac OSX</a>
+    
     <a href="/tag/gui">GUI</a>
     
-    <a href="/tag/voldemort">Voldemort</a>
-    
     <a href="/tag/app+engine">App Engine</a>
+    
+    <a href="/tag/socket">Socket</a>
     
     <a href="/tag/magic+tool">Magic Tool</a>
     
     <a href="/tag/emacs">Emacs</a>
     
-    <a href="/tag/service+mode">Service Mode</a>
+    <a href="/tag/scalability">Scalability</a>
     
     <a href="/tag/internet">Internet</a>
     
@@ -187,17 +360,17 @@
     
     <a href="/tag/tips">Tips</a>
     
-    <a href="/tag/qprogressdialog">QProgressDialog</a>
+    <a href="/tag/riak">Riak</a>
     
     <a href="/tag/android">Android</a>
     
-    <a href="/tag/socket">Socket</a>
+    <a href="/tag/mindmaps">Mindmaps</a>
     
     <a href="/tag/regex">regex</a>
     
     <a href="/tag/gaming">Gaming</a>
     
-    <a href="/tag/shell">Shell</a>
+    <a href="/tag/github">GitHub</a>
     
     <a href="/tag/lg+optimus+one">LG Optimus One</a>
     
@@ -205,13 +378,15 @@
     
     <a href="/tag/borg+pattern">Borg Pattern</a>
     
+    <a href="/tag/computer">Computer</a>
+    
     <a href="/tag/python">Python</a>
     
     <a href="/tag/org-mode">Org-mode</a>
     
     <a href="/tag/gaesessions">GAESessions</a>
     
-    <a href="/tag/scalability">Scalability</a>
+    <a href="/tag/service+mode">Service Mode</a>
     
     <a href="/tag/regexmate">RegexMate</a>
     
@@ -225,33 +400,29 @@
     
     <a href="/tag/ide">IDE</a>
     
-    <a href="/tag/qt">Qt</a>
+    <a href="/tag/singleton">Singleton</a>
     
-    <a href="/tag/books">Books</a>
-    
-    <a href="/tag/blogging">Blogging</a>
+    <a href="/tag/debian">Debian</a>
     
     <a href="/tag/projects">Projects</a>
     
     <a href="/tag/c">C</a>
     
-    <a href="/tag/nosql">NoSQL</a>
+    <a href="/tag/stdeb">stdeb</a>
     
-    <a href="/tag/mindmaps">Mindmaps</a>
+    <a href="/tag/qt">Qt</a>
+    
+    <a href="/tag/unix">Unix</a>
     
     <a href="/tag/cricinfo">Cricinfo</a>
     
-    <a href="/tag/xargs">xargs</a>
-    
     <a href="/tag/urllib2">urllib2</a>
     
-    <a href="/tag/riak">Riak</a>
+    <a href="/tag/voldemort">Voldemort</a>
     
-    <a href="/tag/github">GitHub</a>
+    <a href="/tag/shell">Shell</a>
     
     <a href="/tag/teensy">Teensy</a>
-    
-    <a href="/tag/debian">Debian</a>
     
     <a href="/tag/hypergae">HyperGAE</a>
     
@@ -259,13 +430,13 @@
     
     <a href="/tag/firefox">Firefox</a>
     
+    <a href="/tag/destructor">Destructor</a>
+    
     <a href="/tag/multiprocessing">Multiprocessing</a>
     
-    <a href="/tag/packaging">Packaging</a>
+    <a href="/tag/hardware">Hardware</a>
     
-    <a href="/tag/stdeb">stdeb</a>
-    
-    <a href="/tag/singleton">Singleton</a>
+    <a href="/tag/xargs">xargs</a>
     
     <a href="/tag/playstation+3">Playstation 3</a>
     
@@ -275,17 +446,17 @@
     
     <a href="/tag/variables">Variables</a>
     
-    <a href="/tag/mac+osx">Mac OSX</a>
+    <a href="/tag/qprogressdialog">QProgressDialog</a>
     
     <a href="/tag/pyqt">PyQt</a>
     
     <a href="/tag/hacks">Hacks</a>
     
-    <a href="/tag/hardware">Hardware</a>
+    <a href="/tag/packaging">Packaging</a>
     
     <a href="/tag/lion">Lion</a>
     
-    <a href="/tag/computer">Computer</a>
+    <a href="/tag/books">Books</a>
     
     <a href="/tag/ui">UI</a>
     
@@ -295,9 +466,13 @@
     
     <a href="/tag/hypertable">Hypertable</a>
     
+    <a href="/tag/blogging">Blogging</a>
+    
     <a href="/tag/system+calls">System Calls</a>
     
-    <a href="/tag/unix">Unix</a>
+    <a href="/tag/garbage+collection">Garbage Collection</a>
+    
+    <a href="/tag/design+pattern">Design Pattern</a>
     
     <a href="/tag/memory+management">Memory Management</a>
     

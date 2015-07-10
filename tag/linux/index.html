@@ -71,7 +71,251 @@ Jan 27, 2014
 it is still good getting to know about how things work under the hood. My idea here is to do a series
 of blog posts on UNIX/Linux system internals for the upcoming weeks. I'm doing this as a part of my
 learnings from <a href="https://www.codeschool.com">CodeSchool</a> and reading
-<em><a href="http://shop.oreilly.com/product/9780596009588.do">Linux System Programming</a></em>. Let's get ...</p>
+<em><a href="http://shop.oreilly.com/product/9780596009588.do">Linux System Programming</a></em>. Let's get started
+with UNIX <em>System Calls</em> in the first place.</p>
+<h5>What are System Calls?</h5>
+<p>From <em>Linux System Programming</em> book,</p>
+<blockquote>
+<p>System programming starts and ends with system calls. System calls (often shortened to syscalls)
+are function invocations made from user space—your text editor, favorite game, and so on—into the
+kernel (the core internals of the system) in order to request some service or resource from the
+operating system. System calls range from the familiar, such as read() and write(), to the exotic,
+such as get_thread_area() and set_tid_address().</p>
+</blockquote>
+<p>So system calls acts as an intermediary between userspace applications and the kernel space. It
+allows programs to request the operating system to do something on its behalf. The system calls
+are functions used in the kernel itself. If there was no clear distinction between the kernel
+space and user space, then all the user applications will be able to do absolutely anything
+they want to do in the operating system. Now that would be insecure and chaotic. System calls
+exposes only those functionalities of the kernel through an API which will get only that task
+done for the user application. In short, its a secure way of getting things done in the operating
+system.</p>
+<h5>Some of the popular System Calls</h5>
+<p>All of us are atleast familiar with the <code>read()</code> and <code>write()</code> system calls. But applications need
+even more of these. the following table shows the most commonly used system calls.</p>
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:center;"/>
+<col style="text-align:right;"/>
+</colgroup>
+
+<thead>
+<tr>
+    <th style="text-align:left;">General Class</th>
+    <th style="text-align:center;">Specific Class</th>
+    <th style="text-align:right;">System Call</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+    <td style="text-align:left;">File related</td>
+    <td style="text-align:center;">Creating a Channel</td>
+    <td style="text-align:right;">creat()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">open()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">open()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Input/Output</td>
+    <td style="text-align:right;">read()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">write()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Random Access</td>
+    <td style="text-align:right;">lseek()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Channel duplication</td>
+    <td style="text-align:right;">dup()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Aliassing Files</td>
+    <td style="text-align:right;">link()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Removing Files</td>
+    <td style="text-align:right;">unlink()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">File Status</td>
+    <td style="text-align:right;">stat()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">fstat()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Access Control</td>
+    <td style="text-align:right;">access()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">chmod()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">chown()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">umask()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Device Control</td>
+    <td style="text-align:right;">ioctl()</td>
+</tr>
+<tr>
+    <td style="text-align:left;">Process related</td>
+    <td style="text-align:center;">Process creation</td>
+    <td style="text-align:right;">exec()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Process creation</td>
+    <td style="text-align:right;">fork()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Process wait</td>
+    <td style="text-align:right;">wait()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Process termination</td>
+    <td style="text-align:right;">exit()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Process Owner &amp; Group</td>
+    <td style="text-align:right;">getuid()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">geteuid()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">getgid()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">getegid()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Process identity</td>
+    <td style="text-align:right;">getpid()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">getppid()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Process control</td>
+    <td style="text-align:right;">signal()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">kill()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">alarm()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Change working directory</td>
+    <td style="text-align:right;">chdir()</td>
+</tr>
+<tr>
+    <td style="text-align:left;">IPC</td>
+    <td style="text-align:center;">Pipelines</td>
+    <td style="text-align:right;">pipe()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Messages</td>
+    <td style="text-align:right;">msgget()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">msgsnd()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">msgrcv()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">msgctl()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Semaphores</td>
+    <td style="text-align:right;">semget()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">semop()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;">Shared memory</td>
+    <td style="text-align:right;">shmget()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">shmat()</td>
+</tr>
+<tr>
+    <td style="text-align:left;"></td>
+    <td style="text-align:center;"></td>
+    <td style="text-align:right;">shmdt()</td>
+</tr>
+</tbody>
+</table>
+
+<h5>How System Calls are being called?</h5>
+<h5>UNIX Process Address Space</h5>
+<h5>References</h5>
+<p><a href="http://www.di.uevora.pt/~lmr/syscalls.html">syscalls</a></p>
 <p class="full-post"><a href="/2014/01/27/unix-series-system-calls-part-1">Continue Reading...</a></p>
 
 
@@ -81,7 +325,62 @@ learnings from <a href="https://www.codeschool.com">CodeSchool</a> and reading
 Oct 02, 2011
 </time>
 <p></p>
-<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This ...</p>
+<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This situation made us to build <code>.deb</code> packages for our Python software as well.</p>
+<p>The real challenge here was packaging all the dependencies our Python application has brought in, as most of the dependencies were having only <code>egg</code> distributions. Luckily there was an extension to setuptools called <a href="https://github.com/astraw/stdeb">stdeb</a> which will allow you to generate debian packages using your setup.py script. It'll automatically add the dependencies in the <code>debian/control</code> file after searching for the dependencies using <code>apt-cache</code>. stdeb will do something like <code>apt-cache dump | grep &lt;package&gt;</code> to find whether there is a proper debian package for the dependencies. If they found the correct one in apt-cache, <code>debian/control</code> file will be updated with that information. But as I said, most of the dependencies were not packaged as <code>.deb</code>. So we downloaded all the dependencies using the <code>easy_install</code> command and created <code>.deb</code> packages for them using <code>stdeb</code>.</p>
+<p>I will demonstrate the procedure with the <a href="https://github.com/semk/voldemort">Voldemort</a> project from my GitHub Repo. The <code>setup.py</code> looks like this,</p>
+<div class="codehilite"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">ez_setup</span> <span class="kn">import</span> <span class="n">use_setuptools</span>
+    <span class="n">use_setuptools</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;voldemort&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s">&#39;0.5.0&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Voldemort is a simple static site generator</span><span class="se">\</span>
+<span class="s">                    using Jinja2 and markdown templates.&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s">&#39;Sreejith K / K7Computing Pvt Ltd&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s">&#39;sreejithemk@gmail.com&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s">&#39;http://www.foobarnbaz.com&#39;</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="s">&#39;Pygments &gt;= 1.4&#39;</span><span class="p">,</span>
+        <span class="s">&#39;PyYAML &gt;= 3.10&#39;</span><span class="p">,</span>
+        <span class="s">&#39;Markdown &gt;= 2.0&#39;</span><span class="p">,</span>
+        <span class="s">&#39;Jinja2 &gt;= 2.5&#39;</span>
+    <span class="p">],</span>
+    <span class="n">setup_requires</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;ez_setup&#39;</span><span class="p">]),</span>
+    <span class="n">test_suite</span><span class="o">=</span><span class="s">&#39;tests&#39;</span><span class="p">,</span>
+    <span class="n">scripts</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;scripts/voldemort&#39;</span><span class="p">],</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<p>In this case all the dependencies were lacking <code>.deb</code> packages. So, we need to download them using <code>easy_install</code>.</p>
+<div class="codehilite"><pre>mkdir deps
+easy_install -e -b deps/ <span class="s2">&quot;Pygments&gt;=1.4&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;PyYAML&gt;=3.10&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;Markdown&gt;=2.0&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;Jinja2&gt;=2.5&quot;</span>
+ls deps/
+jinja2   markdown pygments pyyaml
+</pre></div>
+
+
+<p>Now you need to go to each dependency directory and issue the following command</p>
+<div class="codehilite"><pre>python setup.py --command-packages<span class="o">=</span>stdeb.command debianize
+</pre></div>
+
+
+<p>That will create a directory named <code>debian</code> which contain all the stuffs needed to create a <code>.deb</code> package. Now it is upto us to edit the control file and add any additional dependency if needed. To generate the debian package, do</p>
+<div class="codehilite"><pre>dpkg-buildpackage -us -uc
+</pre></div>
+
+
+<p>Now you can build the main application debs by editing the control file manually since stdeb won't add the dependencies. But you know you have them in your hand :-).</p>
 <p class="full-post"><a href="/2011/10/02/packaging-python-applications">Continue Reading...</a></p>
 
 
@@ -93,7 +392,8 @@ May 07, 2011
 <p></p>
 <p>No one would have thought that they could ever buy a computer for $25. Thanks to the smart game developer from <a href="http://www.frontier.co.uk/">Frontier Developments</a>, <a href="http://en.wikipedia.org/wiki/David_Braben">David Braben</a> who designed <a href="http://www.raspberrypi.org/">Raspberry Pi</a>, a $25 dollar computer with the size of a USB Stick, infact it is actually a USB Stick Computer. Have a look,</p>
 <p><img alt="Raspberry Pi" src="http://www.geek.com/wp-content/uploads/2011/05/rasperry_pi_pcb-580x435.jpg" /></p>
-<p>This tiny device comes with an HDMI port in one end and a USB port on the other. You ...</p>
+<p>This tiny device comes with an HDMI port in one end and a USB port on the other. You can plug it into a HDMI socket and then connect a keyboard via the USB port turns it into a fully functioning machine running a flavour of Linux. And the Hardware Specs are not that bad at all. It boasts a 700MHz ARM11 processor coupled with 128MB of RAM and runs OpenGL ES 2.0 allowing for decent graphics performance with 1080p. Yes 1080p. You can also add an SD card to the SD card slot for your storage needs. Did I already mention that you can also mount a 12MP camera into this?</p>
+<p>It looks like the stock OS it ships with is Ubuntu. That means you can browse, run office apps or do whatever you want to do with a computer. Braben argues that the new ICT syllabus in schools have changed a lot and no one is teaching programming and the internals of computer systems. They are now teaching other <em>useful</em> skills like writing documents in a word processor, how to create presentations etc. This could be his effort to bring back the good stuff back to schools by making an affordable computer for students.</p>
 <p class="full-post"><a href="/2011/05/07/cheapest-personal-computer-on-a-usb">Continue Reading...</a></p>
 
 
@@ -104,7 +404,7 @@ Nov 07, 2010
 </time>
 <p></p>
 <p>I installed the new <a href="http://www.ubuntu.com/desktop">Ubuntu 10.10 Maverick Meerkat</a> on my Laptop and on my Desktop at home. Now both systems doesn't have Windows in it. My family is now very comfortable with Ubuntu and they use the Ubuntu machine for working with <a href="http://www.openoffice.org">OpenOffice</a>, watching movies, playing <a href="http://2dboy.com/games.php">games</a> and for using Internet.</p>
-<p>BTW, I really like the new Ubuntu font which gives Ubuntu a brandish look. I mean like ...</p>
+<p>BTW, I really like the new Ubuntu font which gives Ubuntu a brandish look. I mean like Mac :-)</p>
 <p class="full-post"><a href="/2010/11/07/ubuntu-maverick-meerkat">Continue Reading...</a></p>
 
 

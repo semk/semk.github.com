@@ -62,12 +62,106 @@
 
 
 
+<h1><a href="/2015/07/09/understanding-python-del-and-garbage-collection">Demystifying Python's del, __del__ and garbage collection</a></h1>
+<time datetime="2015-07-09" pubdate="pubdate">
+Jul 09, 2015
+</time>
+<p></p>
+<p>People are often confused about Python's <code>del</code> keyword and <code>__del__()</code> method.
+Most people think that applying <code>del</code> on an object causes the object's
+<code>__del__()</code> method to be called. But this is not true. <code>del</code> keyword merely
+decrements the objects reference count and de-scopes the variable on its
+application. But it doesn't necessarily invoke the object's <code>__del__()</code> method.
+<code>__del__</code> method will be called only when the garbage collection kicks in.
+And this would happens automatically when the reference count of an object
+becomes zero.</p>
+<p><code>del</code>: Decrements reference count<br />
+<code>__del__()</code>: Object destructor. Called when an object is garbage collected</p>
+<div class="codehilite"><pre><span class="k">class</span> <span class="nc">Foo</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&#39;__del__() called&#39;</span>
+</pre></div>
+
+
+<p>Now let's create some instances of this <code>Foo</code> class and call <code>del</code> upon these
+instances to see what happens.</p>
+<div class="codehilite"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="o">%</span><span class="k">paste</span>
+    <span class="k">class</span> <span class="nc">Foo</span><span class="p">():</span>
+
+        <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&#39;__del__() called&#39;</span>
+<span class="c">## -- End pasted text --</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">getrefcount</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">getrefcount</span><span class="p">(</span><span class="n">Foo</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="mi">2</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">a</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">getrefcount</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="mi">2</span>
+</pre></div>
+
+
+<p>At this point you might be wondering why <code>getrefcount(Foo)</code> and <code>getrefcount(a)</code>
+shows 2 instead of 1. Well, the reason is when you call the method <code>getrefcount</code>
+the argument is passed by value, effectively bumping the reference count by 1.
+This extra reference will be freed up once the <code>getrefcount</code> method exits. So
+effectively we have a reference count of 1 for the instance <code>a</code> here. Now let's
+make more references to the same instance.</p>
+<div class="codehilite"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">getrefcount</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="mi">3</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">getrefcount</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="mi">3</span>
+</pre></div>
+
+
+<p>As expected, the reference count is incremented. Now let's call <code>del</code> on a to
+see if the object's <code>__del__()</code> is invoked.</p>
+<div class="codehilite"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="k">del</span> <span class="n">a</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="k">del</span> <span class="n">b</span>
+<span class="n">__del__</span><span class="p">()</span> <span class="n">called</span>
+</pre></div>
+
+
+<p>As you can see, <code>__del__()</code> is not invoked on applying <code>del</code> the first reference.
+This is because the reference count is still 1. On calling <code>del</code> on <code>b</code> causes
+the reference count become zero, garbage collection kicks in and finally
+our long awaited <code>__del__()</code> is called.</p>
+<p>But there are situation where the destructor goes astray. These situations and
+the alternative approaches are explained in detail in the following brilliant
+blog post.</p>
+<p><a href="http://eli.thegreenplace.net/2009/06/12/safely-using-destructors-in-python">Safely using destructors in Python</a></p>
+<p class="full-post"><a href="/2015/07/09/understanding-python-del-and-garbage-collection">Continue Reading...</a></p>
+
+
+
 <h1><a href="/2014/01/24/text-editors-vs-ides-which-one-to-use">IDEs vs. Text Editors: What should developers use?</a></h1>
 <time datetime="2014-01-24" pubdate="pubdate">
 Jan 24, 2014
 </time>
 <p></p>
-<p>The answer to this question may vary from developers to developers. I truly believe that it also depends on the kind of programming language they use for developing applications. For example, I have heard many times from my fellow Java programmers that they couldn't live without the <a href="http://www.eclipse.org/">Eclipse</a> IDE, that they will not be able to write a working Java program with the help of a simple text editor ...</p>
+<p>The answer to this question may vary from developers to developers. I truly believe that it also depends on the kind of programming language they use for developing applications. For example, I have heard many times from my fellow Java programmers that they couldn't live without the <a href="http://www.eclipse.org/">Eclipse</a> IDE, that they will not be able to write a working Java program with the help of a simple text editor. Predominantly being a Python developer, I use <a href="http://www.gnu.org/software/emacs/">Emacs</a> for most of my coding. I do not feel code completion or any other fancy IDE features are required for coding in Python, atleast for what I'm doing. The only difficult thing I encountered using just Emacs for coding is <em>debugging</em> the code I've written. For most of the time <code>print</code> statements will do the job fine. But at times I have to manually initialize <code>pdb</code> to debug my code. This could be painful sometimes. Although there are some tricks in Emacs to do the debugging, it didn't seem neat enough to me.</p>
+<blockquote>
+<p>Then when I started writing C and using GDB inside of Emacs I kind of tried to
+keep up the same way of doing things. That was the model we built Energize
+around. And that just never seemed like it worked well. And as time went by I
+gradually stopped even trying to use those tools like that and just stick in
+print statements and run the thing again. Repeat until done. Especially when
+you get to more and more primitive environments like JavaScript and Perl and
+stuff like that, it's the only choice you have -- There aren't any debuggers.
+<cite>Jamie Zawinski, "Coders At Work: Reflections on the Craft of Programming"
+</cite></p>
+</blockquote>
+<p>That's when I found <a href="http://www.jetbrains.com/pycharm/">PyCharm</a> IDE for Python. They had this program where they provide free licenses for the commercial version of PyCharm for doing opensource projects. I applied for one mentioning my <a href="https://github.com/semk/voldemort">voldemort</a> project and I got one free license.</p>
+<p>PyCharm comes with a brilliant visual Python debugger and I found it really easier to debug the code using breakpoints and variable watchers. I spent a month or two coding on PyCharm and it really helped me code faster. One of the main reasons I love Emacs is that I could do all the tasks just by using the keyboard. Be it cutting &amp; pasting text, switching between buffers it was all easy. There was also this good feeling of using just the keyboard. After using PyCharm for quite some time, I felt like using the mouse a lot for most of these taks. Another advantage of using a text editor is that you will get to know the programming language a lot better since there are no autocompletion or any other IDE features. You have to write the code on your own. Then there are things like version control integration for IDEs which I believe eases the effort for most of the people. But I belive they conceal a lot of activities from the user. I prefer doing the version control activities by myself on a terminal rather than handing it to an IDE. In this pypix <a href="http://pypix.com/roundups/tools-python-super-stars/">article</a> some of the world's top Python developers talk about the tools preferred by them.</p>
+<p>So what developer's should ultimately use? Hmm, I believe, there is no concrete answer. Nowadays, I use Emacs for relatively smaller projects and PyCharm for the behemoths. What do you think? What are you using for development?. Give your opinions/suggestions in the comment section.</p>
 <p class="full-post"><a href="/2014/01/24/text-editors-vs-ides-which-one-to-use">Continue Reading...</a></p>
 
 
@@ -81,7 +175,94 @@ Dec 31, 2012
 the honour of being my favourite GUI toolkit ;-). But still I don't like KDE. I have used 
 <a href="http://wiki.python.org/moin/TkInter">Tkinter</a> for quite some time when I was studying engineering. But Qt is 
 much more powerful than Tkinter and comes with an enormous bundle of GUI widgets and elements. Qt documentation
-is one of the best ...</p>
+is one of the best documentations available for a GUI framework. I must admit that I started liking Qt even more 
+as soon as I started reading the documentation and trying out sample programs.</p>
+<p>I encountered a challenge of displaying a progress dialog for files being uploaded to a central server. In this 
+case the files were uploaded using sending a POST request to the server using the <code>urllib2</code> library. The data was 
+multipart encoded. The problem here was, when you send the data to the server, how would you show the incremental 
+progress of how much data got uploaded in the progress dialog view? The <code>urllib2</code> library doesn't provide any special 
+methods to help in this situation. Neither does <code>Qt</code>. But we know the upper and lower limits of the progress bar: 0 to 
+size of the file. But how would you tell Qt that how much data is uploaded at a given time?</p>
+<p>Well, I found a tricky way to let Qt know about the file upload status using the <code>StringIO</code> module. The solution is to give 
+<code>urllib2</code> a custom <code>StringIO</code> instance that will periodically alert <code>QProgressDialog</code> about the status of the upload. 
+Checkout my approach to this problem.</p>
+<div class="codehilite"><pre><span class="k">class</span> <span class="nc">CancelledError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Error denoting user interruption.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span>
+
+    <span class="n">__repr__</span> <span class="o">=</span> <span class="n">__str__</span>
+
+
+<span class="k">class</span> <span class="nc">BufferReader</span><span class="p">(</span><span class="n">StringIO</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;StringIO with a callback.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> 
+                 <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> 
+                 <span class="n">cb_args</span><span class="o">=</span><span class="p">(),</span> 
+                 <span class="n">cb_kwargs</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_args</span> <span class="o">=</span> <span class="n">cb_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span> <span class="o">=</span> <span class="n">cb_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">StringIO</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the chunk. Alert the callback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;progress&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_kwargs</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span> <span class="c"># catches exception from the callback</span>
+                <span class="k">raise</span> <span class="n">CancelledError</span><span class="p">(</span><span class="s">&#39;The upload was cancelled.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">chunk</span>
+</pre></div>
+
+
+<p>We can use the <code>BufferReader</code> instance as the input to the <code>urlllib2.Request</code>. It takes the actual data to be
+sent as the input and registers a callback function which will be periodically called whenever a read occurs from
+the <code>urllib2</code> module. Let's create a progress dialog box in Qt which shows the progress.</p>
+<div class="codehilite"><pre><span class="c"># create the progress dialog</span>
+<span class="n">progressDialog</span> <span class="o">=</span> <span class="n">QProgressDialog</span><span class="p">(</span><span class="s">&#39;Uploading </span><span class="si">%s</span><span class="s"> ...&#39;</span> <span class="o">%</span> <span class="n">file_path</span><span class="p">,</span>
+                                 <span class="n">QString</span><span class="p">(</span><span class="s">&quot;Cancel&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">file_size</span><span class="p">)</span>
+<span class="n">progressDialog</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s">&#39;Upload status&#39;</span><span class="p">)</span>
+<span class="c"># create a file stream that supports callback</span>
+<span class="n">databuf</span> <span class="o">=</span> <span class="n">BufferReader</span><span class="p">(</span><span class="n">buf</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">update_progress</span><span class="p">,</span>
+                       <span class="n">cb_args</span><span class="o">=</span><span class="p">(</span><span class="n">progressDialog</span><span class="p">,</span> <span class="n">file_size</span><span class="p">))</span>
+
+<span class="c"># upload the file using the databuf</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">databuf</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+<span class="n">urlobj</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">urlobj</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+
+<p>And we can use the callback function <code>update_progress</code> to update the progressbar with additional <code>progress</code> keyword argument 
+which reports the bytes uploaded/read by the <code>urllib2</code> library.</p>
+<div class="codehilite"><pre><span class="k">def</span> <span class="nf">update_progress</span><span class="p">(</span><span class="n">progressbar</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Callback method for reporting upload status.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">progressbar</span><span class="o">.</span><span class="n">wasCanceled</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="c"># notify uploader and stop file upload</span>
+
+    <span class="n">progressbar</span><span class="o">.</span><span class="n">setLabelText</span><span class="p">(</span><span class="s">&#39;Uploading </span><span class="si">%d</span><span class="s"> KB of </span><span class="si">%d</span><span class="s"> KB&#39;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="n">progress</span><span class="o">/</span><span class="mi">1024</span><span class="p">,</span> <span class="n">size</span><span class="o">/</span><span class="mi">1024</span><span class="p">))</span>
+    <span class="n">progressbar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">progress</span><span class="p">)</span>
+    <span class="n">QApplication</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+</pre></div>
+
+
+<p>And this happens to be my last blog post of 2012. Happy to have survived the apocalypse, no zombies, earthquakes or Tsunamis. 
+Wishing you all a prosperous and happy new year. Welcome 2K13.</p>
 <p class="full-post"><a href="/2012/12/31/file-upload-progressbar-in-pyqt">Continue Reading...</a></p>
 
 
@@ -98,7 +279,74 @@ Jul 08, 2012
 
 <p>You can think of it as putting the value assigned in a box with the variable name as shown below.</p>
 <p><img alt="int a =1;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1box.png" /></p>
-<p>And for all the variables ...</p>
+<p>And for all the variables you create a new box is created with the variable name to hold the value. If you change the value of the variable the box will be updated with the new value. That means doing</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</pre></div>
+
+
+<p>will result in</p>
+<p><img alt="a = 2;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p>Assigning one variable to another makes a copy of the value and put that value in the new box.</p>
+<div class="codehilite"><pre><span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+</pre></div>
+
+
+<p><img alt="b=2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/b2box.png" /> <img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p>But in Python variables work more like tags unlike the boxes you have seen before. When you do an assignment in Python, it tags the value with the variable name.</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+
+
+<p><img alt="a = 1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1tag.png" /></p>
+<p>and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory. </p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+
+
+<p><img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2tag.png" /> <img alt="1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/1.png" /></p>
+<p>Assigning one variable to another makes a new tag bound to the same value as show below.</p>
+<div class="codehilite"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+</pre></div>
+
+
+<p><img alt="b = a" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/ab2tag.png" /></p>
+<p>Other languages have 'variables'. Python has 'names'.</p>
+<h3>A bit about Python's memory management</h3>
+<p>As you have seen before, a value will have only one copy in memory and all the variables having this value will refer to this memory location. For example when you have variables <code>a</code>, <code>b</code>, <code>c</code> having a value 10, it doesn't mean that there will be 3 copy of <code>10</code>s in memory. There will be only one <code>10</code> and all the variables <code>a</code>, <code>b</code>, <code>c</code> will point to this value. Once a variable is updated, say you are doing <code>a += 1</code> a new value <code>11</code> will be allocated in memory and <code>a</code> will be pointing to this.</p>
+<p>Let's check this behaviour with Python Interpreter. Start the Python Shell and try the following for yourselves.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a_list</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">a_list</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">]</span>
+</pre></div>
+
+
+<p><code>id()</code> will return an objects memory address (object's identity). As you have noticed, when you create a list with same values, the values are not copied in memory. In fact, you are getting a list with references to the value <code>1</code>; not a list with 10 copies of <code>1</code>.</p>
+<p>Now we will try to create custom objects and try to find their identities.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">pass</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">baz</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="mi">140730612513248</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">baz</span><span class="p">)</span>
+<span class="mi">140730612513320</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c"># lists are mutable objects</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_a</span><span class="p">)</span>
+<span class="mi">140116233272136</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_b</span><span class="p">)</span>
+<span class="mi">140116233272064</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_a</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># `int` is immutable</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_b</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># same as above</span>
+</pre></div>
+
+
+<p>As you can see, the two instances have different identities. That means, there are two different copies of the same object in memory. This behaviour is different from what you have seen before. When you are creating objects they will have unique identities unless you are using <a href="http://foobarnbaz.com/2010/10/06/borg-pattern/">Singleton Pattern</a>. All <a href="http://en.wikipedia.org/wiki/Immutable_object">immutable</a> objects like <code>str</code>, <code>int</code>, <code>float</code> will have same identities when objects are created simultaneously.</p>
 <p class="full-post"><a href="/2012/07/08/understanding-python-variables">Continue Reading...</a></p>
 
 
@@ -114,7 +362,9 @@ Apr 06, 2012
 <li>Generates Atom Feed automatically for your blog</li>
 <li>Generates sitemap.xml</li>
 <li>Pagination supported. Just add <code>paginate: True</code> in the page metadata section.</li>
-<li>You can tag posts using ...</li></ul>
+<li>You can tag posts using metadata. Eg: <code>tags: ['Python', 'Tips']</code>. A special template file named <code>tag.html</code> is used to generate tags on the fly.</li>
+</ul>
+<p>You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.</p>
 <p class="full-post"><a href="/2012/04/06/pagination-tags-and-more-in-voldemort">Continue Reading...</a></p>
 
 
@@ -125,7 +375,56 @@ Feb 25, 2012
 </time>
 <p></p>
 <p><img alt="Riak Logo" src="http://upload.wikimedia.org/wikipedia/en/5/53/Riak_product_logo.png" /></p>
-<p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast ...</p>
+<p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast too. The Data retrieval operations in Riak are basically using methods like Get (by key), MapReduce and Key Filters.</p>
+<p>Riak also supports multiple backends for Key-value store. And Google's own <a href="code.google.com/p/leveldb">LevelDB</a> is one of them. One of the advantage of using LevelDB with Riak is that they support Secondary Indexes. This is a way to retrieve data faster when you want to use an SQL like Query interface. But the problem is that Riak only supports single index queries. That means, you will be able to query only one field at a time.</p>
+<p>I wrote a Python wrapper that allows multiple index queries using Secondary indexes and MapReduce. The basic steps are</p>
+<ol>
+<li>Query Multiple Indexes and get the associated keys</li>
+<li>Pass the keys to a MapReduce job where Multiple filters are again evaluated. The map phase applies all the conditions to individual keys.</li>
+</ol>
+<blockquote>
+<p><em>As suggested by Elias Levy, it is ideal to compute the intersection of all the index queries rather than evaluating filters on Map Phase as this involves parsing the data and validating filters. This could become very slow when the number of keys returned by a single index query is larger compared to other indexes. The sources are updated to reflect this change.</em></p>
+</blockquote>
+<p>So the new steps are</p>
+<ol>
+<li>Query Indexes and get the key sets</li>
+<li>Find the intersection of these key sets</li>
+<li>Pass the resulting keys to MapReduce where we fetch and sort the data.</li>
+</ol>
+<p>Using this, you can write queries like</p>
+<div class="codehilite"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">riak</span><span class="o">.</span><span class="n">RiakClient</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8091</span><span class="p">)</span>
+<span class="n">bucket</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">bucket</span><span class="p">(</span><span class="s">&#39;test_multi_index&#39;</span><span class="p">)</span>
+
+<span class="n">bucket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;sree&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">})</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;name_bin&#39;</span><span class="p">,</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">)</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;age_int&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+<span class="n">bucket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;vishnu&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">})</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;name_bin&#39;</span><span class="p">,</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">)</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;age_int&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">RiakMultiIndexQuery</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s">&#39;test_multi_index&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">,</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">,</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;ASC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;ASC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+</pre></div>
+
+
+<p>You can find the full source code at <a href="https://github.com/semk/utils/blob/master/riak_multi_query.py">GitHub</a>.</p>
 <p class="full-post"><a href="/2012/02/25/multi-index-queries-in-riak">Continue Reading...</a></p>
 
 
@@ -137,7 +436,7 @@ Oct 05, 2011
 <p></p>
 <p><a href="https://github.com/semk/voldemort">Voldemort</a> is a blog-aware static site generator inspired by <a href="http://jinja.pocoo.org/2/">Jinja2</a>. All these times this blog was generated using <a href="https://github.com/mojombo/jekyll">Jekyll</a> and I always wanted to use something Pythonic. <a href="http://ringce.com/hyde">Hyde</a> was there, but the awesomeness of Jinja2 forced me to write Voldemort on my own.</p>
 <p><img alt="Voldemort" src="/images/posts/2011-10-05-voldemort-a-jinja-powered-static-site-generator/voldemort.jpg" /></p>
-<p>Voldemort has its own advantages. You can templatize your HTML pages using Jinja and write posts using <a href="http://daringfireball.net/projects/markdown">Markdown</a>. And if you like this website, then you've ...</p>
+<p>Voldemort has its own advantages. You can templatize your HTML pages using Jinja and write posts using <a href="http://daringfireball.net/projects/markdown">Markdown</a>. And if you like this website, then you've got one reason to tryout Voldemort. Go for an <a href="http://pypi.python.org/pypi/voldemort/0.6.0">install</a> or grab the <a href="https://github.com/semk/voldemort">sources</a> if you want to tweak it your own way.</p>
 <p class="full-post"><a href="/2011/10/05/voldemort-a-jinja-powered-static-site-generator">Continue Reading...</a></p>
 
 
@@ -147,7 +446,62 @@ Oct 05, 2011
 Oct 02, 2011
 </time>
 <p></p>
-<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This ...</p>
+<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This situation made us to build <code>.deb</code> packages for our Python software as well.</p>
+<p>The real challenge here was packaging all the dependencies our Python application has brought in, as most of the dependencies were having only <code>egg</code> distributions. Luckily there was an extension to setuptools called <a href="https://github.com/astraw/stdeb">stdeb</a> which will allow you to generate debian packages using your setup.py script. It'll automatically add the dependencies in the <code>debian/control</code> file after searching for the dependencies using <code>apt-cache</code>. stdeb will do something like <code>apt-cache dump | grep &lt;package&gt;</code> to find whether there is a proper debian package for the dependencies. If they found the correct one in apt-cache, <code>debian/control</code> file will be updated with that information. But as I said, most of the dependencies were not packaged as <code>.deb</code>. So we downloaded all the dependencies using the <code>easy_install</code> command and created <code>.deb</code> packages for them using <code>stdeb</code>.</p>
+<p>I will demonstrate the procedure with the <a href="https://github.com/semk/voldemort">Voldemort</a> project from my GitHub Repo. The <code>setup.py</code> looks like this,</p>
+<div class="codehilite"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">ez_setup</span> <span class="kn">import</span> <span class="n">use_setuptools</span>
+    <span class="n">use_setuptools</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;voldemort&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s">&#39;0.5.0&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Voldemort is a simple static site generator</span><span class="se">\</span>
+<span class="s">                    using Jinja2 and markdown templates.&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s">&#39;Sreejith K / K7Computing Pvt Ltd&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s">&#39;sreejithemk@gmail.com&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s">&#39;http://www.foobarnbaz.com&#39;</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="s">&#39;Pygments &gt;= 1.4&#39;</span><span class="p">,</span>
+        <span class="s">&#39;PyYAML &gt;= 3.10&#39;</span><span class="p">,</span>
+        <span class="s">&#39;Markdown &gt;= 2.0&#39;</span><span class="p">,</span>
+        <span class="s">&#39;Jinja2 &gt;= 2.5&#39;</span>
+    <span class="p">],</span>
+    <span class="n">setup_requires</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;ez_setup&#39;</span><span class="p">]),</span>
+    <span class="n">test_suite</span><span class="o">=</span><span class="s">&#39;tests&#39;</span><span class="p">,</span>
+    <span class="n">scripts</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;scripts/voldemort&#39;</span><span class="p">],</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<p>In this case all the dependencies were lacking <code>.deb</code> packages. So, we need to download them using <code>easy_install</code>.</p>
+<div class="codehilite"><pre>mkdir deps
+easy_install -e -b deps/ <span class="s2">&quot;Pygments&gt;=1.4&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;PyYAML&gt;=3.10&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;Markdown&gt;=2.0&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;Jinja2&gt;=2.5&quot;</span>
+ls deps/
+jinja2   markdown pygments pyyaml
+</pre></div>
+
+
+<p>Now you need to go to each dependency directory and issue the following command</p>
+<div class="codehilite"><pre>python setup.py --command-packages<span class="o">=</span>stdeb.command debianize
+</pre></div>
+
+
+<p>That will create a directory named <code>debian</code> which contain all the stuffs needed to create a <code>.deb</code> package. Now it is upto us to edit the control file and add any additional dependency if needed. To generate the debian package, do</p>
+<div class="codehilite"><pre>dpkg-buildpackage -us -uc
+</pre></div>
+
+
+<p>Now you can build the main application debs by editing the control file manually since stdeb won't add the dependencies. But you know you have them in your hand :-).</p>
 <p class="full-post"><a href="/2011/10/02/packaging-python-applications">Continue Reading...</a></p>
 
 
@@ -158,7 +512,104 @@ Aug 30, 2011
 </time>
 <p></p>
 <p>Developing multi-threaded applications in python is a "Pain In The Ass". And the <a href="http://wiki.python.org/moin/GlobalInterpreterLock">GIL</a> (Global Interpreter Lock) takes away the advantage of utilizing multiple cores in a machine. It doesn't matter how many cores a CPU have, GIL prevents threads from running in multiple cores. So python programs would't get the maximum performance out of the CPU when they use threads in their services.</p>
-<p>In many cases you ...</p>
+<p>In many cases you might need to write services where you need to listen on a port and wait for the client connection to do some task. If multiple clients are connecting to this service simultaneously then you might need to spawn threads to handle the requests. Considering the fact that GIL introduces a performance bottleneck, the best way to solve this situation is to use python's <a href="http://docs.python.org/library/multiprocessing.html">multiprocessing</a> capabilities. This library provides almost <code>threading</code> like class implementations. </p>
+<p>Then a question might arise. How do you share a socket created by the server process to the newly spawned processes? It is possible since all the <code>fork</code>ed processes will have the parent's file descriptors. <code>multiprocessing</code> library already has this package named <code>multiprocessing.reduction</code> that provides a method <code>reduce_handle</code> which can serialize a socket and you can send this socket to another process using pipes. The child processes can read from the pipe and re-create the socket using <code>rebuild_handle</code>. The following example will make this idea clear to you.</p>
+<div class="codehilite"><pre><span class="c"># Main Process</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.reduction</span> <span class="kn">import</span> <span class="n">reduce_handle</span>
+<span class="c"># serialize the socket</span>
+<span class="n">serialized_socket</span> <span class="o">=</span> <span class="n">reduce_handle</span><span class="p">(</span><span class="n">client_socket</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+<span class="c"># send it to the child/worker process</span>
+<span class="n">pipe_to_worker</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">serialized_socket</span><span class="p">)</span>
+
+<span class="c"># Worker Process</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.reduction</span> <span class="kn">import</span> <span class="n">rebuild_handle</span>
+<span class="c"># get the socket from parent</span>
+<span class="n">serialized_socket</span> <span class="o">=</span> <span class="n">pipe_from_parent</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+<span class="c"># rebuild the file descriptor</span>
+<span class="n">fd</span> <span class="o">=</span> <span class="n">rebuild_handle</span><span class="p">(</span><span class="n">serialized_socket</span><span class="p">)</span>
+<span class="c"># create socket from fd</span>
+<span class="n">client_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">fromfd</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+<span class="c"># use the socket as usual. eg: send a message to the client</span>
+<span class="n">client_socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">&quot;Baby, I</span><span class="se">\&#39;</span><span class="s">m so fast</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>Preforking</h3>
+<p>Another way to solve this issue is by spawning multiple process from the main server which is listening on a socket/port and letting all the child processes to <code>accept()</code> connections from the client. Apache uses this style of process scaling known as "Preforking". A simple example using <code>multiprocessing</code> module which runs an instance of a <code>BaseHTTPServer.HTTPServer</code> on a pool of worker processes can be written very easily as follows.</p>
+<div class="codehilite"><pre><span class="c">#</span>
+<span class="c"># Example where a pool of http servers share a single listening socket</span>
+<span class="c">#</span>
+<span class="c"># On Windows this module depends on the ability to pickle a socket</span>
+<span class="c"># object so that the worker processes can inherit a copy of the server</span>
+<span class="c"># object.  (We import `multiprocessing.reduction` to enable this pickling.)</span>
+<span class="c">#</span>
+<span class="c"># Not sure if we should synchronize access to `socket.accept()` method by</span>
+<span class="c"># using a process-shared lock -- does not seem to be necessary.</span>
+<span class="c">#</span>
+<span class="c"># Copyright (c) 2006-2008, R Oudkerk</span>
+<span class="c"># All rights reserved.</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">current_process</span><span class="p">,</span> <span class="n">freeze_support</span>
+<span class="kn">from</span> <span class="nn">BaseHTTPServer</span> <span class="kn">import</span> <span class="n">HTTPServer</span>
+<span class="kn">from</span> <span class="nn">SimpleHTTPServer</span> <span class="kn">import</span> <span class="n">SimpleHTTPRequestHandler</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;win32&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">multiprocessing.reduction</span>    <span class="c"># make sockets pickable/inheritable</span>
+
+
+<span class="k">def</span> <span class="nf">note</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;[</span><span class="si">%s</span><span class="s">]</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">format</span><span class="o">%</span><span class="n">args</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">RequestHandler</span><span class="p">(</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
+    <span class="c"># we override log_message() to show which process is handling the request</span>
+    <span class="k">def</span> <span class="nf">log_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">note</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">serve_forever</span><span class="p">(</span><span class="n">server</span><span class="p">):</span>
+    <span class="n">note</span><span class="p">(</span><span class="s">&#39;starting server&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">runpool</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">number_of_processes</span><span class="p">):</span>
+    <span class="c"># create a single server object -- children will each inherit a copy</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">RequestHandler</span><span class="p">)</span>
+
+    <span class="c"># create child processes to act as workers</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_processes</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">serve_forever</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">server</span><span class="p">,))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="c"># main process also acts as a worker</span>
+    <span class="n">serve_forever</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="n">DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;..&#39;</span><span class="p">)</span>
+    <span class="n">ADDRESS</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+    <span class="n">NUMBER_OF_PROCESSES</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="k">print</span> <span class="s">&#39;Serving at http://</span><span class="si">%s</span><span class="s">:</span><span class="si">%d</span><span class="s"> using </span><span class="si">%d</span><span class="s"> worker processes&#39;</span> <span class="o">%</span> \
+          <span class="p">(</span><span class="n">ADDRESS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ADDRESS</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">NUMBER_OF_PROCESSES</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;To exit press Ctrl-&#39;</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;Break&#39;</span><span class="p">][</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="o">==</span><span class="s">&#39;win32&#39;</span><span class="p">]</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">DIR</span><span class="p">)</span>
+    <span class="n">runpool</span><span class="p">(</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">NUMBER_OF_PROCESSES</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">freeze_support</span><span class="p">()</span>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
+
+
+<p>I wrote a simple wrapper for this kind of services which can be scaled. You can find it <a href="https://github.com/semk/utils/blob/master/prefork_server.py">here</a>.</p>
 <p class="full-post"><a href="/2011/08/30/developing-scalable-services-with-python">Continue Reading...</a></p>
 
 
@@ -169,7 +620,46 @@ Jul 31, 2011
 </time>
 <p></p>
 <p><img alt="Google App Engine" src="http://upload.wikimedia.org/wikipedia/en/3/38/Google_App_Engine_Logo.png" /></p>
-<p><a href="http://code.google.com/appengine">Google App Engine</a> is a widely used and most popular <a href="en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a> solution provided by Google. App Engine provides the developer with a wide range of apis which can be used to develop web applications using any <a href="http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface">WSGI</a> compliant Frameworks (<a href="http://code.google.com/appengine/docs/python/tools/webapp/">Webapp</a>, <a href="http://www.tipfy.org">Tipfy</a>, <a href="http://www.django.org">Django</a>, <a href="http://bottlepy.org">Bottle</a>, <a href="http://www.tornadoweb.org">Tornado</a> etc.). One of the apis App Engine provides is the <a href="http://code.google.com/appengine/docs/python/users/overview.html">users api</a>, which most of the developers confuses for an api which provides user creation, authentication ...</p>
+<p><a href="http://code.google.com/appengine">Google App Engine</a> is a widely used and most popular <a href="en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a> solution provided by Google. App Engine provides the developer with a wide range of apis which can be used to develop web applications using any <a href="http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface">WSGI</a> compliant Frameworks (<a href="http://code.google.com/appengine/docs/python/tools/webapp/">Webapp</a>, <a href="http://www.tipfy.org">Tipfy</a>, <a href="http://www.django.org">Django</a>, <a href="http://bottlepy.org">Bottle</a>, <a href="http://www.tornadoweb.org">Tornado</a> etc.). One of the apis App Engine provides is the <a href="http://code.google.com/appengine/docs/python/users/overview.html">users api</a>, which most of the developers confuses for an api which provides user creation, authentication for the application. But this api only authenticates Google Accounts (can be the application developer or any third-party Google Account) using <a href="http://oauth.net/">OAuth</a>. You can't really user this api to create or manage users for your application.</p>
+<p>Remember when I told you that every application you write for GAE is a WSGI Application? WSGI is just a standard for the web application to talk to the backend HTTP server. That means a WSGI application can't run by itself. It needs an HTTP server to listen on and execute the code you have written. Its the HTTP Server which handles all the server stuffs used for authentication such as setting cookies. Now, GAE has a <a href="code.google.com/appengine/docs/python/runtime.html">sandbox</a>, which is a restrictive environment for your application code to run. For example, your application is restricted for file operations and certain modules are restricted from importing. So you can't really set up a cookie from your application code since its not an HTTP Server code. Here is our problem now. How do you do a custom authentication for a Google App Engine application?</p>
+<p>You can achieve this by writing a middleware to your WSGI application. There are many authentication libraries available for this purpose. Popular ones are <a href="http://beaker.groovie.org/">Beaker</a>, <a href="https://github.com/dound/gae-sessions">GAE-Sessions</a>, <a href="http://gaeutilities.appspot.com/session">gaeutilities</a>. But I liked the GAE-Sessions library better than the other ones since its the <a href="https://github.com/dound/gae-sessions/wiki/comparison-with-alternative-libraries">fastest</a> of them all. GAE-Sessions use <a href="code.google.com/appengine/docs/memcache/">memcache</a>/<a href="code.google.com/appengine/docs/datastore/">datastore</a> to store the session information. To use this library, just copy the gaesessions directory to your application directory. The middleware for your application is as simple as shown in the code below</p>
+<div class="codehilite"><pre><span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">SessionMiddleware</span>
+<span class="k">def</span> <span class="nf">webapp_add_wsgi_middleware</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">SessionMiddleware</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">cookie_key</span><span class="o">=</span><span class="s">&quot;a random and long string&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">app</span>
+</pre></div>
+
+
+<p>Save the above code to a file named <code>appengine_config.py</code>. You can use <code>gaesessions.get_current_session()</code> to get a dictionary to store all the session information. You can either use <code>session.set_quick(&lt;session-var&gt;, &lt;value&gt;)</code> method to use application memcache for storing session info. Otherwise it'll be stored to the datastore. Getting session info is as easy as <code>session.get(&lt;session-var&gt;)</code> and <code>session.pop_quick(&lt;session-var&gt;)</code> will remove the information from the session. All the dictionary like indexed operations will be persisted to the database.</p>
+<div class="codehilite"><pre><span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">get_current_session</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">get_current_session</span><span class="p">()</span>
+
+<span class="c"># setting user session information</span>
+<span class="n">session</span><span class="o">.</span><span class="n">set_quick</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;authenticated_user_info&#39;</span><span class="p">)</span>
+<span class="c"># getting user session</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">)</span>
+<span class="c"># removing session info</span>
+<span class="n">session</span><span class="o">.</span><span class="n">pop_quick</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The default session lifetime is 7 days. You may configure how long a session lasts by calling <code>SessionMiddleware</code> with a <code>lifetime</code> parameter, e.g., <code>lifetime=datetime.timedelta(hours=2)</code>). You can schedule a cron job for cleaning up all the expired session info for your application by creating a handler file like this.</p>
+<div class="codehilite"><pre><span class="c"># cleanup_sessions.py</span>
+<span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">delete_expired_sessions</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">delete_expired_sessions</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+
+
+<p>Make sure you have a <code>cron.yaml</code> with the correct info.</p>
+<div class="codehilite"><pre><span class="l-Scalar-Plain">cron</span><span class="p-Indicator">:</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">description</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">daily session cleanup</span>
+  <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/cleanup_sessions</span>
+  <span class="l-Scalar-Plain">schedule</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">every 24 hours</span>
+</pre></div>
+
+
+<p>You can find a complete sample application <a href="https://github.com/dound/gae-sessions/blob/master/demo">here</a>.</p>
 <p class="full-post"><a href="/2011/07/31/custom-authentication-on-gae">Continue Reading...</a></p>
 
 
@@ -179,7 +669,14 @@ Jul 31, 2011
 Jan 08, 2011
 </time>
 <p></p>
-<p>After few days of hacking on the <a href="http://code.google.com/appengine/docs/python/overview.html">Google App Engine SDK</a> and <a href="http://code.google.com/apis/protocolbuffers/docs/pythontutorial.html">ProtocolBuffers</a>, finally I succeeded in creating a datastore driver for GAE that talks to <a href="http://hypertable.org">Hypertable</a> and stores the data there <em>fully protocol buffer encoded</em>. If you want to checkout this implementation head to <a href="https://github.com/semk/hypergae">HyperGAE</a> repository and see <a href="https://github.com/semk/hypergae/tree/master/google/appengine/datastore">files</a> <code>datastore_hypertable_ht.py</code> and <code>datastore_hypertable_thrift.py</code>. HyperGAE basically uses two methods to connect to hypertable. Using the thrift api and using ...</p>
+<p>After few days of hacking on the <a href="http://code.google.com/appengine/docs/python/overview.html">Google App Engine SDK</a> and <a href="http://code.google.com/apis/protocolbuffers/docs/pythontutorial.html">ProtocolBuffers</a>, finally I succeeded in creating a datastore driver for GAE that talks to <a href="http://hypertable.org">Hypertable</a> and stores the data there <em>fully protocol buffer encoded</em>. If you want to checkout this implementation head to <a href="https://github.com/semk/hypergae">HyperGAE</a> repository and see <a href="https://github.com/semk/hypergae/tree/master/google/appengine/datastore">files</a> <code>datastore_hypertable_ht.py</code> and <code>datastore_hypertable_thrift.py</code>. HyperGAE basically uses two methods to connect to hypertable. Using the thrift api and using the boost-python library <a href="http://code.google.com/p/python-hypertable/">ht</a>. The mentioned drivers provides these api connections to hypertable.</p>
+<p>To run App Engine sdk with hypertable support, do</p>
+<div class="codehilite"><pre>python dev_appserver.py demos/guestbook/ --use_hypertable
+</pre></div>
+
+
+<p>The above command assumes hypertable <a href="http://www.hypertable.com/download/0.9.3.4.html">0.9.3.4</a> installed and running on your machine. It uses the thrift connection by default. I need to add support for configuring hypertable options though <code>dev_appserver.py</code> script. Suggestions and patches are always welcome.</p>
+<p><em>UPDATE:</em> The drivers api has been modified to accommodate the new Hypertable and Thrift api changes. You must install Hypertable version <a href="http://www.hypertable.com/download/">0.9.4.3</a> for HyperGAE to work. More updates to follow.</p>
 <p class="full-post"><a href="/2011/01/08/hypergae-use-hypertable-for-appengine-datastore">Continue Reading...</a></p>
 
 
@@ -190,7 +687,22 @@ Dec 25, 2010
 </time>
 <p></p>
 <p>I've seen many people jumping into web development with feature-complete frameworks like <a href="http://www.djangoproject.com/">Django</a> and <a href="http://rubyonrails.org/">Rails</a>. But most of them will find it difficult to assimilate the web development concepts because of cluttered documentation (incase of Rails) or complexity (incase of Django). One might need to look at a simpler microframework to learn from scratch. And yes, <a href="http://flask.pocoo.org/">Flask</a> is the one you'd want to have a look at.</p>
-<p>Flask ...</p>
+<p>Flask is a microframework for Python based on <a href="http://www.pocoo.org/projects/werkzeug/">Werkzeug</a>, and <a href="http://www.pocoo.org/projects/jinja2/">Jinja 2</a>. It is developed by the same guys at <a href="http://www.pocoo.org/">Pocoo</a> who gave us <a href="http://www.pocoo.org/projects/sphinx/">Sphinx</a> and <a href="http://www.pocoo.org/projects/pygments/">Pygments</a> (a Python based syntax highlighter which beautifies the codes shown in this website). If you are new to the world of web development, with Flask you'd find it easier to understand the basics concepts like <em>sessions</em>, <em>cookie</em>, <em>templates</em> etc.</p>
+<p>Flask provides a more developer friendly routing mechanism. You can define the routes to handlers with the help of a simple python decorator. That means no pain-in-the-ass for defining routes and writing handlers separately. Let's have a look at a sample <em>Hello World</em> application in Flask. I don't think you might need an explanation to this code :-)</p>
+<div class="codehilite"><pre><span class="c"># Hello World in Flask</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World!&quot;</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+
+<p>If you want to look at some really cool applications using Flask, never hesitate to checkout the code from <a href="https://github.com/mitsuhiko/flask/tree/master/examples">here</a>.</p>
 <p class="full-post"><a href="/2010/12/25/learn-web-development-with-flask">Continue Reading...</a></p>
 
 
@@ -215,7 +727,17 @@ Nov 30, 2010
 </pre></div>
 
 
-<p>I wish ...</p>
+<p>I wish to add features for every match like full scorecard, innings details etc in a similar manner. A plan for getting player profile is also in my mind. I'd like to make this as human-readable as possible. For example, innings information can be fetched by an iteration over the Match object. </p>
+<div class="codehilite"><pre><span class="c"># getting innings info</span>
+<span class="k">for</span> <span class="n">innings</span> <span class="ow">in</span> <span class="n">match</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">score</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">current_batsmen</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">overs</span>
+    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">wickets</span>
+</pre></div>
+
+
+<p>I'll update about the changes being done for the api. So keep reading my blog. I need your suggestions to make it a useful one.</p>
 <p class="full-post"><a href="/2010/11/30/cricinfo-api-for-python">Continue Reading...</a></p>
 
 
@@ -243,7 +765,17 @@ Oct 06, 2010
 </pre></div>
 
 
-<p>Usually programmers use Singleton Patterns as a global entry point ...</p>
+<p>Usually programmers use Singleton Patterns as a global entry point to database connections. This is a bad programming habit. This will also break tests as most unittests use dummy implementations of real objects that emulate real objects. Suppose you have protected your class to instantiate only once using this pattern, then it would become impossible for him to stub/mock this class for tests. In short, Singleton patterns are not recommended for test driven development.</p>
+<p>What we really care about class objects are its identity/state and behaviour, not the number of instances; unless you really need that kind of implementation. This is where Borg pattern comes as useful. Borg pattern share the same state across all its class instances. Its fairly easy to implement a Borg pattern in python. Just initialize the class <code>__dict__</code> with a class attribute in its <code>__init__</code>.</p>
+<div class="codehilite"><pre><span class="c"># Borg Pattern</span>
+<span class="k">class</span> <span class="nc">Borg</span><span class="p">:</span>
+    <span class="n">__shared_state</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__shared_state</span>
+</pre></div>
+
+
+<p>Subclass this <em>Borg</em> class and you can have a shared-state class implementation and all the instances will have the same state. For more information about different patterns in python, checkout this <a href="http://www.suttoncourtenay.org.uk/duncan/accu/pythonpatterns.html">link</a>.</p>
 <p class="full-post"><a href="/2010/10/06/borg-pattern">Continue Reading...</a></p>
 
 
@@ -262,7 +794,12 @@ Oct 02, 2010
 </pre></div>
 
 
-<p>Similar functionality can be achieved in linux commandline using a combination of unix pipe <code>|</code> and <code>xargs</code> command. For ...</p>
+<p>Similar functionality can be achieved in linux commandline using a combination of unix pipe <code>|</code> and <code>xargs</code> command. For my previous blog post I needed to resize the image sizes so that it fits correcly in the post. This is how I mapped the <code>convert</code> utility over a list of image files in a directory.</p>
+<div class="codehilite"><pre><span class="nv">$ </span>find . -name <span class="s2">&quot;*.jpg&quot;</span> -print0 <span class="p">|</span> xargs -0 -I img convert -resize 600x450 img img
+</pre></div>
+
+
+<p>The <code>-print0</code> option for find list files without the EOF marker so that it can be used efficiently in <code>xargs</code>. The -0 option indicates this. You can use a replace string similar to <code>img</code> used here, to replace initial arguments of the command from standard input. See <code>man xargs</code> for more information about this utility.</p>
 <p class="full-post"><a href="/2010/10/02/commandline-mapper">Continue Reading...</a></p>
 
 

@@ -85,7 +85,17 @@ Oct 06, 2010
 </pre></div>
 
 
-<p>Usually programmers use Singleton Patterns as a global entry point ...</p>
+<p>Usually programmers use Singleton Patterns as a global entry point to database connections. This is a bad programming habit. This will also break tests as most unittests use dummy implementations of real objects that emulate real objects. Suppose you have protected your class to instantiate only once using this pattern, then it would become impossible for him to stub/mock this class for tests. In short, Singleton patterns are not recommended for test driven development.</p>
+<p>What we really care about class objects are its identity/state and behaviour, not the number of instances; unless you really need that kind of implementation. This is where Borg pattern comes as useful. Borg pattern share the same state across all its class instances. Its fairly easy to implement a Borg pattern in python. Just initialize the class <code>__dict__</code> with a class attribute in its <code>__init__</code>.</p>
+<div class="codehilite"><pre><span class="c"># Borg Pattern</span>
+<span class="k">class</span> <span class="nc">Borg</span><span class="p">:</span>
+    <span class="n">__shared_state</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__shared_state</span>
+</pre></div>
+
+
+<p>Subclass this <em>Borg</em> class and you can have a shared-state class implementation and all the instances will have the same state. For more information about different patterns in python, checkout this <a href="http://www.suttoncourtenay.org.uk/duncan/accu/pythonpatterns.html">link</a>.</p>
 <p class="full-post"><a href="/2010/10/06/borg-pattern">Continue Reading...</a></p>
 
 

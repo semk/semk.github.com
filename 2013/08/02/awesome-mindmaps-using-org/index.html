@@ -74,49 +74,49 @@
 <p>Org mode allows you to create documents with a simple syntax. Different headers/sections in the document can be represented by a <code>*</code> symbol. A single <code>*</code> corresponds to an <code>&lt;h1&gt;</code> block in HTML and <code>**</code> represents a <code>&lt;h2&gt;</code>.</p>
 <p>Org mode has the capability to export documents to various formats like ASCII text, PDF, LaTeX, XOXO, HTML, Freemind Mindmap etc. I was not quite happy with the output produced by <a href="http://freemind.sourceforge.net/wiki/index.php/Main_Page">Freemind</a> from the <code>.mm</code> files exported by Org mode. So I switched to <a href="http://mindnode.com/">Mindnode</a>, another mindmapping software which is available for Mac OSX and produces visually pleasing mindmaps. But the <code>.mm</code> exports from Org mode doesn't work pretty well with Mindnode. So I wrote a simple <a href="https://github.com/semk/Org2OPML">Org2OPML</a> converter that converts <code>.org</code> files to <code>.opml</code> files. OPML is another formats for mindmps/outlining and well supported by Mindnode.</p>
 <p>The <code>.org</code> representation of the mindmap</p>
-<div class="codehilite"><pre><span class="cp">#+TITLE: Windows Versions</span>
-<span class="cp">#+AUTHOR: Sreejith Kesavan</span>
-<span class="cp">#+ROOT: Windows Versions</span>
+<div class="codehilite"><pre>#+TITLE: Windows Versions
+#+AUTHOR: Sreejith Kesavan
+#+ROOT: Windows Versions
 
-<span class="o">*</span> <span class="n">Windows</span> <span class="mi">8</span> <span class="n">Home</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">8</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">8</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">8</span> <span class="n">Enterprise</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">RT</span>
+* Windows 8 Home
+** Windows 8
+** Windows 8
+** Windows 8 Enterprise
+** Windows RT
 
-<span class="o">*</span> <span class="n">Windows</span> <span class="mi">7</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">7</span> <span class="n">Starter</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">7</span> <span class="n">Home</span> <span class="n">Basic</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">7</span> <span class="n">Home</span> <span class="n">Premium</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">7</span> <span class="n">Professional</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">7</span> <span class="n">Enterprise</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">7</span> <span class="n">Ultimate</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="mi">7</span> <span class="n">Service</span> <span class="n">Pack</span> <span class="mi">1</span>
+* Windows 7
+** Windows 7 Starter
+** Windows 7 Home Basic
+** Windows 7 Home Premium
+** Windows 7 Professional
+** Windows 7 Enterprise
+** Windows 7 Ultimate
+** Windows 7 Service Pack 1
 
-<span class="o">*</span> <span class="n">Windows</span> <span class="n">Vista</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">Vista</span> <span class="n">Starter</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">Vista</span> <span class="n">Home</span> <span class="n">Basic</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">Vista</span> <span class="n">Home</span> <span class="n">Premium</span> 
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">Vista</span> <span class="n">Business</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">Vista</span> <span class="n">Enterprise</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">Vista</span> <span class="n">Ultimate</span>
+* Windows Vista
+** Windows Vista Starter
+** Windows Vista Home Basic
+** Windows Vista Home Premium 
+** Windows Vista Business
+** Windows Vista Enterprise
+** Windows Vista Ultimate
 
-<span class="o">*</span> <span class="n">Windows</span> <span class="n">XP</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Starter</span> <span class="n">Edition</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Home</span> <span class="n">Edition</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Edition</span> <span class="n">N</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Professional</span><span class="p">,</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Edition</span> <span class="n">N</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Professional</span> <span class="n">x64</span> <span class="n">Edition</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="k">for</span> <span class="n">specialized</span> <span class="n">hardware</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Media</span> <span class="n">Center</span> <span class="n">Edition</span>
-<span class="o">***</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Media</span> <span class="n">Center</span> <span class="n">Edition</span>
-<span class="o">***</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Media</span> <span class="n">Center</span> <span class="n">Edition</span> <span class="mi">2003</span>
-<span class="o">***</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Media</span> <span class="n">Center</span> <span class="n">Edition</span> <span class="mi">2004</span>
-<span class="o">***</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Media</span> <span class="n">Center</span> <span class="n">Edition</span> <span class="mi">2005</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="mi">64</span><span class="o">-</span><span class="n">bit</span> <span class="n">Edition</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">XP</span> <span class="n">Tablet</span> <span class="n">PC</span> <span class="n">Edition</span>
-<span class="o">**</span> <span class="n">Windows</span> <span class="n">Fundamentals</span> <span class="k">for</span> <span class="n">Legacy</span> <span class="n">PCs</span>
+* Windows XP
+** Windows XP Starter Edition
+** Windows XP Home Edition
+** Windows XP Edition N
+** Windows XP Professional,
+** Windows XP Edition N
+** Windows XP Professional x64 Edition
+** Windows XP for specialized hardware
+** Windows XP Media Center Edition
+*** Windows XP Media Center Edition
+*** Windows XP Media Center Edition 2003
+*** Windows XP Media Center Edition 2004
+*** Windows XP Media Center Edition 2005
+** Windows XP 64-bit Edition
+** Windows XP Tablet PC Edition
+** Windows Fundamentals for Legacy PCs
 </pre></div>
 
 

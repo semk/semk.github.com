@@ -4,13 +4,91 @@
     <title>Codeception</title>
     <link href="http://foobarnbaz.com/atom.xml" rel="self"/>
     <link href="http://foobarnbaz.com"/>
-    <updated>2014-04-04T00:00:00+5:30</updated>
+    <updated>2015-07-11T00:00:00+5:30</updated>
     <id></id>
     <author>
         <name>Sreejith Kesavan</name>
         <email>sreejithemk@gmail.com</email>
     </author>
 
+    
+    <entry>
+        <title>Demystifying Python's del, __del__ and garbage collection</title>
+        <link href="http://foobarnbaz.com/2015/07/09/understanding-python-del-and-garbage-collection"/>
+        <updated>2015-07-09T00:00:00+5:30</updated>
+        <id>http://foobarnbaz.com/2015/07/09/understanding-python-del-and-garbage-collection</id>
+        <content type="html">&lt;p&gt;People are often confused about Python's &lt;code&gt;del&lt;/code&gt; keyword and &lt;code&gt;__del__()&lt;/code&gt; method.
+Most people think that applying &lt;code&gt;del&lt;/code&gt; on an object causes the object's
+&lt;code&gt;__del__()&lt;/code&gt; method to be called. But this is not true. &lt;code&gt;del&lt;/code&gt; keyword merely
+decrements the objects reference count and de-scopes the variable on its
+application. But it doesn't necessarily invoke the object's &lt;code&gt;__del__()&lt;/code&gt; method.
+&lt;code&gt;__del__&lt;/code&gt; method will be called only when the garbage collection kicks in.
+And this would happens automatically when the reference count of an object
+becomes zero.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;del&lt;/code&gt;: Decrements reference count&lt;br /&gt;
+&lt;code&gt;__del__()&lt;/code&gt;: Object destructor. Called when an object is garbage collected&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Foo&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__del__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;__del__() called&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's create some instances of this &lt;code&gt;Foo&lt;/code&gt; class and call &lt;code&gt;del&lt;/code&gt; upon these
+instances to see what happens.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="k"&gt;paste&lt;/span&gt;
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Foo&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+        &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__del__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;__del__() called&amp;#39;&lt;/span&gt;
+&lt;span class="c"&gt;## -- End pasted text --&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;getrefcount&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;getrefcount&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Foo&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Foo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;getrefcount&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At this point you might be wondering why &lt;code&gt;getrefcount(Foo)&lt;/code&gt; and &lt;code&gt;getrefcount(a)&lt;/code&gt;
+shows 2 instead of 1. Well, the reason is when you call the method &lt;code&gt;getrefcount&lt;/code&gt;
+the argument is passed by value, effectively bumping the reference count by 1.
+This extra reference will be freed up once the &lt;code&gt;getrefcount&lt;/code&gt; method exits. So
+effectively we have a reference count of 1 for the instance &lt;code&gt;a&lt;/code&gt; here. Now let's
+make more references to the same instance.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;getrefcount&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;getrefcount&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As expected, the reference count is incremented. Now let's call &lt;code&gt;del&lt;/code&gt; on a to
+see if the object's &lt;code&gt;__del__()&lt;/code&gt; is invoked.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="k"&gt;del&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="k"&gt;del&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;
+&lt;span class="n"&gt;__del__&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="n"&gt;called&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see, &lt;code&gt;__del__()&lt;/code&gt; is not invoked on applying &lt;code&gt;del&lt;/code&gt; the first reference.
+This is because the reference count is still 1. On calling &lt;code&gt;del&lt;/code&gt; on &lt;code&gt;b&lt;/code&gt; causes
+the reference count become zero, garbage collection kicks in and finally
+our long awaited &lt;code&gt;__del__()&lt;/code&gt; is called.&lt;/p&gt;
+&lt;p&gt;But there are situation where the destructor goes astray. These situations and
+the alternative approaches are explained in detail in the following brilliant
+blog post.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://eli.thegreenplace.net/2009/06/12/safely-using-destructors-in-python"&gt;Safely using destructors in Python&lt;/a&gt;&lt;/p&gt;</content>
+    </entry>
     
     <entry>
         <title>UNIX Series: System Calls - Part I</title>
@@ -312,49 +390,49 @@ stuff like that, it's the only choice you have -- There aren't any debuggers.
 &lt;p&gt;Org mode allows you to create documents with a simple syntax. Different headers/sections in the document can be represented by a &lt;code&gt;*&lt;/code&gt; symbol. A single &lt;code&gt;*&lt;/code&gt; corresponds to an &lt;code&gt;&amp;lt;h1&amp;gt;&lt;/code&gt; block in HTML and &lt;code&gt;**&lt;/code&gt; represents a &lt;code&gt;&amp;lt;h2&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Org mode has the capability to export documents to various formats like ASCII text, PDF, LaTeX, XOXO, HTML, Freemind Mindmap etc. I was not quite happy with the output produced by &lt;a href="http://freemind.sourceforge.net/wiki/index.php/Main_Page"&gt;Freemind&lt;/a&gt; from the &lt;code&gt;.mm&lt;/code&gt; files exported by Org mode. So I switched to &lt;a href="http://mindnode.com/"&gt;Mindnode&lt;/a&gt;, another mindmapping software which is available for Mac OSX and produces visually pleasing mindmaps. But the &lt;code&gt;.mm&lt;/code&gt; exports from Org mode doesn't work pretty well with Mindnode. So I wrote a simple &lt;a href="https://github.com/semk/Org2OPML"&gt;Org2OPML&lt;/a&gt; converter that converts &lt;code&gt;.org&lt;/code&gt; files to &lt;code&gt;.opml&lt;/code&gt; files. OPML is another formats for mindmps/outlining and well supported by Mindnode.&lt;/p&gt;
 &lt;p&gt;The &lt;code&gt;.org&lt;/code&gt; representation of the mindmap&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#+TITLE: Windows Versions&lt;/span&gt;
-&lt;span class="cp"&gt;#+AUTHOR: Sreejith Kesavan&lt;/span&gt;
-&lt;span class="cp"&gt;#+ROOT: Windows Versions&lt;/span&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;#+TITLE: Windows Versions
+#+AUTHOR: Sreejith Kesavan
+#+ROOT: Windows Versions
 
-&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="n"&gt;Enterprise&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;RT&lt;/span&gt;
+* Windows 8 Home
+** Windows 8
+** Windows 8
+** Windows 8 Enterprise
+** Windows RT
 
-&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Starter&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Basic&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Premium&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Professional&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Enterprise&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Ultimate&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;Service&lt;/span&gt; &lt;span class="n"&gt;Pack&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+* Windows 7
+** Windows 7 Starter
+** Windows 7 Home Basic
+** Windows 7 Home Premium
+** Windows 7 Professional
+** Windows 7 Enterprise
+** Windows 7 Ultimate
+** Windows 7 Service Pack 1
 
-&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Starter&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Basic&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Premium&lt;/span&gt; 
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Business&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Enterprise&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Vista&lt;/span&gt; &lt;span class="n"&gt;Ultimate&lt;/span&gt;
+* Windows Vista
+** Windows Vista Starter
+** Windows Vista Home Basic
+** Windows Vista Home Premium 
+** Windows Vista Business
+** Windows Vista Enterprise
+** Windows Vista Ultimate
 
-&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Starter&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Professional&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Professional&lt;/span&gt; &lt;span class="n"&gt;x64&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;specialized&lt;/span&gt; &lt;span class="n"&gt;hardware&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
-&lt;span class="o"&gt;***&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
-&lt;span class="o"&gt;***&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="mi"&gt;2003&lt;/span&gt;
-&lt;span class="o"&gt;***&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="mi"&gt;2004&lt;/span&gt;
-&lt;span class="o"&gt;***&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Center&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt; &lt;span class="mi"&gt;2005&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="mi"&gt;64&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;bit&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;XP&lt;/span&gt; &lt;span class="n"&gt;Tablet&lt;/span&gt; &lt;span class="n"&gt;PC&lt;/span&gt; &lt;span class="n"&gt;Edition&lt;/span&gt;
-&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;Windows&lt;/span&gt; &lt;span class="n"&gt;Fundamentals&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;Legacy&lt;/span&gt; &lt;span class="n"&gt;PCs&lt;/span&gt;
+* Windows XP
+** Windows XP Starter Edition
+** Windows XP Home Edition
+** Windows XP Edition N
+** Windows XP Professional,
+** Windows XP Edition N
+** Windows XP Professional x64 Edition
+** Windows XP for specialized hardware
+** Windows XP Media Center Edition
+*** Windows XP Media Center Edition
+*** Windows XP Media Center Edition 2003
+*** Windows XP Media Center Edition 2004
+*** Windows XP Media Center Edition 2005
+** Windows XP 64-bit Edition
+** Windows XP Tablet PC Edition
+** Windows Fundamentals for Legacy PCs
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -555,6 +633,22 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
     </entry>
     
     <entry>
+        <title>Pagination, Tags and more in Voldemort</title>
+        <link href="http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort"/>
+        <updated>2012-04-06T00:00:00+5:30</updated>
+        <id>http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort</id>
+        <content type="html">&lt;p&gt;&lt;img alt="Voldemort" src="/images/posts/2012-04-06-pagination-tags-and-more-in-voldemort/term.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I have been adding a few useul features to &lt;a href="https://github.com/semk/voldemort"&gt;Voldemort&lt;/a&gt; for the last few months and it did come out pretty good. It now sports automatic Atom Feed and sitemap generation, thanks to the contibutions from my friend &lt;a href="http://endlessinsomnia.com"&gt;Stanislav Yudin&lt;/a&gt;. Here are the highlights.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Generates Atom Feed automatically for your blog&lt;/li&gt;
+&lt;li&gt;Generates sitemap.xml&lt;/li&gt;
+&lt;li&gt;Pagination supported. Just add &lt;code&gt;paginate: True&lt;/code&gt; in the page metadata section.&lt;/li&gt;
+&lt;li&gt;You can tag posts using metadata. Eg: &lt;code&gt;tags: ['Python', 'Tips']&lt;/code&gt;. A special template file named &lt;code&gt;tag.html&lt;/code&gt; is used to generate tags on the fly.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.&lt;/p&gt;</content>
+    </entry>
+    
+    <entry>
         <title>New set of Developer Tools in Firefox</title>
         <link href="http://foobarnbaz.com/2012/04/06/firefox-developer-tools"/>
         <updated>2012-04-06T00:00:00+5:30</updated>
@@ -571,22 +665,6 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
 &lt;p&gt;And finally for testing Javascript code snippets, there is Scratchpad which also sports code highlighting.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Scratchpad" src="/images/posts/2012-04-06-firefox-developer-tools/scratchpad.png" /&gt;&lt;/p&gt;
 &lt;p&gt;I find it quite useful and intuitive. How about you?&lt;/p&gt;</content>
-    </entry>
-    
-    <entry>
-        <title>Pagination, Tags and more in Voldemort</title>
-        <link href="http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort"/>
-        <updated>2012-04-06T00:00:00+5:30</updated>
-        <id>http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort</id>
-        <content type="html">&lt;p&gt;&lt;img alt="Voldemort" src="/images/posts/2012-04-06-pagination-tags-and-more-in-voldemort/term.png" /&gt;&lt;/p&gt;
-&lt;p&gt;I have been adding a few useul features to &lt;a href="https://github.com/semk/voldemort"&gt;Voldemort&lt;/a&gt; for the last few months and it did come out pretty good. It now sports automatic Atom Feed and sitemap generation, thanks to the contibutions from my friend &lt;a href="http://endlessinsomnia.com"&gt;Stanislav Yudin&lt;/a&gt;. Here are the highlights.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Generates Atom Feed automatically for your blog&lt;/li&gt;
-&lt;li&gt;Generates sitemap.xml&lt;/li&gt;
-&lt;li&gt;Pagination supported. Just add &lt;code&gt;paginate: True&lt;/code&gt; in the page metadata section.&lt;/li&gt;
-&lt;li&gt;You can tag posts using metadata. Eg: &lt;code&gt;tags: ['Python', 'Tips']&lt;/code&gt;. A special template file named &lt;code&gt;tag.html&lt;/code&gt; is used to generate tags on the fly.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.&lt;/p&gt;</content>
     </entry>
     
     <entry>
@@ -928,7 +1006,7 @@ jinja2   markdown pygments pyyaml
 &lt;p&gt;&lt;img alt="LG Optimus One" src="http://www.gadgetvenue.com/wp-content/uploads/2010/09/LG-optimus-one-300x300.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;This one is a good choice for anyone looking for a budget Android phone (10.8K when I bought) whose battery lasts a complete day with internet on. Thanks to &lt;a href="http://binarykarma.org"&gt;Shuveb&lt;/a&gt; for providing a review of the phone and atlast making me buy it :-P&lt;/p&gt;
 &lt;p&gt;Eventhough a Pythonista like me hates Java, the Android platform was tempting me to look at Java with some interest. So I bought &lt;em&gt;Android Application Development by O'Reilly&lt;/em&gt; and setup a Development Environment on my laptop using Eclipse. This was so easy that I could run the &lt;em&gt;Hello World&lt;/em&gt; program without even writing a piece of Java code. Once you create a Project, it auto-generates files needed for the application to show on the foreground and other resource files and build scripts. By default, they'll create an activity source file with an &lt;em&gt;Activity&lt;/em&gt; name you've given. This is pretty much the &lt;em&gt;Hello World&lt;/em&gt; program we wanted.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;semk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;helloworld&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;com.semk.helloworld&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;android.app.Activity&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;android.os.Bundle&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
@@ -1159,7 +1237,7 @@ make
 
 
 &lt;p&gt;Similar functionality can be achieved in linux commandline using a combination of unix pipe &lt;code&gt;|&lt;/code&gt; and &lt;code&gt;xargs&lt;/code&gt; command. For my previous blog post I needed to resize the image sizes so that it fits correcly in the post. This is how I mapped the &lt;code&gt;convert&lt;/code&gt; utility over a list of image files in a directory.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;find . -name &lt;span class="s2"&gt;&amp;quot;*.jpg&amp;quot;&lt;/span&gt; -print0 | xargs -0 -I img convert -resize 600x450 img img
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;find . -name &lt;span class="s2"&gt;&amp;quot;*.jpg&amp;quot;&lt;/span&gt; -print0 &lt;span class="p"&gt;|&lt;/span&gt; xargs -0 -I img convert -resize 600x450 img img
 &lt;/pre&gt;&lt;/div&gt;
 
 

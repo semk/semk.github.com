@@ -6,51 +6,56 @@
 
     
     <url>
-        <loc>/about</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/archive</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/atom</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/games</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/index</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/lab</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
+        <loc>/robots</loc>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/not-found-404</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
     </url>
     
     <url>
-        <loc>/robots</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
+        <loc>/games</loc>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/index</loc>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/atom</loc>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/about</loc>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/lab</loc>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/archive</loc>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/sitemap</loc>
-        <lastmod>2014-04-04T00:00:00+5:30</lastmod>
+        <lastmod>2015-07-11T00:00:00+5:30</lastmod>
     </url>
     
 
+    
+    <url>
+        <loc>/2015/07/09/understanding-python-del-and-garbage-collection</loc>
+        <lastmod>2015-07-09T00:00:00+5:30</lastmod>
+    </url>
     
     <url>
         <loc>/2014/01/27/unix-series-system-calls-part-1</loc>
@@ -88,12 +93,12 @@
     </url>
     
     <url>
-        <loc>/2012/04/06/firefox-developer-tools</loc>
+        <loc>/2012/04/06/pagination-tags-and-more-in-voldemort</loc>
         <lastmod>2012-04-06T00:00:00+5:30</lastmod>
     </url>
     
     <url>
-        <loc>/2012/04/06/pagination-tags-and-more-in-voldemort</loc>
+        <loc>/2012/04/06/firefox-developer-tools</loc>
         <lastmod>2012-04-06T00:00:00+5:30</lastmod>
     </url>
     
