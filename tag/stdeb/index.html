@@ -67,62 +67,7 @@
 Oct 02, 2011
 </time>
 <p></p>
-<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This situation made us to build <code>.deb</code> packages for our Python software as well.</p>
-<p>The real challenge here was packaging all the dependencies our Python application has brought in, as most of the dependencies were having only <code>egg</code> distributions. Luckily there was an extension to setuptools called <a href="https://github.com/astraw/stdeb">stdeb</a> which will allow you to generate debian packages using your setup.py script. It'll automatically add the dependencies in the <code>debian/control</code> file after searching for the dependencies using <code>apt-cache</code>. stdeb will do something like <code>apt-cache dump | grep &lt;package&gt;</code> to find whether there is a proper debian package for the dependencies. If they found the correct one in apt-cache, <code>debian/control</code> file will be updated with that information. But as I said, most of the dependencies were not packaged as <code>.deb</code>. So we downloaded all the dependencies using the <code>easy_install</code> command and created <code>.deb</code> packages for them using <code>stdeb</code>.</p>
-<p>I will demonstrate the procedure with the <a href="https://github.com/semk/voldemort">Voldemort</a> project from my GitHub Repo. The <code>setup.py</code> looks like this,</p>
-<div class="codehilite"><pre><span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">ez_setup</span> <span class="kn">import</span> <span class="n">use_setuptools</span>
-    <span class="n">use_setuptools</span><span class="p">()</span>
-    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
-
-<span class="n">setup</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s">&#39;voldemort&#39;</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="s">&#39;0.5.0&#39;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Voldemort is a simple static site generator</span><span class="se">\</span>
-<span class="s">                    using Jinja2 and markdown templates.&#39;</span><span class="p">,</span>
-    <span class="n">author</span><span class="o">=</span><span class="s">&#39;Sreejith K / K7Computing Pvt Ltd&#39;</span><span class="p">,</span>
-    <span class="n">author_email</span><span class="o">=</span><span class="s">&#39;sreejithemk@gmail.com&#39;</span><span class="p">,</span>
-    <span class="n">url</span><span class="o">=</span><span class="s">&#39;http://www.foobarnbaz.com&#39;</span><span class="p">,</span>
-    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
-        <span class="s">&#39;Pygments &gt;= 1.4&#39;</span><span class="p">,</span>
-        <span class="s">&#39;PyYAML &gt;= 3.10&#39;</span><span class="p">,</span>
-        <span class="s">&#39;Markdown &gt;= 2.0&#39;</span><span class="p">,</span>
-        <span class="s">&#39;Jinja2 &gt;= 2.5&#39;</span>
-    <span class="p">],</span>
-    <span class="n">setup_requires</span><span class="o">=</span><span class="p">[],</span>
-    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;ez_setup&#39;</span><span class="p">]),</span>
-    <span class="n">test_suite</span><span class="o">=</span><span class="s">&#39;tests&#39;</span><span class="p">,</span>
-    <span class="n">scripts</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;scripts/voldemort&#39;</span><span class="p">],</span>
-    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-
-
-<p>In this case all the dependencies were lacking <code>.deb</code> packages. So, we need to download them using <code>easy_install</code>.</p>
-<div class="codehilite"><pre>mkdir deps
-easy_install -e -b deps/ <span class="s2">&quot;Pygments&gt;=1.4&quot;</span>
-easy_install -e -b deps/ <span class="s2">&quot;PyYAML&gt;=3.10&quot;</span>
-easy_install -e -b deps/ <span class="s2">&quot;Markdown&gt;=2.0&quot;</span>
-easy_install -e -b deps/ <span class="s2">&quot;Jinja2&gt;=2.5&quot;</span>
-ls deps/
-jinja2   markdown pygments pyyaml
-</pre></div>
-
-
-<p>Now you need to go to each dependency directory and issue the following command</p>
-<div class="codehilite"><pre>python setup.py --command-packages<span class="o">=</span>stdeb.command debianize
-</pre></div>
-
-
-<p>That will create a directory named <code>debian</code> which contain all the stuffs needed to create a <code>.deb</code> package. Now it is upto us to edit the control file and add any additional dependency if needed. To generate the debian package, do</p>
-<div class="codehilite"><pre>dpkg-buildpackage -us -uc
-</pre></div>
-
-
-<p>Now you can build the main application debs by editing the control file manually since stdeb won't add the dependencies. But you know you have them in your hand :-).</p>
+<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This ...</p>
 <p class="full-post"><a href="/2011/10/02/packaging-python-applications">Continue Reading...</a></p>
 
 

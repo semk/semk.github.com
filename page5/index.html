@@ -68,39 +68,7 @@
 <p></p>
 <p>The 27th <a href="http://events.ccc.de/congress/2010/wiki/Welcome">Chaos Communication Congress</a> revealed the <a href="http://www.engadget.com/2010/12/29/hackers-obtain-ps3-private-cryptography-key-due-to-epic-programm/"><em>Epic Programming Fail</em></a> on the PlayStation 3 security. Finally it turned  out that Sony's ECDSA algorithm for signing apps use a random number generator which always returns the same number (No, I'm not kidding). The <a href="http://fail0verflow.com">fail0verflow</a> team, who found out this fail, used the following famous <a href="http://xkcd.com">xkcd</a> comic to describe Sony's ECDSA algorithm.</p>
 <p><img alt="Random Number" src="http://imgs.xkcd.com/comics/random_number.png" /></p>
-<p><em>fail0verflow</em> demonstrated their work on <a href="http://marcansoft.com/blog/2010/10/asbestos-running-linux-as-gameos/">AsbestOS</a>, which is a bootloader for ps3 using which you can boot <em>Linux</em> on it. Currently this needs some wiring and soldering works but they have promised to release an easy to use tool sometime next month.</p>
-<p>But <a href="https://github.com/kakaroto">kakaroto</a>(the hacker behind aMsn and PL3 payload for <em>psgroove</em>) wasn't patient enough. He went on to develop some tools to create <em>custom firmware</em> for ps3. You can find the custom firmware generator code from <a href="https://github.com/kakaroto/ps3utils">here</a>. Currently it works on Linux and Mac. For those who doesn't know how to use these tools, the following steps would help.</p>
-<p>First of all checkout the tools developed by <em>fail0verflow</em> team and build it. You might need to install <code>build-essential</code> and <code>zlib1g-dev</code> packages if you are using Ubuntu (use <code>sudo apt-get install</code>).</p>
-<div class="codehilite"><pre>mkdir ~/src
-<span class="nb">cd</span> ~/src
-git clone git://git.fail0verflow.com/ps3tools.git
-<span class="nb">cd </span>ps3tools
-make
-</pre></div>
-
-
-<p>Now checkout the firmware generator code from kakaroto's GitHub repository and use the official firmware update (PS3UPDAT.PUP) to create the CFW.</p>
-<div class="codehilite"><pre>mkdir ~/.ps3
-<span class="nb">cd</span> ~/.ps3
-git clone https://github.com/kakaroto/ps3keys.git .
-<span class="nb">cd</span> ~/src
-git clone https://github.com/kakaroto/ps3utils.git
-<span class="nb">cd </span>ps3utils
-make
-./create_cfw.sh PS3UPDAT.PUP CFW.PUP
-</pre></div>
-
-
-<p>You can rename this CFW.PUP to PS3UPDAT.PUP and copy it to PS3-&gt;UPDATE directory of your pendrive and update the ps3 from the XMB. Still, this CFW does nothing but shows the <em>Install Application</em> option on XMB. You still have to wait until the homebrews are signed and repackaged with the retail <code>.pkg</code> format to install on this firmware.</p>
-<h4>Links</h4>
-<ul>
-<li>
-<p><a href="http://events.ccc.de/congress/2010/Fahrplan/attachments/1780_27c3_console_hacking_2010.pdf">fail0verflow's presentation on Console Hacking</a> - 27th Chaos Communication Congress</p>
-</li>
-<li>
-<p><a href="http://www.bbc.co.uk/news/technology-12116051">fail0verflow and Geohot Interview with BBC</a></p>
-</li>
-</ul>
+<p><em>fail0verflow</em> demonstrated their work on <a href="http://marcansoft.com/blog/2010/10/asbestos-running-linux-as-gameos/">AsbestOS</a>, which ...</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2011/01/05/building-custom-firmware-for-ps3">Read more...</a></p> 
   <p class="alignright"><a href="/2011/01/05/building-custom-firmware-for-ps3#comments">Comments...</a></p>
@@ -114,10 +82,7 @@ make
 </time>
 <p></p>
 <p>Now I have two new good books to read for this New Year. The classic <a href="http://mitpress.mit.edu/sicp/full-text/book/book.html">Structure and Interpretation of Computer Programs/SICP</a> and <a href="http://www.amazon.com/Mock-Mockingbird-Other-Logic-Puzzles/dp/0394534913">To Mock a Mockingbird</a> (<a href="http://en.wikipedia.org/wiki/Raymond_Smullyan">Raymond Smullyan</a>), a humorous introduction to <a href="http://en.wikipedia.org/wiki/Combinatory_logic">combinatory logic</a> with the help of <a href="http://www.codinghorror.com/blog/2007/09/classic-computer-science-puzzles.html">interesting puzzles</a>.</p>
-<p>SICP was used as the textbook of MIT's old introductory programming class <a href="http://sicp.ai.mit.edu/Spring-2007/">6.001</a>. Later this class has been replaced by <a href="http://mit.edu/6.01/mercurial/spring10/www/index.html">6.01</a>, which uses Python. It is also known as the wizard book beacause it features the image of a wizard on its cover page.</p>
-<p><img alt="Books" src="/images/posts/2010-12-31-reads-for-the-new-year/books.png" /></p>
-<p>To Mock a Mockingbird contains numerous logical puzzles and by solving them, you will eventually learn some theories and concepts in combinatorics and <a href="http://en.wikipedia.org/wiki/Lambda_calculus">lambda calulus</a>, the base of <a href="http://en.wikipedia.org/wiki/Lisp_programming_language">Lisp</a> programming.</p>
-<p>Well. Afterall, its time to say good bye to 2010 and welcome 2011.</p>
+<p>SICP was used as the textbook of MIT's old introductory programming class <a href="http://sicp.ai.mit.edu/Spring-2007/">6.001</a>. Later this class has been replaced by <a href="http://mit.edu/6.01/mercurial/spring10/www/index.html">6.01</a>, which uses Python. It is ...</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/12/31/reads-for-the-new-year">Read more...</a></p> 
   <p class="alignright"><a href="/2010/12/31/reads-for-the-new-year#comments">Comments...</a></p>
@@ -131,22 +96,7 @@ make
 </time>
 <p></p>
 <p>I've seen many people jumping into web development with feature-complete frameworks like <a href="http://www.djangoproject.com/">Django</a> and <a href="http://rubyonrails.org/">Rails</a>. But most of them will find it difficult to assimilate the web development concepts because of cluttered documentation (incase of Rails) or complexity (incase of Django). One might need to look at a simpler microframework to learn from scratch. And yes, <a href="http://flask.pocoo.org/">Flask</a> is the one you'd want to have a look at.</p>
-<p>Flask is a microframework for Python based on <a href="http://www.pocoo.org/projects/werkzeug/">Werkzeug</a>, and <a href="http://www.pocoo.org/projects/jinja2/">Jinja 2</a>. It is developed by the same guys at <a href="http://www.pocoo.org/">Pocoo</a> who gave us <a href="http://www.pocoo.org/projects/sphinx/">Sphinx</a> and <a href="http://www.pocoo.org/projects/pygments/">Pygments</a> (a Python based syntax highlighter which beautifies the codes shown in this website). If you are new to the world of web development, with Flask you'd find it easier to understand the basics concepts like <em>sessions</em>, <em>cookie</em>, <em>templates</em> etc.</p>
-<p>Flask provides a more developer friendly routing mechanism. You can define the routes to handlers with the help of a simple python decorator. That means no pain-in-the-ass for defining routes and writing handlers separately. Let's have a look at a sample <em>Hello World</em> application in Flask. I don't think you might need an explanation to this code :-)</p>
-<div class="codehilite"><pre><span class="c"># Hello World in Flask</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
-
-<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
-    <span class="k">return</span> <span class="s">&quot;Hello World!&quot;</span>
-
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</pre></div>
-
-
-<p>If you want to look at some really cool applications using Flask, never hesitate to checkout the code from <a href="https://github.com/mitsuhiko/flask/tree/master/examples">here</a>.</p>
+<p>Flask ...</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/12/25/learn-web-development-with-flask">Read more...</a></p> 
   <p class="alignright"><a href="/2010/12/25/learn-web-development-with-flask#comments">Comments...</a></p>
@@ -159,23 +109,7 @@ make
   Dec 12, 2010
 </time>
 <p></p>
-<p>Here is a happy news for those who updated to firmware <code>&gt;3.41</code> and didn't get a chance to enjoy the homwbrews for PS3. Yes, atlast we'll be able to downgrade the PS3 firmware to any version <code>&lt;3.50</code>. The actual PSJailbreak team were the first team to release the downgrade. But many thanks to <a href="https://github.com/zAxis">zAxis</a> who created <a href="https://github.com/zAxis/PSGrade">PSGrade</a>, an opensouce version of PSDowngrade. Using this we can put the PS3 into Factory/Service mode (Downgrade) using popular development boards like Teensy and AT90USBKEY.</p>
-<p>We should also be thankful to <a href="https://github.com/kakaroto">KaKaRaTo</a> who reversed the PS3Yes Key and made it available for PSGrade. Here is PS3Yes key which he reversed from its hex.</p>
-<blockquote>
-<p>0×04, 0x4E, 0×61, 0x1B, 0xA6, 0xA6, 0xE3, 0x9A, 0×98, 0xCF, 0×35, 0×81, 0x2C, 0×80, 0×68, 0xC7, 0xFC, 0x5F, 0x7A, 0xE8</p>
-</blockquote>
-<p>You'll need to specify this key in PSGrade sources (key.c as shown below) for the service mode hack to work. But now zAxis has updated the code with this key. So all you have to do is download the souces and compile the hex for your board.</p>
-<div class="codehilite"><pre><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">jig_key</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-<span class="mh">0x04</span><span class="p">,</span> <span class="mh">0x4E</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0x1B</span><span class="p">,</span> <span class="mh">0xA6</span><span class="p">,</span> <span class="mh">0xA6</span><span class="p">,</span> <span class="mh">0xE3</span><span class="p">,</span> <span class="mh">0x9A</span><span class="p">,</span> <span class="mh">0x98</span><span class="p">,</span> <span class="mh">0xCF</span><span class="p">,</span> 
-<span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x81</span><span class="p">,</span> <span class="mh">0x2C</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mh">0x68</span><span class="p">,</span> <span class="mh">0xC7</span><span class="p">,</span> <span class="mh">0xFC</span><span class="p">,</span> <span class="mh">0x5F</span><span class="p">,</span> <span class="mh">0x7A</span><span class="p">,</span> <span class="mh">0xE8</span> 
-<span class="p">};</span>
-</pre></div>
-
-
-<p>As I was already there in firmware 3.50, I had a chance to test PSGrade. I compiled the sources for my Teensy 2.0 board and wrote the hex files to it. Using the same PSJailbreak methods I booted the PS3 with the Teensy board in the usb port and rebooted after the hack got executed (Teensy LED will glow). It booted into the service mode quickly and I got a screen as shown below.</p>
-<p><img alt="Service Mode" src="http://www.ps3hax.net/wp-content/uploads/2010/12/SERVICE.jpg" /></p>
-<p>For exiting from the service mode you need to copy a special file (Lv2diag.self) to a usb storage drive and boot the PS3. Otherwise your PS3 will still be on service mode.</p>
-<p>If you wish to downgrade the firmware (which I haven't performed yet) follow these downgrade steps from <a href="http://psgroove.com/content.php?501-PS3Yes-Release-Free-PSGRADE-Downgrade-Hex-Works-on-All-AT90usb162-Boards">here</a>.</p>
+<p>Here is a happy news for those who updated to firmware <code>&gt;3.41</code> and didn't get a chance to enjoy the homwbrews for PS3. Yes, atlast we'll be able to downgrade the PS3 firmware to any version <code>&lt;3.50</code>. The actual PSJailbreak team were the first team to release the downgrade. But many thanks to <a href="https://github.com/zAxis">zAxis</a> who created <a href="https://github.com/zAxis/PSGrade">PSGrade</a>, an opensouce version of PSDowngrade. Using this we can ...</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/12/12/factory-service-mode-om-playstation-3">Read more...</a></p> 
   <p class="alignright"><a href="/2010/12/12/factory-service-mode-om-playstation-3#comments">Comments...</a></p>
@@ -203,17 +137,7 @@ make
 </pre></div>
 
 
-<p>I wish to add features for every match like full scorecard, innings details etc in a similar manner. A plan for getting player profile is also in my mind. I'd like to make this as human-readable as possible. For example, innings information can be fetched by an iteration over the Match object. </p>
-<div class="codehilite"><pre><span class="c"># getting innings info</span>
-<span class="k">for</span> <span class="n">innings</span> <span class="ow">in</span> <span class="n">match</span><span class="p">:</span>
-    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">score</span>
-    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">current_batsmen</span>
-    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">overs</span>
-    <span class="k">print</span> <span class="n">innings</span><span class="o">.</span><span class="n">wickets</span>
-</pre></div>
-
-
-<p>I'll update about the changes being done for the api. So keep reading my blog. I need your suggestions to make it a useful one.</p>
+<p>I wish ...</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/11/30/cricinfo-api-for-python">Read more...</a></p> 
   <p class="alignright"><a href="/2010/11/30/cricinfo-api-for-python#comments">Comments...</a></p>
