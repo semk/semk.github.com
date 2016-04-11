@@ -72,72 +72,7 @@ Most people think that applying <code>del</code> on an object causes the object'
 <code>__del__()</code> method to be called. But this is not true. <code>del</code> keyword merely
 decrements the objects reference count and de-scopes the variable on its
 application. But it doesn't necessarily invoke the object's <code>__del__()</code> method.
-<code>__del__</code> method will be called only when the garbage collection kicks in.
-And this would happens automatically when the reference count of an object
-becomes zero.</p>
-<p><code>del</code>: Decrements reference count<br />
-<code>__del__()</code>: Object destructor. Called when an object is garbage collected</p>
-<div class="codehilite"><pre><span class="k">class</span> <span class="nc">Foo</span><span class="p">():</span>
-
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s">&#39;__del__() called&#39;</span>
-</pre></div>
-
-
-<p>Now let's create some instances of this <code>Foo</code> class and call <code>del</code> upon these
-instances to see what happens.</p>
-<div class="codehilite"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="o">%</span><span class="k">paste</span>
-    <span class="k">class</span> <span class="nc">Foo</span><span class="p">():</span>
-
-        <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">print</span> <span class="s">&#39;__del__() called&#39;</span>
-<span class="c">## -- End pasted text --</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">getrefcount</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">getrefcount</span><span class="p">(</span><span class="n">Foo</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="mi">2</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">a</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">getrefcount</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="mi">2</span>
-</pre></div>
-
-
-<p>At this point you might be wondering why <code>getrefcount(Foo)</code> and <code>getrefcount(a)</code>
-shows 2 instead of 1. Well, the reason is when you call the method <code>getrefcount</code>
-the argument is passed by value, effectively bumping the reference count by 1.
-This extra reference will be freed up once the <code>getrefcount</code> method exits. So
-effectively we have a reference count of 1 for the instance <code>a</code> here. Now let's
-make more references to the same instance.</p>
-<div class="codehilite"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">getrefcount</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="mi">3</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">getrefcount</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="mi">3</span>
-</pre></div>
-
-
-<p>As expected, the reference count is incremented. Now let's call <code>del</code> on a to
-see if the object's <code>__del__()</code> is invoked.</p>
-<div class="codehilite"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="k">del</span> <span class="n">a</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="k">del</span> <span class="n">b</span>
-<span class="n">__del__</span><span class="p">()</span> <span class="n">called</span>
-</pre></div>
-
-
-<p>As you can see, <code>__del__()</code> is not invoked on applying <code>del</code> the first reference.
-This is because the reference count is still 1. On calling <code>del</code> on <code>b</code> causes
-the reference count become zero, garbage collection kicks in and finally
-our long awaited <code>__del__()</code> is called.</p>
-<p>But there are situation where the destructor goes astray. These situations and
-the alternative approaches are explained in detail in the following brilliant
-blog post.</p>
-<p><a href="http://eli.thegreenplace.net/2009/06/12/safely-using-destructors-in-python">Safely using destructors in Python</a></p>
+<code>__del__</code> method will be called only when the garbage ...</p>
 <p class="full-post"><a href="/2015/07/09/understanding-python-del-and-garbage-collection">Continue Reading...</a></p>
 
 
