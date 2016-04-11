@@ -68,7 +68,46 @@ Jul 31, 2011
 </time>
 <p></p>
 <p><img alt="Google App Engine" src="http://upload.wikimedia.org/wikipedia/en/3/38/Google_App_Engine_Logo.png" /></p>
-<p><a href="http://code.google.com/appengine">Google App Engine</a> is a widely used and most popular <a href="en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a> solution provided by Google. App Engine provides the developer with a wide range of apis which can be used to develop web applications using any <a href="http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface">WSGI</a> compliant Frameworks (<a href="http://code.google.com/appengine/docs/python/tools/webapp/">Webapp</a>, <a href="http://www.tipfy.org">Tipfy</a>, <a href="http://www.django.org">Django</a>, <a href="http://bottlepy.org">Bottle</a>, <a href="http://www.tornadoweb.org">Tornado</a> etc.). One of the apis App Engine provides is the <a href="http://code.google.com/appengine/docs/python/users/overview.html">users api</a>, which most of the developers confuses for an api which provides user creation, authentication ...</p>
+<p><a href="http://code.google.com/appengine">Google App Engine</a> is a widely used and most popular <a href="en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a> solution provided by Google. App Engine provides the developer with a wide range of apis which can be used to develop web applications using any <a href="http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface">WSGI</a> compliant Frameworks (<a href="http://code.google.com/appengine/docs/python/tools/webapp/">Webapp</a>, <a href="http://www.tipfy.org">Tipfy</a>, <a href="http://www.django.org">Django</a>, <a href="http://bottlepy.org">Bottle</a>, <a href="http://www.tornadoweb.org">Tornado</a> etc.). One of the apis App Engine provides is the <a href="http://code.google.com/appengine/docs/python/users/overview.html">users api</a>, which most of the developers confuses for an api which provides user creation, authentication for the application. But this api only authenticates Google Accounts (can be the application developer or any third-party Google Account) using <a href="http://oauth.net/">OAuth</a>. You can't really user this api to create or manage users for your application.</p>
+<p>Remember when I told you that every application you write for GAE is a WSGI Application? WSGI is just a standard for the web application to talk to the backend HTTP server. That means a WSGI application can't run by itself. It needs an HTTP server to listen on and execute the code you have written. Its the HTTP Server which handles all the server stuffs used for authentication such as setting cookies. Now, GAE has a <a href="code.google.com/appengine/docs/python/runtime.html">sandbox</a>, which is a restrictive environment for your application code to run. For example, your application is restricted for file operations and certain modules are restricted from importing. So you can't really set up a cookie from your application code since its not an HTTP Server code. Here is our problem now. How do you do a custom authentication for a Google App Engine application?</p>
+<p>You can achieve this by writing a middleware to your WSGI application. There are many authentication libraries available for this purpose. Popular ones are <a href="http://beaker.groovie.org/">Beaker</a>, <a href="https://github.com/dound/gae-sessions">GAE-Sessions</a>, <a href="http://gaeutilities.appspot.com/session">gaeutilities</a>. But I liked the GAE-Sessions library better than the other ones since its the <a href="https://github.com/dound/gae-sessions/wiki/comparison-with-alternative-libraries">fastest</a> of them all. GAE-Sessions use <a href="code.google.com/appengine/docs/memcache/">memcache</a>/<a href="code.google.com/appengine/docs/datastore/">datastore</a> to store the session information. To use this library, just copy the gaesessions directory to your application directory. The middleware for your application is as simple as shown in the code below</p>
+<div class="codehilite"><pre><span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">SessionMiddleware</span>
+<span class="k">def</span> <span class="nf">webapp_add_wsgi_middleware</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">SessionMiddleware</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">cookie_key</span><span class="o">=</span><span class="s">&quot;a random and long string&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">app</span>
+</pre></div>
+
+
+<p>Save the above code to a file named <code>appengine_config.py</code>. You can use <code>gaesessions.get_current_session()</code> to get a dictionary to store all the session information. You can either use <code>session.set_quick(&lt;session-var&gt;, &lt;value&gt;)</code> method to use application memcache for storing session info. Otherwise it'll be stored to the datastore. Getting session info is as easy as <code>session.get(&lt;session-var&gt;)</code> and <code>session.pop_quick(&lt;session-var&gt;)</code> will remove the information from the session. All the dictionary like indexed operations will be persisted to the database.</p>
+<div class="codehilite"><pre><span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">get_current_session</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">get_current_session</span><span class="p">()</span>
+
+<span class="c"># setting user session information</span>
+<span class="n">session</span><span class="o">.</span><span class="n">set_quick</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;authenticated_user_info&#39;</span><span class="p">)</span>
+<span class="c"># getting user session</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">)</span>
+<span class="c"># removing session info</span>
+<span class="n">session</span><span class="o">.</span><span class="n">pop_quick</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The default session lifetime is 7 days. You may configure how long a session lasts by calling <code>SessionMiddleware</code> with a <code>lifetime</code> parameter, e.g., <code>lifetime=datetime.timedelta(hours=2)</code>). You can schedule a cron job for cleaning up all the expired session info for your application by creating a handler file like this.</p>
+<div class="codehilite"><pre><span class="c"># cleanup_sessions.py</span>
+<span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">delete_expired_sessions</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">delete_expired_sessions</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+
+
+<p>Make sure you have a <code>cron.yaml</code> with the correct info.</p>
+<div class="codehilite"><pre><span class="l-Scalar-Plain">cron</span><span class="p-Indicator">:</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">description</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">daily session cleanup</span>
+  <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/cleanup_sessions</span>
+  <span class="l-Scalar-Plain">schedule</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">every 24 hours</span>
+</pre></div>
+
+
+<p>You can find a complete sample application <a href="https://github.com/dound/gae-sessions/blob/master/demo">here</a>.</p>
 <p class="full-post"><a href="/2011/07/31/custom-authentication-on-gae">Continue Reading...</a></p>
 
 

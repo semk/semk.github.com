@@ -93,7 +93,7 @@
 
 
 <p><img alt="a = 1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1tag.png" /></p>
-<p>and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory. </p>
+<p>and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory.</p>
 <div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 
@@ -121,27 +121,28 @@
 <p>Now we will try to create custom objects and try to find their identities.</p>
 <div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
 <span class="o">...</span>     <span class="k">pass</span>
-<span class="o">...</span> 
+<span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">baz</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
 <span class="mi">140730612513248</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">baz</span><span class="p">)</span>
 <span class="mi">140730612513320</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">list_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c"># lists are mutable objects</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c"># lists are containers holding data objects</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">list_b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_a</span><span class="p">)</span>
 <span class="mi">140116233272136</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_b</span><span class="p">)</span>
 <span class="mi">140116233272064</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_a</span><span class="p">]</span>
-<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># `int` is immutable</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># `int` is a basic data type</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_b</span><span class="p">]</span>
 <span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># same as above</span>
 </pre></div>
 
 
-<p>As you can see, the two instances have different identities. That means, there are two different copies of the same object in memory. This behaviour is different from what you have seen before. When you are creating objects they will have unique identities unless you are using <a href="http://foobarnbaz.com/2010/10/06/borg-pattern/">Singleton Pattern</a>. All <a href="http://en.wikipedia.org/wiki/Immutable_object">immutable</a> objects like <code>str</code>, <code>int</code>, <code>float</code> will have same identities when objects are created simultaneously.</p>
+<p>As you can see, the two instances have different identities. That means, there are two different copies of the same object in memory. This behaviour is different from what you have seen before. When you are creating custom objects or using complex data types like lists, tuples etc., they will have unique identities unless you are using <a href="http://foobarnbaz.com/2010/10/06/borg-pattern/">Singleton Pattern</a> which overrides this behaviour (in <code>__new__()</code>) by giving out the same instance upon instance creation. All other basic data types in Python like <code>str</code>, <code>int</code>, <code>float</code> will have same identities and point to the same memory location.</p>
+<p>Thanks to Jadav Bheda (see comments) for correcting a mistake (of mentioning immutable types instead of the basic ones) in the article.</p>
 
 <div>
   <strong>Tagged under</strong>  <em><a href="/tag/python">Python</a></em>,  <em><a href="/tag/c">C</a></em>,  <em><a href="/tag/variables">Variables</a></em>,  <em><a href="/tag/memory+management">Memory Management</a></em> 

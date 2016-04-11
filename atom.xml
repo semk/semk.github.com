@@ -4,7 +4,7 @@
     <title>Codeception</title>
     <link href="http://foobarnbaz.com/atom.xml" rel="self"/>
     <link href="http://foobarnbaz.com"/>
-    <updated>2015-07-11T00:00:00+5:30</updated>
+    <updated>2016-04-11T00:00:00+5:30</updated>
     <id></id>
     <author>
         <name>Sreejith Kesavan</name>
@@ -570,7 +570,7 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
 
 
 &lt;p&gt;&lt;img alt="a = 1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1tag.png" /&gt;&lt;/p&gt;
-&lt;p&gt;and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory. &lt;/p&gt;
+&lt;p&gt;and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory.&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -598,27 +598,28 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
 &lt;p&gt;Now we will try to create custom objects and try to find their identities.&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Foo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="k"&gt;pass&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt; 
+&lt;span class="o"&gt;...&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;bar&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Foo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;baz&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Foo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bar&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="mi"&gt;140730612513248&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;baz&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="mi"&gt;140730612513320&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;list_a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# lists are mutable objects&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;list_a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# lists are containers holding data objects&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;list_b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;list_a&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="mi"&gt;140116233272136&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;list_b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="mi"&gt;140116233272064&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;list_a&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;24221624&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24221600&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24221576&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# `int` is immutable&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;24221624&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24221600&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24221576&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# `int` is a basic data type&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;list_b&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;24221624&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24221600&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24221576&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# same as above&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;As you can see, the two instances have different identities. That means, there are two different copies of the same object in memory. This behaviour is different from what you have seen before. When you are creating objects they will have unique identities unless you are using &lt;a href="http://foobarnbaz.com/2010/10/06/borg-pattern/"&gt;Singleton Pattern&lt;/a&gt;. All &lt;a href="http://en.wikipedia.org/wiki/Immutable_object"&gt;immutable&lt;/a&gt; objects like &lt;code&gt;str&lt;/code&gt;, &lt;code&gt;int&lt;/code&gt;, &lt;code&gt;float&lt;/code&gt; will have same identities when objects are created simultaneously.&lt;/p&gt;</content>
+&lt;p&gt;As you can see, the two instances have different identities. That means, there are two different copies of the same object in memory. This behaviour is different from what you have seen before. When you are creating custom objects or using complex data types like lists, tuples etc., they will have unique identities unless you are using &lt;a href="http://foobarnbaz.com/2010/10/06/borg-pattern/"&gt;Singleton Pattern&lt;/a&gt; which overrides this behaviour (in &lt;code&gt;__new__()&lt;/code&gt;) by giving out the same instance upon instance creation. All other basic data types in Python like &lt;code&gt;str&lt;/code&gt;, &lt;code&gt;int&lt;/code&gt;, &lt;code&gt;float&lt;/code&gt; will have same identities and point to the same memory location.&lt;/p&gt;
+&lt;p&gt;Thanks to Jadav Bheda (see comments) for correcting a mistake (of mentioning immutable types instead of the basic ones) in the article.&lt;/p&gt;</content>
     </entry>
     
     <entry>
@@ -630,22 +631,6 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
 &lt;p&gt;I was using &lt;a href="http://rechargeitnow.com"&gt;RechargeItNow&lt;/a&gt; for recharging my cell phone and DTH services. But their website was too cluttered and filled with advertisements all over the place. Then I found &lt;a href="https://justrechargeit.com"&gt;JustRechargeIt&lt;/a&gt;. Their web application was way too better than the RechargeItNow website. They even provided options to save lists of phone numbers and DTH accounts to ease the payment. I was happily using this service for a long time until I found &lt;a href="http://paytm.com"&gt;Paytm&lt;/a&gt;. Paytm web application is so simle and intuitive. Just have a look.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Paytm" src="/images/posts/the-era-of-online-payments/paytm.png" /&gt;&lt;/p&gt;
 &lt;p&gt;The simplicity and way of presentation is an important aspect when it comes to the web business. And Paytm has succeeded in doing so. I really want to see more and more web applications doing the same like what Paytm did for user experience, hopefully &lt;a href="http://ebay.in"&gt;eBay&lt;/a&gt; :-)&lt;/p&gt;</content>
-    </entry>
-    
-    <entry>
-        <title>Pagination, Tags and more in Voldemort</title>
-        <link href="http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort"/>
-        <updated>2012-04-06T00:00:00+5:30</updated>
-        <id>http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort</id>
-        <content type="html">&lt;p&gt;&lt;img alt="Voldemort" src="/images/posts/2012-04-06-pagination-tags-and-more-in-voldemort/term.png" /&gt;&lt;/p&gt;
-&lt;p&gt;I have been adding a few useul features to &lt;a href="https://github.com/semk/voldemort"&gt;Voldemort&lt;/a&gt; for the last few months and it did come out pretty good. It now sports automatic Atom Feed and sitemap generation, thanks to the contibutions from my friend &lt;a href="http://endlessinsomnia.com"&gt;Stanislav Yudin&lt;/a&gt;. Here are the highlights.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Generates Atom Feed automatically for your blog&lt;/li&gt;
-&lt;li&gt;Generates sitemap.xml&lt;/li&gt;
-&lt;li&gt;Pagination supported. Just add &lt;code&gt;paginate: True&lt;/code&gt; in the page metadata section.&lt;/li&gt;
-&lt;li&gt;You can tag posts using metadata. Eg: &lt;code&gt;tags: ['Python', 'Tips']&lt;/code&gt;. A special template file named &lt;code&gt;tag.html&lt;/code&gt; is used to generate tags on the fly.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.&lt;/p&gt;</content>
     </entry>
     
     <entry>
@@ -665,6 +650,22 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
 &lt;p&gt;And finally for testing Javascript code snippets, there is Scratchpad which also sports code highlighting.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Scratchpad" src="/images/posts/2012-04-06-firefox-developer-tools/scratchpad.png" /&gt;&lt;/p&gt;
 &lt;p&gt;I find it quite useful and intuitive. How about you?&lt;/p&gt;</content>
+    </entry>
+    
+    <entry>
+        <title>Pagination, Tags and more in Voldemort</title>
+        <link href="http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort"/>
+        <updated>2012-04-06T00:00:00+5:30</updated>
+        <id>http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort</id>
+        <content type="html">&lt;p&gt;&lt;img alt="Voldemort" src="/images/posts/2012-04-06-pagination-tags-and-more-in-voldemort/term.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I have been adding a few useul features to &lt;a href="https://github.com/semk/voldemort"&gt;Voldemort&lt;/a&gt; for the last few months and it did come out pretty good. It now sports automatic Atom Feed and sitemap generation, thanks to the contibutions from my friend &lt;a href="http://endlessinsomnia.com"&gt;Stanislav Yudin&lt;/a&gt;. Here are the highlights.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Generates Atom Feed automatically for your blog&lt;/li&gt;
+&lt;li&gt;Generates sitemap.xml&lt;/li&gt;
+&lt;li&gt;Pagination supported. Just add &lt;code&gt;paginate: True&lt;/code&gt; in the page metadata section.&lt;/li&gt;
+&lt;li&gt;You can tag posts using metadata. Eg: &lt;code&gt;tags: ['Python', 'Tips']&lt;/code&gt;. A special template file named &lt;code&gt;tag.html&lt;/code&gt; is used to generate tags on the fly.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.&lt;/p&gt;</content>
     </entry>
     
     <entry>

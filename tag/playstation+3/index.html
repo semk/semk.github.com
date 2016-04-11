@@ -69,7 +69,39 @@ Jan 05, 2011
 <p></p>
 <p>The 27th <a href="http://events.ccc.de/congress/2010/wiki/Welcome">Chaos Communication Congress</a> revealed the <a href="http://www.engadget.com/2010/12/29/hackers-obtain-ps3-private-cryptography-key-due-to-epic-programm/"><em>Epic Programming Fail</em></a> on the PlayStation 3 security. Finally it turned  out that Sony's ECDSA algorithm for signing apps use a random number generator which always returns the same number (No, I'm not kidding). The <a href="http://fail0verflow.com">fail0verflow</a> team, who found out this fail, used the following famous <a href="http://xkcd.com">xkcd</a> comic to describe Sony's ECDSA algorithm.</p>
 <p><img alt="Random Number" src="http://imgs.xkcd.com/comics/random_number.png" /></p>
-<p><em>fail0verflow</em> demonstrated their work on <a href="http://marcansoft.com/blog/2010/10/asbestos-running-linux-as-gameos/">AsbestOS</a>, which ...</p>
+<p><em>fail0verflow</em> demonstrated their work on <a href="http://marcansoft.com/blog/2010/10/asbestos-running-linux-as-gameos/">AsbestOS</a>, which is a bootloader for ps3 using which you can boot <em>Linux</em> on it. Currently this needs some wiring and soldering works but they have promised to release an easy to use tool sometime next month.</p>
+<p>But <a href="https://github.com/kakaroto">kakaroto</a>(the hacker behind aMsn and PL3 payload for <em>psgroove</em>) wasn't patient enough. He went on to develop some tools to create <em>custom firmware</em> for ps3. You can find the custom firmware generator code from <a href="https://github.com/kakaroto/ps3utils">here</a>. Currently it works on Linux and Mac. For those who doesn't know how to use these tools, the following steps would help.</p>
+<p>First of all checkout the tools developed by <em>fail0verflow</em> team and build it. You might need to install <code>build-essential</code> and <code>zlib1g-dev</code> packages if you are using Ubuntu (use <code>sudo apt-get install</code>).</p>
+<div class="codehilite"><pre>mkdir ~/src
+<span class="nb">cd</span> ~/src
+git clone git://git.fail0verflow.com/ps3tools.git
+<span class="nb">cd </span>ps3tools
+make
+</pre></div>
+
+
+<p>Now checkout the firmware generator code from kakaroto's GitHub repository and use the official firmware update (PS3UPDAT.PUP) to create the CFW.</p>
+<div class="codehilite"><pre>mkdir ~/.ps3
+<span class="nb">cd</span> ~/.ps3
+git clone https://github.com/kakaroto/ps3keys.git .
+<span class="nb">cd</span> ~/src
+git clone https://github.com/kakaroto/ps3utils.git
+<span class="nb">cd </span>ps3utils
+make
+./create_cfw.sh PS3UPDAT.PUP CFW.PUP
+</pre></div>
+
+
+<p>You can rename this CFW.PUP to PS3UPDAT.PUP and copy it to PS3-&gt;UPDATE directory of your pendrive and update the ps3 from the XMB. Still, this CFW does nothing but shows the <em>Install Application</em> option on XMB. You still have to wait until the homebrews are signed and repackaged with the retail <code>.pkg</code> format to install on this firmware.</p>
+<h4>Links</h4>
+<ul>
+<li>
+<p><a href="http://events.ccc.de/congress/2010/Fahrplan/attachments/1780_27c3_console_hacking_2010.pdf">fail0verflow's presentation on Console Hacking</a> - 27th Chaos Communication Congress</p>
+</li>
+<li>
+<p><a href="http://www.bbc.co.uk/news/technology-12116051">fail0verflow and Geohot Interview with BBC</a></p>
+</li>
+</ul>
 <p class="full-post"><a href="/2011/01/05/building-custom-firmware-for-ps3">Continue Reading...</a></p>
 
 
@@ -79,7 +111,23 @@ Jan 05, 2011
 Dec 12, 2010
 </time>
 <p></p>
-<p>Here is a happy news for those who updated to firmware <code>&gt;3.41</code> and didn't get a chance to enjoy the homwbrews for PS3. Yes, atlast we'll be able to downgrade the PS3 firmware to any version <code>&lt;3.50</code>. The actual PSJailbreak team were the first team to release the downgrade. But many thanks to <a href="https://github.com/zAxis">zAxis</a> who created <a href="https://github.com/zAxis/PSGrade">PSGrade</a>, an opensouce version of PSDowngrade. Using this we can ...</p>
+<p>Here is a happy news for those who updated to firmware <code>&gt;3.41</code> and didn't get a chance to enjoy the homwbrews for PS3. Yes, atlast we'll be able to downgrade the PS3 firmware to any version <code>&lt;3.50</code>. The actual PSJailbreak team were the first team to release the downgrade. But many thanks to <a href="https://github.com/zAxis">zAxis</a> who created <a href="https://github.com/zAxis/PSGrade">PSGrade</a>, an opensouce version of PSDowngrade. Using this we can put the PS3 into Factory/Service mode (Downgrade) using popular development boards like Teensy and AT90USBKEY.</p>
+<p>We should also be thankful to <a href="https://github.com/kakaroto">KaKaRaTo</a> who reversed the PS3Yes Key and made it available for PSGrade. Here is PS3Yes key which he reversed from its hex.</p>
+<blockquote>
+<p>0×04, 0x4E, 0×61, 0x1B, 0xA6, 0xA6, 0xE3, 0x9A, 0×98, 0xCF, 0×35, 0×81, 0x2C, 0×80, 0×68, 0xC7, 0xFC, 0x5F, 0x7A, 0xE8</p>
+</blockquote>
+<p>You'll need to specify this key in PSGrade sources (key.c as shown below) for the service mode hack to work. But now zAxis has updated the code with this key. So all you have to do is download the souces and compile the hex for your board.</p>
+<div class="codehilite"><pre><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">jig_key</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="mh">0x04</span><span class="p">,</span> <span class="mh">0x4E</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0x1B</span><span class="p">,</span> <span class="mh">0xA6</span><span class="p">,</span> <span class="mh">0xA6</span><span class="p">,</span> <span class="mh">0xE3</span><span class="p">,</span> <span class="mh">0x9A</span><span class="p">,</span> <span class="mh">0x98</span><span class="p">,</span> <span class="mh">0xCF</span><span class="p">,</span> 
+<span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x81</span><span class="p">,</span> <span class="mh">0x2C</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mh">0x68</span><span class="p">,</span> <span class="mh">0xC7</span><span class="p">,</span> <span class="mh">0xFC</span><span class="p">,</span> <span class="mh">0x5F</span><span class="p">,</span> <span class="mh">0x7A</span><span class="p">,</span> <span class="mh">0xE8</span> 
+<span class="p">};</span>
+</pre></div>
+
+
+<p>As I was already there in firmware 3.50, I had a chance to test PSGrade. I compiled the sources for my Teensy 2.0 board and wrote the hex files to it. Using the same PSJailbreak methods I booted the PS3 with the Teensy board in the usb port and rebooted after the hack got executed (Teensy LED will glow). It booted into the service mode quickly and I got a screen as shown below.</p>
+<p><img alt="Service Mode" src="http://www.ps3hax.net/wp-content/uploads/2010/12/SERVICE.jpg" /></p>
+<p>For exiting from the service mode you need to copy a special file (Lv2diag.self) to a usb storage drive and boot the PS3. Otherwise your PS3 will still be on service mode.</p>
+<p>If you wish to downgrade the firmware (which I haven't performed yet) follow these downgrade steps from <a href="http://psgroove.com/content.php?501-PS3Yes-Release-Free-PSGRADE-Downgrade-Hex-Works-on-All-AT90usb162-Boards">here</a>.</p>
 <p class="full-post"><a href="/2010/12/12/factory-service-mode-om-playstation-3">Continue Reading...</a></p>
 
 
@@ -89,7 +137,19 @@ Dec 12, 2010
 Oct 02, 2010
 </time>
 <p></p>
-<p>I've always been a proud and loyal owner of a <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> and still I consider it as the most powerful game console of this generation. But things were super-cool back on the days when <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> supported <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a> by which you could boot and use Linux on your console. This was the very feature (other than GameOS which is why someone should buy a PS3 :-)) every PS3 owner ...</p>
+<p>I've always been a proud and loyal owner of a <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> and still I consider it as the most powerful game console of this generation. But things were super-cool back on the days when <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> supported <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a> by which you could boot and use Linux on your console. This was the very feature (other than GameOS which is why someone should buy a PS3 :-)) every PS3 owner was proud of when comparing his console to its counterparts. This feature was removed by Sony after <a href="http://en.wikipedia.org/wiki/George_Hotz">Geohot's</a> attempts to hack <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> using Linux. Although he was partially succeeded in doing so, soon he disappeared from the PlayStation hacking scene and asked other hackers to continue his work. The PS3 users gained nothing from this untill the mighty <a href="http://psjailbreak.com">PSJailbreak</a> was announced.</p>
+<p>I must say, Sony guys have made <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> almost unhackable as it took more than 4 years for the console hackers to find an exploit to allow homebrews on it. This exploit which was found in firmware 3.41, allows users to backup <em>Legitimate</em> Copies of PlayStation Games to internal/external harddisk. This is achieved by installing an application called Backup Manager. The team to announce this hack was <a href="http://psjailbreak.com">PSJailbreak</a>, who used a USB dongle to boot from which took advantage of the exploit found in 3.41. Later open source implementations of <a href="http://psjailbreak.com">PSJailbreak</a> like <a href="http://github.com/psgroove/psgroove">psgroove</a>, psfreedom etc. came which used popular development boards like <a href="http://www.pjrc.com/store/teensypp.html">Teensy ++</a> and <a href="http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3879">Atmel AT90USBKEY</a>.</p>
+<p>I was really excited to see this progress and I liked the idea of backing up games. If you buy Original Games for $50, atleast there should be one way to make backups so that you can play games even if yor media is damaged. So I logged on to <a href="http://pjrc.com">pjrc</a> and ordered one <a href="http://www.pjrc.com/teensy/">Teensy 2.0 USB Development Board</a> which used <a href="http://www.atmel.com/dyn/products/product_card.asp?part_id=4317">Atmel ATMEGA32U4 AVR</a>. It took almost 3 weeks to ship to India from US. I checked out <a href="http://github.com/psgroove/psgroove">psgroove</a> code from GitHub and used the Teensy Loader utility to flash the compiled hex code to the board.</p>
+<p>For this jailbreak to work, you need to hard power your PS3 after connecting the usb board. Turn on the console and immediately press eject button for the exploit to work. If everything goes proper, the orange led in Teensy board will light up. Tada! The PlayStation is Jailbroken. Take a look at the snaps I took during Jailbreaking my console.</p>
+<p><img alt="Flashed Teensy" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/teensy_loaded.jpg" /></p>
+<p><img alt="Exploited" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/exploited.jpg" /></p>
+<p><img alt="Installing" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/installing.jpg" /></p>
+<p><img alt="Backup Manager" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/backup_manager.jpg" /></p>
+<p><img alt="Backup Manager Page" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/bm_screen.jpg" /></p>
+<p><img alt="Backing up Uncharted" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/backing_up.jpg" /></p>
+<p><img alt="FTP Server" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/ftp_server.jpg" /></p>
+<p>The latest firmware update from Sony patches this exploit and even they are banning consoles using Backup Manager when they connect to <a href="http://en.wikipedia.org/wiki/PlayStation_Network">PSN</a>. As I love <a href="http://en.wikipedia.org/wiki/PlayStation_Network">PSN</a> and playing <a href="http://en.wikipedia.org/wiki/Uncharted_2:_Among_Thieves">Uncharted 2</a> online, soon I have to update my firmware to 3.50. Even legitimate users are irritated by this move by Sony. If iPhone Jailbreak is legal, this is also legal. Right ?</p>
+<p>Had Sony not removed <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a>, none of this would have happened OR atleast it would have taken more time for the hackers to hack the console. "Sony, never do stupid things like this anymore. Please bring back <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a>."</p>
 <p class="full-post"><a href="/2010/10/02/hacking-playstation3-with-teensy">Continue Reading...</a></p>
 
 

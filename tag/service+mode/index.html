@@ -67,7 +67,23 @@
 Dec 12, 2010
 </time>
 <p></p>
-<p>Here is a happy news for those who updated to firmware <code>&gt;3.41</code> and didn't get a chance to enjoy the homwbrews for PS3. Yes, atlast we'll be able to downgrade the PS3 firmware to any version <code>&lt;3.50</code>. The actual PSJailbreak team were the first team to release the downgrade. But many thanks to <a href="https://github.com/zAxis">zAxis</a> who created <a href="https://github.com/zAxis/PSGrade">PSGrade</a>, an opensouce version of PSDowngrade. Using this we can ...</p>
+<p>Here is a happy news for those who updated to firmware <code>&gt;3.41</code> and didn't get a chance to enjoy the homwbrews for PS3. Yes, atlast we'll be able to downgrade the PS3 firmware to any version <code>&lt;3.50</code>. The actual PSJailbreak team were the first team to release the downgrade. But many thanks to <a href="https://github.com/zAxis">zAxis</a> who created <a href="https://github.com/zAxis/PSGrade">PSGrade</a>, an opensouce version of PSDowngrade. Using this we can put the PS3 into Factory/Service mode (Downgrade) using popular development boards like Teensy and AT90USBKEY.</p>
+<p>We should also be thankful to <a href="https://github.com/kakaroto">KaKaRaTo</a> who reversed the PS3Yes Key and made it available for PSGrade. Here is PS3Yes key which he reversed from its hex.</p>
+<blockquote>
+<p>0×04, 0x4E, 0×61, 0x1B, 0xA6, 0xA6, 0xE3, 0x9A, 0×98, 0xCF, 0×35, 0×81, 0x2C, 0×80, 0×68, 0xC7, 0xFC, 0x5F, 0x7A, 0xE8</p>
+</blockquote>
+<p>You'll need to specify this key in PSGrade sources (key.c as shown below) for the service mode hack to work. But now zAxis has updated the code with this key. So all you have to do is download the souces and compile the hex for your board.</p>
+<div class="codehilite"><pre><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">jig_key</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="mh">0x04</span><span class="p">,</span> <span class="mh">0x4E</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0x1B</span><span class="p">,</span> <span class="mh">0xA6</span><span class="p">,</span> <span class="mh">0xA6</span><span class="p">,</span> <span class="mh">0xE3</span><span class="p">,</span> <span class="mh">0x9A</span><span class="p">,</span> <span class="mh">0x98</span><span class="p">,</span> <span class="mh">0xCF</span><span class="p">,</span> 
+<span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x81</span><span class="p">,</span> <span class="mh">0x2C</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mh">0x68</span><span class="p">,</span> <span class="mh">0xC7</span><span class="p">,</span> <span class="mh">0xFC</span><span class="p">,</span> <span class="mh">0x5F</span><span class="p">,</span> <span class="mh">0x7A</span><span class="p">,</span> <span class="mh">0xE8</span> 
+<span class="p">};</span>
+</pre></div>
+
+
+<p>As I was already there in firmware 3.50, I had a chance to test PSGrade. I compiled the sources for my Teensy 2.0 board and wrote the hex files to it. Using the same PSJailbreak methods I booted the PS3 with the Teensy board in the usb port and rebooted after the hack got executed (Teensy LED will glow). It booted into the service mode quickly and I got a screen as shown below.</p>
+<p><img alt="Service Mode" src="http://www.ps3hax.net/wp-content/uploads/2010/12/SERVICE.jpg" /></p>
+<p>For exiting from the service mode you need to copy a special file (Lv2diag.self) to a usb storage drive and boot the PS3. Otherwise your PS3 will still be on service mode.</p>
+<p>If you wish to downgrade the firmware (which I haven't performed yet) follow these downgrade steps from <a href="http://psgroove.com/content.php?501-PS3Yes-Release-Free-PSGRADE-Downgrade-Hex-Works-on-All-AT90usb162-Boards">here</a>.</p>
 <p class="full-post"><a href="/2010/12/12/factory-service-mode-om-playstation-3">Continue Reading...</a></p>
 
 

@@ -67,7 +67,56 @@
 </time>
 <p></p>
 <p><img alt="Riak Logo" src="http://upload.wikimedia.org/wikipedia/en/5/53/Riak_product_logo.png" /></p>
-<p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast ...</p>
+<p><a href="http://wiki.basho.com/Riak.html">Riak</a> is a <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Amazon Dynamo</a> inspired masterless Key-Value store written in Erlang. It is one of those <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> databases that is rock stable, production ready and promises zero downtime. I have been using Riak at work and was literally blown away by its simplicity (Setting up a three node cluster wouldn't even take ten minutes) and the kind of support the Riak Community provides. And it is amazingly fast too. The Data retrieval operations in Riak are basically using methods like Get (by key), MapReduce and Key Filters.</p>
+<p>Riak also supports multiple backends for Key-value store. And Google's own <a href="code.google.com/p/leveldb">LevelDB</a> is one of them. One of the advantage of using LevelDB with Riak is that they support Secondary Indexes. This is a way to retrieve data faster when you want to use an SQL like Query interface. But the problem is that Riak only supports single index queries. That means, you will be able to query only one field at a time.</p>
+<p>I wrote a Python wrapper that allows multiple index queries using Secondary indexes and MapReduce. The basic steps are</p>
+<ol>
+<li>Query Multiple Indexes and get the associated keys</li>
+<li>Pass the keys to a MapReduce job where Multiple filters are again evaluated. The map phase applies all the conditions to individual keys.</li>
+</ol>
+<blockquote>
+<p><em>As suggested by Elias Levy, it is ideal to compute the intersection of all the index queries rather than evaluating filters on Map Phase as this involves parsing the data and validating filters. This could become very slow when the number of keys returned by a single index query is larger compared to other indexes. The sources are updated to reflect this change.</em></p>
+</blockquote>
+<p>So the new steps are</p>
+<ol>
+<li>Query Indexes and get the key sets</li>
+<li>Find the intersection of these key sets</li>
+<li>Pass the resulting keys to MapReduce where we fetch and sort the data.</li>
+</ol>
+<p>Using this, you can write queries like</p>
+<div class="codehilite"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">riak</span><span class="o">.</span><span class="n">RiakClient</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8091</span><span class="p">)</span>
+<span class="n">bucket</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">bucket</span><span class="p">(</span><span class="s">&#39;test_multi_index&#39;</span><span class="p">)</span>
+
+<span class="n">bucket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;sree&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">})</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;name_bin&#39;</span><span class="p">,</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">)</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;age_int&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+<span class="n">bucket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;vishnu&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">})</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;name_bin&#39;</span><span class="p">,</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">)</span><span class="o">.</span>\
+    <span class="n">add_index</span><span class="p">(</span><span class="s">&#39;age_int&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">RiakMultiIndexQuery</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s">&#39;test_multi_index&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">,</span> <span class="s">&#39;Sreejith&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">,</span> <span class="s">&#39;Vishnu&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;ASC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+
+<span class="n">query</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;ASC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">res</span>
+</pre></div>
+
+
+<p>You can find the full source code at <a href="https://github.com/semk/utils/blob/master/riak_multi_query.py">GitHub</a>.</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2012/02/25/multi-index-queries-in-riak">Read more...</a></p> 
   <p class="alignright"><a href="/2012/02/25/multi-index-queries-in-riak#comments">Comments...</a></p>
@@ -82,7 +131,7 @@
 <p></p>
 <p><a href="https://github.com/semk/voldemort">Voldemort</a> is a blog-aware static site generator inspired by <a href="http://jinja.pocoo.org/2/">Jinja2</a>. All these times this blog was generated using <a href="https://github.com/mojombo/jekyll">Jekyll</a> and I always wanted to use something Pythonic. <a href="http://ringce.com/hyde">Hyde</a> was there, but the awesomeness of Jinja2 forced me to write Voldemort on my own.</p>
 <p><img alt="Voldemort" src="/images/posts/2011-10-05-voldemort-a-jinja-powered-static-site-generator/voldemort.jpg" /></p>
-<p>Voldemort has its own advantages. You can templatize your HTML pages using Jinja and write posts using <a href="http://daringfireball.net/projects/markdown">Markdown</a>. And if you like this website, then you've ...</p>
+<p>Voldemort has its own advantages. You can templatize your HTML pages using Jinja and write posts using <a href="http://daringfireball.net/projects/markdown">Markdown</a>. And if you like this website, then you've got one reason to tryout Voldemort. Go for an <a href="http://pypi.python.org/pypi/voldemort/0.6.0">install</a> or grab the <a href="https://github.com/semk/voldemort">sources</a> if you want to tweak it your own way.</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2011/10/05/voldemort-a-jinja-powered-static-site-generator">Read more...</a></p> 
   <p class="alignright"><a href="/2011/10/05/voldemort-a-jinja-powered-static-site-generator#comments">Comments...</a></p>
@@ -95,7 +144,62 @@
   Oct 02, 2011
 </time>
 <p></p>
-<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This ...</p>
+<p>A few days ago, I came across a situation where I needed to create Debian packages for some Python libraries on which our software was dependant on. All these time we were creating and distributing the application as Eggs built using <a href="http://pypi.python.org/pypi/setuptools">setuptools</a> <code>setup.py</code> script. Later on this became a problem since some other applications which we were using were not Python applications and were packaged as <code>.deb</code> packages. This situation made us to build <code>.deb</code> packages for our Python software as well.</p>
+<p>The real challenge here was packaging all the dependencies our Python application has brought in, as most of the dependencies were having only <code>egg</code> distributions. Luckily there was an extension to setuptools called <a href="https://github.com/astraw/stdeb">stdeb</a> which will allow you to generate debian packages using your setup.py script. It'll automatically add the dependencies in the <code>debian/control</code> file after searching for the dependencies using <code>apt-cache</code>. stdeb will do something like <code>apt-cache dump | grep &lt;package&gt;</code> to find whether there is a proper debian package for the dependencies. If they found the correct one in apt-cache, <code>debian/control</code> file will be updated with that information. But as I said, most of the dependencies were not packaged as <code>.deb</code>. So we downloaded all the dependencies using the <code>easy_install</code> command and created <code>.deb</code> packages for them using <code>stdeb</code>.</p>
+<p>I will demonstrate the procedure with the <a href="https://github.com/semk/voldemort">Voldemort</a> project from my GitHub Repo. The <code>setup.py</code> looks like this,</p>
+<div class="codehilite"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">ez_setup</span> <span class="kn">import</span> <span class="n">use_setuptools</span>
+    <span class="n">use_setuptools</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;voldemort&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s">&#39;0.5.0&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Voldemort is a simple static site generator</span><span class="se">\</span>
+<span class="s">                    using Jinja2 and markdown templates.&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s">&#39;Sreejith K / K7Computing Pvt Ltd&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s">&#39;sreejithemk@gmail.com&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s">&#39;http://www.foobarnbaz.com&#39;</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="s">&#39;Pygments &gt;= 1.4&#39;</span><span class="p">,</span>
+        <span class="s">&#39;PyYAML &gt;= 3.10&#39;</span><span class="p">,</span>
+        <span class="s">&#39;Markdown &gt;= 2.0&#39;</span><span class="p">,</span>
+        <span class="s">&#39;Jinja2 &gt;= 2.5&#39;</span>
+    <span class="p">],</span>
+    <span class="n">setup_requires</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;ez_setup&#39;</span><span class="p">]),</span>
+    <span class="n">test_suite</span><span class="o">=</span><span class="s">&#39;tests&#39;</span><span class="p">,</span>
+    <span class="n">scripts</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;scripts/voldemort&#39;</span><span class="p">],</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<p>In this case all the dependencies were lacking <code>.deb</code> packages. So, we need to download them using <code>easy_install</code>.</p>
+<div class="codehilite"><pre>mkdir deps
+easy_install -e -b deps/ <span class="s2">&quot;Pygments&gt;=1.4&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;PyYAML&gt;=3.10&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;Markdown&gt;=2.0&quot;</span>
+easy_install -e -b deps/ <span class="s2">&quot;Jinja2&gt;=2.5&quot;</span>
+ls deps/
+jinja2   markdown pygments pyyaml
+</pre></div>
+
+
+<p>Now you need to go to each dependency directory and issue the following command</p>
+<div class="codehilite"><pre>python setup.py --command-packages<span class="o">=</span>stdeb.command debianize
+</pre></div>
+
+
+<p>That will create a directory named <code>debian</code> which contain all the stuffs needed to create a <code>.deb</code> package. Now it is upto us to edit the control file and add any additional dependency if needed. To generate the debian package, do</p>
+<div class="codehilite"><pre>dpkg-buildpackage -us -uc
+</pre></div>
+
+
+<p>Now you can build the main application debs by editing the control file manually since stdeb won't add the dependencies. But you know you have them in your hand :-).</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2011/10/02/packaging-python-applications">Read more...</a></p> 
   <p class="alignright"><a href="/2011/10/02/packaging-python-applications#comments">Comments...</a></p>
@@ -109,7 +213,104 @@
 </time>
 <p></p>
 <p>Developing multi-threaded applications in python is a "Pain In The Ass". And the <a href="http://wiki.python.org/moin/GlobalInterpreterLock">GIL</a> (Global Interpreter Lock) takes away the advantage of utilizing multiple cores in a machine. It doesn't matter how many cores a CPU have, GIL prevents threads from running in multiple cores. So python programs would't get the maximum performance out of the CPU when they use threads in their services.</p>
-<p>In many cases you ...</p>
+<p>In many cases you might need to write services where you need to listen on a port and wait for the client connection to do some task. If multiple clients are connecting to this service simultaneously then you might need to spawn threads to handle the requests. Considering the fact that GIL introduces a performance bottleneck, the best way to solve this situation is to use python's <a href="http://docs.python.org/library/multiprocessing.html">multiprocessing</a> capabilities. This library provides almost <code>threading</code> like class implementations. </p>
+<p>Then a question might arise. How do you share a socket created by the server process to the newly spawned processes? It is possible since all the <code>fork</code>ed processes will have the parent's file descriptors. <code>multiprocessing</code> library already has this package named <code>multiprocessing.reduction</code> that provides a method <code>reduce_handle</code> which can serialize a socket and you can send this socket to another process using pipes. The child processes can read from the pipe and re-create the socket using <code>rebuild_handle</code>. The following example will make this idea clear to you.</p>
+<div class="codehilite"><pre><span class="c"># Main Process</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.reduction</span> <span class="kn">import</span> <span class="n">reduce_handle</span>
+<span class="c"># serialize the socket</span>
+<span class="n">serialized_socket</span> <span class="o">=</span> <span class="n">reduce_handle</span><span class="p">(</span><span class="n">client_socket</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+<span class="c"># send it to the child/worker process</span>
+<span class="n">pipe_to_worker</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">serialized_socket</span><span class="p">)</span>
+
+<span class="c"># Worker Process</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.reduction</span> <span class="kn">import</span> <span class="n">rebuild_handle</span>
+<span class="c"># get the socket from parent</span>
+<span class="n">serialized_socket</span> <span class="o">=</span> <span class="n">pipe_from_parent</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+<span class="c"># rebuild the file descriptor</span>
+<span class="n">fd</span> <span class="o">=</span> <span class="n">rebuild_handle</span><span class="p">(</span><span class="n">serialized_socket</span><span class="p">)</span>
+<span class="c"># create socket from fd</span>
+<span class="n">client_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">fromfd</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+<span class="c"># use the socket as usual. eg: send a message to the client</span>
+<span class="n">client_socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">&quot;Baby, I</span><span class="se">\&#39;</span><span class="s">m so fast</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>Preforking</h3>
+<p>Another way to solve this issue is by spawning multiple process from the main server which is listening on a socket/port and letting all the child processes to <code>accept()</code> connections from the client. Apache uses this style of process scaling known as "Preforking". A simple example using <code>multiprocessing</code> module which runs an instance of a <code>BaseHTTPServer.HTTPServer</code> on a pool of worker processes can be written very easily as follows.</p>
+<div class="codehilite"><pre><span class="c">#</span>
+<span class="c"># Example where a pool of http servers share a single listening socket</span>
+<span class="c">#</span>
+<span class="c"># On Windows this module depends on the ability to pickle a socket</span>
+<span class="c"># object so that the worker processes can inherit a copy of the server</span>
+<span class="c"># object.  (We import `multiprocessing.reduction` to enable this pickling.)</span>
+<span class="c">#</span>
+<span class="c"># Not sure if we should synchronize access to `socket.accept()` method by</span>
+<span class="c"># using a process-shared lock -- does not seem to be necessary.</span>
+<span class="c">#</span>
+<span class="c"># Copyright (c) 2006-2008, R Oudkerk</span>
+<span class="c"># All rights reserved.</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">current_process</span><span class="p">,</span> <span class="n">freeze_support</span>
+<span class="kn">from</span> <span class="nn">BaseHTTPServer</span> <span class="kn">import</span> <span class="n">HTTPServer</span>
+<span class="kn">from</span> <span class="nn">SimpleHTTPServer</span> <span class="kn">import</span> <span class="n">SimpleHTTPRequestHandler</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;win32&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">multiprocessing.reduction</span>    <span class="c"># make sockets pickable/inheritable</span>
+
+
+<span class="k">def</span> <span class="nf">note</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;[</span><span class="si">%s</span><span class="s">]</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">format</span><span class="o">%</span><span class="n">args</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">RequestHandler</span><span class="p">(</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
+    <span class="c"># we override log_message() to show which process is handling the request</span>
+    <span class="k">def</span> <span class="nf">log_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">note</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">serve_forever</span><span class="p">(</span><span class="n">server</span><span class="p">):</span>
+    <span class="n">note</span><span class="p">(</span><span class="s">&#39;starting server&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">runpool</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">number_of_processes</span><span class="p">):</span>
+    <span class="c"># create a single server object -- children will each inherit a copy</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">RequestHandler</span><span class="p">)</span>
+
+    <span class="c"># create child processes to act as workers</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_processes</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">serve_forever</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">server</span><span class="p">,))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="c"># main process also acts as a worker</span>
+    <span class="n">serve_forever</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="n">DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;..&#39;</span><span class="p">)</span>
+    <span class="n">ADDRESS</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+    <span class="n">NUMBER_OF_PROCESSES</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="k">print</span> <span class="s">&#39;Serving at http://</span><span class="si">%s</span><span class="s">:</span><span class="si">%d</span><span class="s"> using </span><span class="si">%d</span><span class="s"> worker processes&#39;</span> <span class="o">%</span> \
+          <span class="p">(</span><span class="n">ADDRESS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ADDRESS</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">NUMBER_OF_PROCESSES</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;To exit press Ctrl-&#39;</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;Break&#39;</span><span class="p">][</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="o">==</span><span class="s">&#39;win32&#39;</span><span class="p">]</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">DIR</span><span class="p">)</span>
+    <span class="n">runpool</span><span class="p">(</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">NUMBER_OF_PROCESSES</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">freeze_support</span><span class="p">()</span>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
+
+
+<p>I wrote a simple wrapper for this kind of services which can be scaled. You can find it <a href="https://github.com/semk/utils/blob/master/prefork_server.py">here</a>.</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2011/08/30/developing-scalable-services-with-python">Read more...</a></p> 
   <p class="alignright"><a href="/2011/08/30/developing-scalable-services-with-python#comments">Comments...</a></p>
@@ -123,7 +324,46 @@
 </time>
 <p></p>
 <p><img alt="Google App Engine" src="http://upload.wikimedia.org/wikipedia/en/3/38/Google_App_Engine_Logo.png" /></p>
-<p><a href="http://code.google.com/appengine">Google App Engine</a> is a widely used and most popular <a href="en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a> solution provided by Google. App Engine provides the developer with a wide range of apis which can be used to develop web applications using any <a href="http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface">WSGI</a> compliant Frameworks (<a href="http://code.google.com/appengine/docs/python/tools/webapp/">Webapp</a>, <a href="http://www.tipfy.org">Tipfy</a>, <a href="http://www.django.org">Django</a>, <a href="http://bottlepy.org">Bottle</a>, <a href="http://www.tornadoweb.org">Tornado</a> etc.). One of the apis App Engine provides is the <a href="http://code.google.com/appengine/docs/python/users/overview.html">users api</a>, which most of the developers confuses for an api which provides user creation, authentication ...</p>
+<p><a href="http://code.google.com/appengine">Google App Engine</a> is a widely used and most popular <a href="en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a> solution provided by Google. App Engine provides the developer with a wide range of apis which can be used to develop web applications using any <a href="http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface">WSGI</a> compliant Frameworks (<a href="http://code.google.com/appengine/docs/python/tools/webapp/">Webapp</a>, <a href="http://www.tipfy.org">Tipfy</a>, <a href="http://www.django.org">Django</a>, <a href="http://bottlepy.org">Bottle</a>, <a href="http://www.tornadoweb.org">Tornado</a> etc.). One of the apis App Engine provides is the <a href="http://code.google.com/appengine/docs/python/users/overview.html">users api</a>, which most of the developers confuses for an api which provides user creation, authentication for the application. But this api only authenticates Google Accounts (can be the application developer or any third-party Google Account) using <a href="http://oauth.net/">OAuth</a>. You can't really user this api to create or manage users for your application.</p>
+<p>Remember when I told you that every application you write for GAE is a WSGI Application? WSGI is just a standard for the web application to talk to the backend HTTP server. That means a WSGI application can't run by itself. It needs an HTTP server to listen on and execute the code you have written. Its the HTTP Server which handles all the server stuffs used for authentication such as setting cookies. Now, GAE has a <a href="code.google.com/appengine/docs/python/runtime.html">sandbox</a>, which is a restrictive environment for your application code to run. For example, your application is restricted for file operations and certain modules are restricted from importing. So you can't really set up a cookie from your application code since its not an HTTP Server code. Here is our problem now. How do you do a custom authentication for a Google App Engine application?</p>
+<p>You can achieve this by writing a middleware to your WSGI application. There are many authentication libraries available for this purpose. Popular ones are <a href="http://beaker.groovie.org/">Beaker</a>, <a href="https://github.com/dound/gae-sessions">GAE-Sessions</a>, <a href="http://gaeutilities.appspot.com/session">gaeutilities</a>. But I liked the GAE-Sessions library better than the other ones since its the <a href="https://github.com/dound/gae-sessions/wiki/comparison-with-alternative-libraries">fastest</a> of them all. GAE-Sessions use <a href="code.google.com/appengine/docs/memcache/">memcache</a>/<a href="code.google.com/appengine/docs/datastore/">datastore</a> to store the session information. To use this library, just copy the gaesessions directory to your application directory. The middleware for your application is as simple as shown in the code below</p>
+<div class="codehilite"><pre><span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">SessionMiddleware</span>
+<span class="k">def</span> <span class="nf">webapp_add_wsgi_middleware</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">SessionMiddleware</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">cookie_key</span><span class="o">=</span><span class="s">&quot;a random and long string&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">app</span>
+</pre></div>
+
+
+<p>Save the above code to a file named <code>appengine_config.py</code>. You can use <code>gaesessions.get_current_session()</code> to get a dictionary to store all the session information. You can either use <code>session.set_quick(&lt;session-var&gt;, &lt;value&gt;)</code> method to use application memcache for storing session info. Otherwise it'll be stored to the datastore. Getting session info is as easy as <code>session.get(&lt;session-var&gt;)</code> and <code>session.pop_quick(&lt;session-var&gt;)</code> will remove the information from the session. All the dictionary like indexed operations will be persisted to the database.</p>
+<div class="codehilite"><pre><span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">get_current_session</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">get_current_session</span><span class="p">()</span>
+
+<span class="c"># setting user session information</span>
+<span class="n">session</span><span class="o">.</span><span class="n">set_quick</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;authenticated_user_info&#39;</span><span class="p">)</span>
+<span class="c"># getting user session</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">)</span>
+<span class="c"># removing session info</span>
+<span class="n">session</span><span class="o">.</span><span class="n">pop_quick</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The default session lifetime is 7 days. You may configure how long a session lasts by calling <code>SessionMiddleware</code> with a <code>lifetime</code> parameter, e.g., <code>lifetime=datetime.timedelta(hours=2)</code>). You can schedule a cron job for cleaning up all the expired session info for your application by creating a handler file like this.</p>
+<div class="codehilite"><pre><span class="c"># cleanup_sessions.py</span>
+<span class="kn">from</span> <span class="nn">gaesessions</span> <span class="kn">import</span> <span class="n">delete_expired_sessions</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">delete_expired_sessions</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+
+
+<p>Make sure you have a <code>cron.yaml</code> with the correct info.</p>
+<div class="codehilite"><pre><span class="l-Scalar-Plain">cron</span><span class="p-Indicator">:</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">description</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">daily session cleanup</span>
+  <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/cleanup_sessions</span>
+  <span class="l-Scalar-Plain">schedule</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">every 24 hours</span>
+</pre></div>
+
+
+<p>You can find a complete sample application <a href="https://github.com/dound/gae-sessions/blob/master/demo">here</a>.</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2011/07/31/custom-authentication-on-gae">Read more...</a></p> 
   <p class="alignright"><a href="/2011/07/31/custom-authentication-on-gae#comments">Comments...</a></p>
@@ -154,23 +394,21 @@
     
     <a href="/tag/preforking">Preforking</a>
     
-    <a href="/tag/nosql">NoSQL</a>
+    <a href="/tag/design+pattern">Design Pattern</a>
     
     <a href="/tag/flask">Flask</a>
     
-    <a href="/tag/mac+osx">Mac OSX</a>
-    
     <a href="/tag/gui">GUI</a>
     
-    <a href="/tag/app+engine">App Engine</a>
+    <a href="/tag/voldemort">Voldemort</a>
     
-    <a href="/tag/socket">Socket</a>
+    <a href="/tag/app+engine">App Engine</a>
     
     <a href="/tag/magic+tool">Magic Tool</a>
     
     <a href="/tag/emacs">Emacs</a>
     
-    <a href="/tag/scalability">Scalability</a>
+    <a href="/tag/service+mode">Service Mode</a>
     
     <a href="/tag/internet">Internet</a>
     
@@ -178,17 +416,17 @@
     
     <a href="/tag/tips">Tips</a>
     
-    <a href="/tag/riak">Riak</a>
+    <a href="/tag/qprogressdialog">QProgressDialog</a>
     
     <a href="/tag/android">Android</a>
     
-    <a href="/tag/mindmaps">Mindmaps</a>
+    <a href="/tag/socket">Socket</a>
     
     <a href="/tag/regex">regex</a>
     
     <a href="/tag/gaming">Gaming</a>
     
-    <a href="/tag/github">GitHub</a>
+    <a href="/tag/shell">Shell</a>
     
     <a href="/tag/lg+optimus+one">LG Optimus One</a>
     
@@ -196,15 +434,13 @@
     
     <a href="/tag/borg+pattern">Borg Pattern</a>
     
-    <a href="/tag/computer">Computer</a>
-    
     <a href="/tag/python">Python</a>
     
     <a href="/tag/org-mode">Org-mode</a>
     
     <a href="/tag/gaesessions">GAESessions</a>
     
-    <a href="/tag/service+mode">Service Mode</a>
+    <a href="/tag/scalability">Scalability</a>
     
     <a href="/tag/regexmate">RegexMate</a>
     
@@ -218,29 +454,35 @@
     
     <a href="/tag/ide">IDE</a>
     
-    <a href="/tag/singleton">Singleton</a>
+    <a href="/tag/qt">Qt</a>
     
-    <a href="/tag/debian">Debian</a>
+    <a href="/tag/books">Books</a>
+    
+    <a href="/tag/blogging">Blogging</a>
     
     <a href="/tag/projects">Projects</a>
     
     <a href="/tag/c">C</a>
     
-    <a href="/tag/stdeb">stdeb</a>
+    <a href="/tag/nosql">NoSQL</a>
     
-    <a href="/tag/qt">Qt</a>
+    <a href="/tag/mindmaps">Mindmaps</a>
     
     <a href="/tag/unix">Unix</a>
     
     <a href="/tag/cricinfo">Cricinfo</a>
     
+    <a href="/tag/xargs">xargs</a>
+    
     <a href="/tag/urllib2">urllib2</a>
     
-    <a href="/tag/voldemort">Voldemort</a>
+    <a href="/tag/riak">Riak</a>
     
-    <a href="/tag/shell">Shell</a>
+    <a href="/tag/github">GitHub</a>
     
     <a href="/tag/teensy">Teensy</a>
+    
+    <a href="/tag/debian">Debian</a>
     
     <a href="/tag/hypergae">HyperGAE</a>
     
@@ -252,9 +494,11 @@
     
     <a href="/tag/multiprocessing">Multiprocessing</a>
     
-    <a href="/tag/hardware">Hardware</a>
+    <a href="/tag/packaging">Packaging</a>
     
-    <a href="/tag/xargs">xargs</a>
+    <a href="/tag/stdeb">stdeb</a>
+    
+    <a href="/tag/singleton">Singleton</a>
     
     <a href="/tag/playstation+3">Playstation 3</a>
     
@@ -264,17 +508,17 @@
     
     <a href="/tag/variables">Variables</a>
     
-    <a href="/tag/qprogressdialog">QProgressDialog</a>
+    <a href="/tag/mac+osx">Mac OSX</a>
     
     <a href="/tag/pyqt">PyQt</a>
     
     <a href="/tag/hacks">Hacks</a>
     
-    <a href="/tag/packaging">Packaging</a>
+    <a href="/tag/hardware">Hardware</a>
     
     <a href="/tag/lion">Lion</a>
     
-    <a href="/tag/books">Books</a>
+    <a href="/tag/computer">Computer</a>
     
     <a href="/tag/ui">UI</a>
     
@@ -284,13 +528,9 @@
     
     <a href="/tag/hypertable">Hypertable</a>
     
-    <a href="/tag/blogging">Blogging</a>
-    
     <a href="/tag/system+calls">System Calls</a>
     
     <a href="/tag/garbage+collection">Garbage Collection</a>
-    
-    <a href="/tag/design+pattern">Design Pattern</a>
     
     <a href="/tag/memory+management">Memory Management</a>
     

@@ -74,7 +74,75 @@ Jul 08, 2012
 
 <p>You can think of it as putting the value assigned in a box with the variable name as shown below.</p>
 <p><img alt="int a =1;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1box.png" /></p>
-<p>And for all the variables ...</p>
+<p>And for all the variables you create a new box is created with the variable name to hold the value. If you change the value of the variable the box will be updated with the new value. That means doing</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</pre></div>
+
+
+<p>will result in</p>
+<p><img alt="a = 2;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p>Assigning one variable to another makes a copy of the value and put that value in the new box.</p>
+<div class="codehilite"><pre><span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+</pre></div>
+
+
+<p><img alt="b=2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/b2box.png" /> <img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p>But in Python variables work more like tags unlike the boxes you have seen before. When you do an assignment in Python, it tags the value with the variable name.</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+
+
+<p><img alt="a = 1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1tag.png" /></p>
+<p>and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory.</p>
+<div class="codehilite"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+
+
+<p><img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2tag.png" /> <img alt="1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/1.png" /></p>
+<p>Assigning one variable to another makes a new tag bound to the same value as show below.</p>
+<div class="codehilite"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+</pre></div>
+
+
+<p><img alt="b = a" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/ab2tag.png" /></p>
+<p>Other languages have 'variables'. Python has 'names'.</p>
+<h3>A bit about Python's memory management</h3>
+<p>As you have seen before, a value will have only one copy in memory and all the variables having this value will refer to this memory location. For example when you have variables <code>a</code>, <code>b</code>, <code>c</code> having a value 10, it doesn't mean that there will be 3 copy of <code>10</code>s in memory. There will be only one <code>10</code> and all the variables <code>a</code>, <code>b</code>, <code>c</code> will point to this value. Once a variable is updated, say you are doing <code>a += 1</code> a new value <code>11</code> will be allocated in memory and <code>a</code> will be pointing to this.</p>
+<p>Let's check this behaviour with Python Interpreter. Start the Python Shell and try the following for yourselves.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a_list</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">a_list</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">,</span> <span class="mi">26089400</span><span class="p">]</span>
+</pre></div>
+
+
+<p><code>id()</code> will return an objects memory address (object's identity). As you have noticed, when you create a list with same values, the values are not copied in memory. In fact, you are getting a list with references to the value <code>1</code>; not a list with 10 copies of <code>1</code>.</p>
+<p>Now we will try to create custom objects and try to find their identities.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">pass</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">baz</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="mi">140730612513248</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">baz</span><span class="p">)</span>
+<span class="mi">140730612513320</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c"># lists are containers holding data objects</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list_b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_a</span><span class="p">)</span>
+<span class="mi">140116233272136</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">list_b</span><span class="p">)</span>
+<span class="mi">140116233272064</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_a</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># `int` is a basic data type</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list_b</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24221624</span><span class="p">,</span> <span class="mi">24221600</span><span class="p">,</span> <span class="mi">24221576</span><span class="p">]</span> <span class="c"># same as above</span>
+</pre></div>
+
+
+<p>As you can see, the two instances have different identities. That means, there are two different copies of the same object in memory. This behaviour is different from what you have seen before. When you are creating custom objects or using complex data types like lists, tuples etc., they will have unique identities unless you are using <a href="http://foobarnbaz.com/2010/10/06/borg-pattern/">Singleton Pattern</a> which overrides this behaviour (in <code>__new__()</code>) by giving out the same instance upon instance creation. All other basic data types in Python like <code>str</code>, <code>int</code>, <code>float</code> will have same identities and point to the same memory location.</p>
+<p>Thanks to Jadav Bheda (see comments) for correcting a mistake (of mentioning immutable types instead of the basic ones) in the article.</p>
 <p class="full-post"><a href="/2012/07/08/understanding-python-variables">Continue Reading...</a></p>
 
 
@@ -85,7 +153,11 @@ Apr 11, 2011
 </time>
 <p></p>
 <p><a href="http://tuxpaint.org/">Tux Paint</a> is a drawing software for children that provides a kids-like user interface. Tuxpaint does have some nice tools integrated in it which helps the kids to create their drawing <a href="http://tuxpaint.org/gallery/">masterpieces</a> using a computer. Simply speaking its the GIMP for kids of 3-12 years.</p>
-<p>But what I was excited about Tux Paint is the availability of <a href="http://www.tuxpaint.org/presentations/tuxpaint-magic-api.pdf">Magic Tool Plug-in API</a> using which you can create Magic Tools that creates ...</p>
+<p>But what I was excited about Tux Paint is the availability of <a href="http://www.tuxpaint.org/presentations/tuxpaint-magic-api.pdf">Magic Tool Plug-in API</a> using which you can create Magic Tools that creates some sort of graphical effect on the canvas. Tux Paint already provides some Magic Tools by default like blur, bricks etc. Tux paint is fully written in C and uses <a href="http://libsdl.org">SDL</a> for graphics programming. There are basically two kinds of tools we can create using the API. One that affects the whole canvas and one that updates a specific region of the canvas (eg. place where you drag the cursor).</p>
+<p><img alt="Scratch effect on Bricks" src="/images/posts/2011-04-11-a-magic-tool-for-tux-paint/scratch_on_bricks.png" /></p>
+<p>To test how this API works, I actually developed a <a href="https://github.com/semk/tp-scratch">Scratch Magic Tool</a> which when you apply, creates a <em>scratched</em> effect on the image (as shown above). It also produces a nice sound effect while applying the effect. Still this tool has a lot of logical bugs so that sometimes it doesn't even look like a scratch when applied over certain colors :-). Other than that, you can use this code for a reference to create your own Magic Tools. If you need documentation this presentation <a href="http://www.tuxpaint.org/presentations/tuxpaint-magic-api.pdf">slide</a> is more than enough. Once you have downloaded the Tux Paint source code go through <code>src/tp_magic_api.h</code> to see the all API definitions and usage.</p>
+<p>Back in the college days, we had this subject on <em>Computer Graphics</em> where you need to study some popular <a href="http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm">line-drawing</a> and <a href="http://en.wikipedia.org/wiki/Midpoint_circle_algorithm">circle-drawing</a> algorithms. But there were no lab sessions for those subjects. Everyone where literally by-hearting those algorithms at that time. I would suggest all the CS faculty to conduct a lab session on Computer Graphics and ask students to implement those algorithms as a Magic Tool in Tux Paint using the Magic Tool API. It will be useful for them to see those algorithms in action. You may use my plugin or other plugins available in Tux Paint's <code>magic/src/</code>  directory as a reference for your development. Please do give a feedback here in the comment section when you implement some of these algorithms as a Magic Tool.</p>
+<p><em>NOTE:</em> For compilation and installation of Tux Paint from sources, follow the instructions from <a href="https://github.com/semk/tp-scratch">tp-scratch repository</a>.</p>
 <p class="full-post"><a href="/2011/04/11/a-magic-tool-for-tuxpaint">Continue Reading...</a></p>
 
 

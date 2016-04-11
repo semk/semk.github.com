@@ -69,7 +69,27 @@ Feb 21, 2011
 <p></p>
 <p>Finally my wish came true. Now I'm a proud owner of an Android phone. Its LG Optimus One, better known as LG P500. Good that it comes with Froyo and LG promises an update to Gingerbread. Here you can find the phone <a href="http://www.gsmarena.com/lg_optimus_one_p500-3516.php">specs</a>.</p>
 <p><img alt="LG Optimus One" src="http://www.gadgetvenue.com/wp-content/uploads/2010/09/LG-optimus-one-300x300.jpg" /></p>
-<p>This one is a good choice for anyone looking for a budget Android phone (10.8K when I bought) whose battery lasts a complete day with ...</p>
+<p>This one is a good choice for anyone looking for a budget Android phone (10.8K when I bought) whose battery lasts a complete day with internet on. Thanks to <a href="http://binarykarma.org">Shuveb</a> for providing a review of the phone and atlast making me buy it :-P</p>
+<p>Eventhough a Pythonista like me hates Java, the Android platform was tempting me to look at Java with some interest. So I bought <em>Android Application Development by O'Reilly</em> and setup a Development Environment on my laptop using Eclipse. This was so easy that I could run the <em>Hello World</em> program without even writing a piece of Java code. Once you create a Project, it auto-generates files needed for the application to show on the foreground and other resource files and build scripts. By default, they'll create an activity source file with an <em>Activity</em> name you've given. This is pretty much the <em>Hello World</em> program we wanted.</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="nn">com.semk.helloworld</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorldActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
+    <span class="cm">/** Called when the activity is first created. */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">main</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Google has done a great job in developing an easy-to-use and feature-abundant SDK for Android. The Android emulator which comes with the SDK is an engineering masterpiece. It helps the developer to run and test their applications locally before running them on the actual devices.</p>
+<p><img alt="Android Emulator" src="/images/posts/2011-02-21-i-have-an-droid/emulator.png" /></p>
+<p>I'm hoping to develop some useful applications for Android while I finish reading the book. So keep an eye on my <a href="http://github.com/semk">Git Repo</a>.</p>
 <p class="full-post"><a href="/2011/02/21/i-have-an-droid">Continue Reading...</a></p>
 
 

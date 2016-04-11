@@ -67,7 +67,7 @@
 </time>
 <p></p>
 <p>I installed the new <a href="http://www.ubuntu.com/desktop">Ubuntu 10.10 Maverick Meerkat</a> on my Laptop and on my Desktop at home. Now both systems doesn't have Windows in it. My family is now very comfortable with Ubuntu and they use the Ubuntu machine for working with <a href="http://www.openoffice.org">OpenOffice</a>, watching movies, playing <a href="http://2dboy.com/games.php">games</a> and for using Internet.</p>
-<p>BTW, I really like the new Ubuntu font which gives Ubuntu a brandish look. I mean like ...</p>
+<p>BTW, I really like the new Ubuntu font which gives Ubuntu a brandish look. I mean like Mac :-)</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/11/07/ubuntu-maverick-meerkat">Read more...</a></p> 
   <p class="alignright"><a href="/2010/11/07/ubuntu-maverick-meerkat#comments">Comments...</a></p>
@@ -98,7 +98,17 @@
 </pre></div>
 
 
-<p>Usually programmers use Singleton Patterns as a global entry point ...</p>
+<p>Usually programmers use Singleton Patterns as a global entry point to database connections. This is a bad programming habit. This will also break tests as most unittests use dummy implementations of real objects that emulate real objects. Suppose you have protected your class to instantiate only once using this pattern, then it would become impossible for him to stub/mock this class for tests. In short, Singleton patterns are not recommended for test driven development.</p>
+<p>What we really care about class objects are its identity/state and behaviour, not the number of instances; unless you really need that kind of implementation. This is where Borg pattern comes as useful. Borg pattern share the same state across all its class instances. Its fairly easy to implement a Borg pattern in python. Just initialize the class <code>__dict__</code> with a class attribute in its <code>__init__</code>.</p>
+<div class="codehilite"><pre><span class="c"># Borg Pattern</span>
+<span class="k">class</span> <span class="nc">Borg</span><span class="p">:</span>
+    <span class="n">__shared_state</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__shared_state</span>
+</pre></div>
+
+
+<p>Subclass this <em>Borg</em> class and you can have a shared-state class implementation and all the instances will have the same state. For more information about different patterns in python, checkout this <a href="http://www.suttoncourtenay.org.uk/duncan/accu/pythonpatterns.html">link</a>.</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/10/06/borg-pattern">Read more...</a></p> 
   <p class="alignright"><a href="/2010/10/06/borg-pattern#comments">Comments...</a></p>
@@ -120,7 +130,12 @@
 </pre></div>
 
 
-<p>Similar functionality can be achieved in linux commandline using a combination of unix pipe <code>|</code> and <code>xargs</code> command. For ...</p>
+<p>Similar functionality can be achieved in linux commandline using a combination of unix pipe <code>|</code> and <code>xargs</code> command. For my previous blog post I needed to resize the image sizes so that it fits correcly in the post. This is how I mapped the <code>convert</code> utility over a list of image files in a directory.</p>
+<div class="codehilite"><pre><span class="nv">$ </span>find . -name <span class="s2">&quot;*.jpg&quot;</span> -print0 <span class="p">|</span> xargs -0 -I img convert -resize 600x450 img img
+</pre></div>
+
+
+<p>The <code>-print0</code> option for find list files without the EOF marker so that it can be used efficiently in <code>xargs</code>. The -0 option indicates this. You can use a replace string similar to <code>img</code> used here, to replace initial arguments of the command from standard input. See <code>man xargs</code> for more information about this utility.</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/10/02/commandline-mapper">Read more...</a></p> 
   <p class="alignright"><a href="/2010/10/02/commandline-mapper#comments">Comments...</a></p>
@@ -133,7 +148,19 @@
   Oct 02, 2010
 </time>
 <p></p>
-<p>I've always been a proud and loyal owner of a <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> and still I consider it as the most powerful game console of this generation. But things were super-cool back on the days when <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> supported <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a> by which you could boot and use Linux on your console. This was the very feature (other than GameOS which is why someone should buy a PS3 :-)) every PS3 owner ...</p>
+<p>I've always been a proud and loyal owner of a <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> and still I consider it as the most powerful game console of this generation. But things were super-cool back on the days when <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> supported <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a> by which you could boot and use Linux on your console. This was the very feature (other than GameOS which is why someone should buy a PS3 :-)) every PS3 owner was proud of when comparing his console to its counterparts. This feature was removed by Sony after <a href="http://en.wikipedia.org/wiki/George_Hotz">Geohot's</a> attempts to hack <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> using Linux. Although he was partially succeeded in doing so, soon he disappeared from the PlayStation hacking scene and asked other hackers to continue his work. The PS3 users gained nothing from this untill the mighty <a href="http://psjailbreak.com">PSJailbreak</a> was announced.</p>
+<p>I must say, Sony guys have made <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> almost unhackable as it took more than 4 years for the console hackers to find an exploit to allow homebrews on it. This exploit which was found in firmware 3.41, allows users to backup <em>Legitimate</em> Copies of PlayStation Games to internal/external harddisk. This is achieved by installing an application called Backup Manager. The team to announce this hack was <a href="http://psjailbreak.com">PSJailbreak</a>, who used a USB dongle to boot from which took advantage of the exploit found in 3.41. Later open source implementations of <a href="http://psjailbreak.com">PSJailbreak</a> like <a href="http://github.com/psgroove/psgroove">psgroove</a>, psfreedom etc. came which used popular development boards like <a href="http://www.pjrc.com/store/teensypp.html">Teensy ++</a> and <a href="http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3879">Atmel AT90USBKEY</a>.</p>
+<p>I was really excited to see this progress and I liked the idea of backing up games. If you buy Original Games for $50, atleast there should be one way to make backups so that you can play games even if yor media is damaged. So I logged on to <a href="http://pjrc.com">pjrc</a> and ordered one <a href="http://www.pjrc.com/teensy/">Teensy 2.0 USB Development Board</a> which used <a href="http://www.atmel.com/dyn/products/product_card.asp?part_id=4317">Atmel ATMEGA32U4 AVR</a>. It took almost 3 weeks to ship to India from US. I checked out <a href="http://github.com/psgroove/psgroove">psgroove</a> code from GitHub and used the Teensy Loader utility to flash the compiled hex code to the board.</p>
+<p>For this jailbreak to work, you need to hard power your PS3 after connecting the usb board. Turn on the console and immediately press eject button for the exploit to work. If everything goes proper, the orange led in Teensy board will light up. Tada! The PlayStation is Jailbroken. Take a look at the snaps I took during Jailbreaking my console.</p>
+<p><img alt="Flashed Teensy" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/teensy_loaded.jpg" /></p>
+<p><img alt="Exploited" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/exploited.jpg" /></p>
+<p><img alt="Installing" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/installing.jpg" /></p>
+<p><img alt="Backup Manager" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/backup_manager.jpg" /></p>
+<p><img alt="Backup Manager Page" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/bm_screen.jpg" /></p>
+<p><img alt="Backing up Uncharted" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/backing_up.jpg" /></p>
+<p><img alt="FTP Server" src="/images/posts/2010-10-02-hacking-playstation3-with-teensy/ftp_server.jpg" /></p>
+<p>The latest firmware update from Sony patches this exploit and even they are banning consoles using Backup Manager when they connect to <a href="http://en.wikipedia.org/wiki/PlayStation_Network">PSN</a>. As I love <a href="http://en.wikipedia.org/wiki/PlayStation_Network">PSN</a> and playing <a href="http://en.wikipedia.org/wiki/Uncharted_2:_Among_Thieves">Uncharted 2</a> online, soon I have to update my firmware to 3.50. Even legitimate users are irritated by this move by Sony. If iPhone Jailbreak is legal, this is also legal. Right ?</p>
+<p>Had Sony not removed <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a>, none of this would have happened OR atleast it would have taken more time for the hackers to hack the console. "Sony, never do stupid things like this anymore. Please bring back <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a>."</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/10/02/hacking-playstation3-with-teensy">Read more...</a></p> 
   <p class="alignright"><a href="/2010/10/02/hacking-playstation3-with-teensy#comments">Comments...</a></p>
@@ -146,7 +173,10 @@
   Sep 23, 2010
 </time>
 <p></p>
-<p>I have learned a big lesson from losing all the blog archives from my previous blog <a href="http://semk.in">semk.in</a>, that never ever host a blog without any backups. I didn't pay any attention to domain/hosting expiration date since I was busy working at that time. But finally everything was deleted in a matter of seconds. I never blamed the hosting provider for this. They kept mailing me all the ...</p>
+<p>I have learned a big lesson from losing all the blog archives from my previous blog <a href="http://semk.in">semk.in</a>, that never ever host a blog without any backups. I didn't pay any attention to domain/hosting expiration date since I was busy working at that time. But finally everything was deleted in a matter of seconds. I never blamed the hosting provider for this. They kept mailing me all the day. Recently I came to know about using <a href="http://github.om">Github</a> + <a href="http://github.com/mojombo/jekyll">Jekyll</a> for blogging from <a href="http://pages.github.com/">Github Pages</a> which I think is the best way to maintain the website code. Thats why this new site got spawned up. </p>
+<p>This website layout is a fork of <a href="http://tatey.com">Tate Johnson's site</a> with some minor modifications. Stay tuned for interesting stuffs ...</p>
+<p>Thanks,</p>
+<p>Sreejith K</p>
 <div class="post-excerpt">
   <p class="alignleft"><a href="/2010/09/23/github-powered-blogging">Read more...</a></p> 
   <p class="alignright"><a href="/2010/09/23/github-powered-blogging#comments">Comments...</a></p>
@@ -175,23 +205,21 @@
     
     <a href="/tag/preforking">Preforking</a>
     
-    <a href="/tag/nosql">NoSQL</a>
+    <a href="/tag/design+pattern">Design Pattern</a>
     
     <a href="/tag/flask">Flask</a>
     
-    <a href="/tag/mac+osx">Mac OSX</a>
-    
     <a href="/tag/gui">GUI</a>
     
-    <a href="/tag/app+engine">App Engine</a>
+    <a href="/tag/voldemort">Voldemort</a>
     
-    <a href="/tag/socket">Socket</a>
+    <a href="/tag/app+engine">App Engine</a>
     
     <a href="/tag/magic+tool">Magic Tool</a>
     
     <a href="/tag/emacs">Emacs</a>
     
-    <a href="/tag/scalability">Scalability</a>
+    <a href="/tag/service+mode">Service Mode</a>
     
     <a href="/tag/internet">Internet</a>
     
@@ -199,17 +227,17 @@
     
     <a href="/tag/tips">Tips</a>
     
-    <a href="/tag/riak">Riak</a>
+    <a href="/tag/qprogressdialog">QProgressDialog</a>
     
     <a href="/tag/android">Android</a>
     
-    <a href="/tag/mindmaps">Mindmaps</a>
+    <a href="/tag/socket">Socket</a>
     
     <a href="/tag/regex">regex</a>
     
     <a href="/tag/gaming">Gaming</a>
     
-    <a href="/tag/github">GitHub</a>
+    <a href="/tag/shell">Shell</a>
     
     <a href="/tag/lg+optimus+one">LG Optimus One</a>
     
@@ -217,15 +245,13 @@
     
     <a href="/tag/borg+pattern">Borg Pattern</a>
     
-    <a href="/tag/computer">Computer</a>
-    
     <a href="/tag/python">Python</a>
     
     <a href="/tag/org-mode">Org-mode</a>
     
     <a href="/tag/gaesessions">GAESessions</a>
     
-    <a href="/tag/service+mode">Service Mode</a>
+    <a href="/tag/scalability">Scalability</a>
     
     <a href="/tag/regexmate">RegexMate</a>
     
@@ -239,29 +265,35 @@
     
     <a href="/tag/ide">IDE</a>
     
-    <a href="/tag/singleton">Singleton</a>
+    <a href="/tag/qt">Qt</a>
     
-    <a href="/tag/debian">Debian</a>
+    <a href="/tag/books">Books</a>
+    
+    <a href="/tag/blogging">Blogging</a>
     
     <a href="/tag/projects">Projects</a>
     
     <a href="/tag/c">C</a>
     
-    <a href="/tag/stdeb">stdeb</a>
+    <a href="/tag/nosql">NoSQL</a>
     
-    <a href="/tag/qt">Qt</a>
+    <a href="/tag/mindmaps">Mindmaps</a>
     
     <a href="/tag/unix">Unix</a>
     
     <a href="/tag/cricinfo">Cricinfo</a>
     
+    <a href="/tag/xargs">xargs</a>
+    
     <a href="/tag/urllib2">urllib2</a>
     
-    <a href="/tag/voldemort">Voldemort</a>
+    <a href="/tag/riak">Riak</a>
     
-    <a href="/tag/shell">Shell</a>
+    <a href="/tag/github">GitHub</a>
     
     <a href="/tag/teensy">Teensy</a>
+    
+    <a href="/tag/debian">Debian</a>
     
     <a href="/tag/hypergae">HyperGAE</a>
     
@@ -273,9 +305,11 @@
     
     <a href="/tag/multiprocessing">Multiprocessing</a>
     
-    <a href="/tag/hardware">Hardware</a>
+    <a href="/tag/packaging">Packaging</a>
     
-    <a href="/tag/xargs">xargs</a>
+    <a href="/tag/stdeb">stdeb</a>
+    
+    <a href="/tag/singleton">Singleton</a>
     
     <a href="/tag/playstation+3">Playstation 3</a>
     
@@ -285,17 +319,17 @@
     
     <a href="/tag/variables">Variables</a>
     
-    <a href="/tag/qprogressdialog">QProgressDialog</a>
+    <a href="/tag/mac+osx">Mac OSX</a>
     
     <a href="/tag/pyqt">PyQt</a>
     
     <a href="/tag/hacks">Hacks</a>
     
-    <a href="/tag/packaging">Packaging</a>
+    <a href="/tag/hardware">Hardware</a>
     
     <a href="/tag/lion">Lion</a>
     
-    <a href="/tag/books">Books</a>
+    <a href="/tag/computer">Computer</a>
     
     <a href="/tag/ui">UI</a>
     
@@ -305,13 +339,9 @@
     
     <a href="/tag/hypertable">Hypertable</a>
     
-    <a href="/tag/blogging">Blogging</a>
-    
     <a href="/tag/system+calls">System Calls</a>
     
     <a href="/tag/garbage+collection">Garbage Collection</a>
-    
-    <a href="/tag/design+pattern">Design Pattern</a>
     
     <a href="/tag/memory+management">Memory Management</a>
     

@@ -68,7 +68,104 @@ Aug 30, 2011
 </time>
 <p></p>
 <p>Developing multi-threaded applications in python is a "Pain In The Ass". And the <a href="http://wiki.python.org/moin/GlobalInterpreterLock">GIL</a> (Global Interpreter Lock) takes away the advantage of utilizing multiple cores in a machine. It doesn't matter how many cores a CPU have, GIL prevents threads from running in multiple cores. So python programs would't get the maximum performance out of the CPU when they use threads in their services.</p>
-<p>In many cases you ...</p>
+<p>In many cases you might need to write services where you need to listen on a port and wait for the client connection to do some task. If multiple clients are connecting to this service simultaneously then you might need to spawn threads to handle the requests. Considering the fact that GIL introduces a performance bottleneck, the best way to solve this situation is to use python's <a href="http://docs.python.org/library/multiprocessing.html">multiprocessing</a> capabilities. This library provides almost <code>threading</code> like class implementations. </p>
+<p>Then a question might arise. How do you share a socket created by the server process to the newly spawned processes? It is possible since all the <code>fork</code>ed processes will have the parent's file descriptors. <code>multiprocessing</code> library already has this package named <code>multiprocessing.reduction</code> that provides a method <code>reduce_handle</code> which can serialize a socket and you can send this socket to another process using pipes. The child processes can read from the pipe and re-create the socket using <code>rebuild_handle</code>. The following example will make this idea clear to you.</p>
+<div class="codehilite"><pre><span class="c"># Main Process</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.reduction</span> <span class="kn">import</span> <span class="n">reduce_handle</span>
+<span class="c"># serialize the socket</span>
+<span class="n">serialized_socket</span> <span class="o">=</span> <span class="n">reduce_handle</span><span class="p">(</span><span class="n">client_socket</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+<span class="c"># send it to the child/worker process</span>
+<span class="n">pipe_to_worker</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">serialized_socket</span><span class="p">)</span>
+
+<span class="c"># Worker Process</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.reduction</span> <span class="kn">import</span> <span class="n">rebuild_handle</span>
+<span class="c"># get the socket from parent</span>
+<span class="n">serialized_socket</span> <span class="o">=</span> <span class="n">pipe_from_parent</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+<span class="c"># rebuild the file descriptor</span>
+<span class="n">fd</span> <span class="o">=</span> <span class="n">rebuild_handle</span><span class="p">(</span><span class="n">serialized_socket</span><span class="p">)</span>
+<span class="c"># create socket from fd</span>
+<span class="n">client_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">fromfd</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+<span class="c"># use the socket as usual. eg: send a message to the client</span>
+<span class="n">client_socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">&quot;Baby, I</span><span class="se">\&#39;</span><span class="s">m so fast</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>Preforking</h3>
+<p>Another way to solve this issue is by spawning multiple process from the main server which is listening on a socket/port and letting all the child processes to <code>accept()</code> connections from the client. Apache uses this style of process scaling known as "Preforking". A simple example using <code>multiprocessing</code> module which runs an instance of a <code>BaseHTTPServer.HTTPServer</code> on a pool of worker processes can be written very easily as follows.</p>
+<div class="codehilite"><pre><span class="c">#</span>
+<span class="c"># Example where a pool of http servers share a single listening socket</span>
+<span class="c">#</span>
+<span class="c"># On Windows this module depends on the ability to pickle a socket</span>
+<span class="c"># object so that the worker processes can inherit a copy of the server</span>
+<span class="c"># object.  (We import `multiprocessing.reduction` to enable this pickling.)</span>
+<span class="c">#</span>
+<span class="c"># Not sure if we should synchronize access to `socket.accept()` method by</span>
+<span class="c"># using a process-shared lock -- does not seem to be necessary.</span>
+<span class="c">#</span>
+<span class="c"># Copyright (c) 2006-2008, R Oudkerk</span>
+<span class="c"># All rights reserved.</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">current_process</span><span class="p">,</span> <span class="n">freeze_support</span>
+<span class="kn">from</span> <span class="nn">BaseHTTPServer</span> <span class="kn">import</span> <span class="n">HTTPServer</span>
+<span class="kn">from</span> <span class="nn">SimpleHTTPServer</span> <span class="kn">import</span> <span class="n">SimpleHTTPRequestHandler</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;win32&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">multiprocessing.reduction</span>    <span class="c"># make sockets pickable/inheritable</span>
+
+
+<span class="k">def</span> <span class="nf">note</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;[</span><span class="si">%s</span><span class="s">]</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">format</span><span class="o">%</span><span class="n">args</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">RequestHandler</span><span class="p">(</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
+    <span class="c"># we override log_message() to show which process is handling the request</span>
+    <span class="k">def</span> <span class="nf">log_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">note</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">serve_forever</span><span class="p">(</span><span class="n">server</span><span class="p">):</span>
+    <span class="n">note</span><span class="p">(</span><span class="s">&#39;starting server&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">runpool</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">number_of_processes</span><span class="p">):</span>
+    <span class="c"># create a single server object -- children will each inherit a copy</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">RequestHandler</span><span class="p">)</span>
+
+    <span class="c"># create child processes to act as workers</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_processes</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">serve_forever</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">server</span><span class="p">,))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="c"># main process also acts as a worker</span>
+    <span class="n">serve_forever</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="n">DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;..&#39;</span><span class="p">)</span>
+    <span class="n">ADDRESS</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+    <span class="n">NUMBER_OF_PROCESSES</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="k">print</span> <span class="s">&#39;Serving at http://</span><span class="si">%s</span><span class="s">:</span><span class="si">%d</span><span class="s"> using </span><span class="si">%d</span><span class="s"> worker processes&#39;</span> <span class="o">%</span> \
+          <span class="p">(</span><span class="n">ADDRESS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ADDRESS</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">NUMBER_OF_PROCESSES</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;To exit press Ctrl-&#39;</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;Break&#39;</span><span class="p">][</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="o">==</span><span class="s">&#39;win32&#39;</span><span class="p">]</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">DIR</span><span class="p">)</span>
+    <span class="n">runpool</span><span class="p">(</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">NUMBER_OF_PROCESSES</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">freeze_support</span><span class="p">()</span>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
+
+
+<p>I wrote a simple wrapper for this kind of services which can be scaled. You can find it <a href="https://github.com/semk/utils/blob/master/prefork_server.py">here</a>.</p>
 <p class="full-post"><a href="/2011/08/30/developing-scalable-services-with-python">Continue Reading...</a></p>
 
 
