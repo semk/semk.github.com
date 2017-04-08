@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - Scratch - A Magic Tool for Tux Paint</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
+
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25990753-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1><a href="/">Codeception</a></h1>
+  <p>Musings & ramblings of a Pythonista</p>
+  <ul>
+    <li><a href="/about">Read about <strong>Me</strong></a></li>
+    <li><a href="/lab">Checkout my <strong>Lab</strong></a></li>
+    <li><a href="/archive">Browse the <strong>Archive</strong></a></li>
+  </ul>
+</header>
+
+      <section>
+        
+<h1>Scratch - A Magic Tool for Tux Paint</h1>
+
+<time datetime="2011-04-11">
+  Apr 11, 2011
+</time>
+
+<p></p>
+
+<p><a href="http://tuxpaint.org/">Tux Paint</a> is a drawing software for children that provides a kids-like user interface. Tuxpaint does have some nice tools integrated in it which helps the kids to create their drawing <a href="http://tuxpaint.org/gallery/">masterpieces</a> using a computer. Simply speaking its the GIMP for kids of 3-12 years.</p>
+<p>But what I was excited about Tux Paint is the availability of <a href="http://www.tuxpaint.org/presentations/tuxpaint-magic-api.pdf">Magic Tool Plug-in API</a> using which you can create Magic Tools that creates some sort of graphical effect on the canvas. Tux Paint already provides some Magic Tools by default like blur, bricks etc. Tux paint is fully written in C and uses <a href="http://libsdl.org">SDL</a> for graphics programming. There are basically two kinds of tools we can create using the API. One that affects the whole canvas and one that updates a specific region of the canvas (eg. place where you drag the cursor).</p>
+<p><img alt="Scratch effect on Bricks" src="/images/posts/2011-04-11-a-magic-tool-for-tux-paint/scratch_on_bricks.png" /></p>
+<p>To test how this API works, I actually developed a <a href="https://github.com/semk/tp-scratch">Scratch Magic Tool</a> which when you apply, creates a <em>scratched</em> effect on the image (as shown above). It also produces a nice sound effect while applying the effect. Still this tool has a lot of logical bugs so that sometimes it doesn't even look like a scratch when applied over certain colors :-). Other than that, you can use this code for a reference to create your own Magic Tools. If you need documentation this presentation <a href="http://www.tuxpaint.org/presentations/tuxpaint-magic-api.pdf">slide</a> is more than enough. Once you have downloaded the Tux Paint source code go through <code>src/tp_magic_api.h</code> to see the all API definitions and usage.</p>
+<p>Back in the college days, we had this subject on <em>Computer Graphics</em> where you need to study some popular <a href="http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm">line-drawing</a> and <a href="http://en.wikipedia.org/wiki/Midpoint_circle_algorithm">circle-drawing</a> algorithms. But there were no lab sessions for those subjects. Everyone where literally by-hearting those algorithms at that time. I would suggest all the CS faculty to conduct a lab session on Computer Graphics and ask students to implement those algorithms as a Magic Tool in Tux Paint using the Magic Tool API. It will be useful for them to see those algorithms in action. You may use my plugin or other plugins available in Tux Paint's <code>magic/src/</code>  directory as a reference for your development. Please do give a feedback here in the comment section when you implement some of these algorithms as a Magic Tool.</p>
+<p><em>NOTE:</em> For compilation and installation of Tux Paint from sources, follow the instructions from <a href="https://github.com/semk/tp-scratch">tp-scratch repository</a>.</p>
+
+<div>
+  <strong>Tagged under</strong>  <em><a href="/tag/tux+paint">Tux Paint</a></em>,  <em><a href="/tag/magic+tool">Magic Tool</a></em>,  <em><a href="/tag/c">C</a></em>,  <em><a href="/tag/scratch">Scratch</a></em>,  <em><a href="/tag/projects">Projects</a></em> 
+<div>
+
+<br/>
+
+<div class="blog-nav">
+  
+  <p class="alignleft"><a href="/2011/02/21/i-have-an-droid">&larr; Previous Post</a></p>
+  
+  
+  <p class="alignright"><a href="/2011/05/07/cheapest-personal-computer-on-a-usb">Next Post &rarr;</a></p>
+  
+  <div style="clear: both;"></div>
+</div>
+
+<div id="disqus_thread"><a id="comments" /></div>
+<script type="text/javascript">
+	/**
+	* var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
+	*/
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://foobarnbaz.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=foobarnbaz">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+      </section>
+
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://www.linkedin.com/in/sreejithemk">LinkedIn</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
+</html>
