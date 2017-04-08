@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>foobarnbaz.com - Codeception</title>
+    <meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="Sreejith K" />
+
+<link rel="alternate" href="http://feeds2.feedburner.com/foobarnbaz"
+  title="Codeception" type="application/atom+xml" />
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href='/images/layout/favicon.gif' rel='shortcut icon' type='image/ico' />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25990753-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  // Create elements here allows IE8 to style them when it sees the real thing.
+  document.createElement('article');
+  document.createElement('aside');
+  document.createElement('footer');
+  document.createElement('header');
+  document.createElement('hgroup');
+  document.createElement('menu');
+  document.createElement('nav');
+  document.createElement('section');
+</script>
+<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+  <h1><a href="/">Codeception</a></h1>
+  <p>Musings & ramblings of a Pythonista</p>
+  <ul>
+    <li><a href="/about">Read about <strong>Me</strong></a></li>
+    <li><a href="/lab">Checkout my <strong>Lab</strong></a></li>
+    <li><a href="/archive">Browse the <strong>Archive</strong></a></li>
+  </ul>
+</header>
+
+      <section>
+        
+
+
+<h1><a href="/2010/11/07/ubuntu-maverick-meerkat">Ubuntu Maverick Meerkat</a></h1>
+<time datetime="2010-11-07">
+  Nov 07, 2010
+</time>
+<p></p>
+<p>I installed the new <a href="http://www.ubuntu.com/desktop">Ubuntu 10.10 Maverick Meerkat</a> on my Laptop and on my Desktop at home. Now both systems doesn't have Windows in it. My family is now very comfortable with Ubuntu and they use the Ubuntu machine for working with <a href="http://www.openoffice.org">OpenOffice</a>, watching movies, playing <a href="http://2dboy.com/games.php">games</a> and for using Internet.</p>
+<p>BTW, I really like the new Ubuntu font which gives Ubuntu a brandish look. I mean like ...</p>
+<div class="post-excerpt">
+  <p class="alignleft"><a href="/2010/11/07/ubuntu-maverick-meerkat">Read more...</a></p> 
+  <p class="alignright"><a href="/2010/11/07/ubuntu-maverick-meerkat#comments">Comments...</a></p>
+  <div style="clear: both;"></div>
+</div>
+<hr>
+
+<h1><a href="/2010/10/06/borg-pattern">Borg Pattern</a></h1>
+<time datetime="2010-10-06">
+  Oct 06, 2010
+</time>
+<p></p>
+<p>Singleton Design Patterns create all sorts of problems as you have exactly one instance for the singleton class throughout the program.</p>
+<div class="codehilite"><pre><span></span><span class="c1"># Singleton implementation using new-style classes</span>
+<span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;_the_instance&#39;</span> <span class="ow">in</span> <span class="nb">type</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="nb">type</span><span class="o">.</span><span class="n">_the_instance</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">_the_instance</span>
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">Singleton</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">id</span><span class="p">(</span><span class="n">foo</span><span class="p">),</span> <span class="nb">id</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">10049912</span><span class="p">,</span> <span class="mi">10049912</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Usually programmers use Singleton Patterns as a global entry point ...</p>
+<div class="post-excerpt">
+  <p class="alignleft"><a href="/2010/10/06/borg-pattern">Read more...</a></p> 
+  <p class="alignright"><a href="/2010/10/06/borg-pattern#comments">Comments...</a></p>
+  <div style="clear: both;"></div>
+</div>
+<hr>
+
+<h1><a href="/2010/10/02/commandline-mapper">A commandline mapper</a></h1>
+<time datetime="2010-10-02">
+  Oct 02, 2010
+</time>
+<p></p>
+<p>Python provides a builtin <code>map</code> function which applies a method over a list of entities. This function comes handy in a lot of situations as in</p>
+<div class="codehilite"><pre><span></span><span class="c1"># find the square of all integers in a list</span>
+<span class="c1"># Eg: </span>
+<span class="c1">#   input: [1, 2, 3, 4]</span>
+<span class="c1">#   return: [1, 4, 9, 16]</span>
+<span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="n">list_of_integers</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Similar functionality can be achieved in linux commandline using a combination of unix pipe <code>|</code> and <code>xargs</code> command. For ...</p>
+<div class="post-excerpt">
+  <p class="alignleft"><a href="/2010/10/02/commandline-mapper">Read more...</a></p> 
+  <p class="alignright"><a href="/2010/10/02/commandline-mapper#comments">Comments...</a></p>
+  <div style="clear: both;"></div>
+</div>
+<hr>
+
+<h1><a href="/2010/10/02/hacking-playstation3-with-teensy">Hacking PlayStation 3 with Teensy 2.0</a></h1>
+<time datetime="2010-10-02">
+  Oct 02, 2010
+</time>
+<p></p>
+<p>I've always been a proud and loyal owner of a <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> and still I consider it as the most powerful game console of this generation. But things were super-cool back on the days when <a href="http://en.wikipedia.org/wiki/PlayStation_3">Playstation 3</a> supported <a href="http://en.wikipedia.org/wiki/OtherOS">OtherOS</a> by which you could boot and use Linux on your console. This was the very feature (other than GameOS which is why someone should buy a PS3 :-)) every PS3 owner ...</p>
+<div class="post-excerpt">
+  <p class="alignleft"><a href="/2010/10/02/hacking-playstation3-with-teensy">Read more...</a></p> 
+  <p class="alignright"><a href="/2010/10/02/hacking-playstation3-with-teensy#comments">Comments...</a></p>
+  <div style="clear: both;"></div>
+</div>
+<hr>
+
+<h1><a href="/2010/09/23/github-powered-blogging">GitHub powered blogging</a></h1>
+<time datetime="2010-09-23">
+  Sep 23, 2010
+</time>
+<p></p>
+<p>I have learned a big lesson from losing all the blog archives from my previous blog <a href="http://semk.in">semk.in</a>, that never ever host a blog without any backups. I didn't pay any attention to domain/hosting expiration date since I was busy working at that time. But finally everything was deleted in a matter of seconds. I never blamed the hosting provider for this. They kept mailing me all the ...</p>
+<div class="post-excerpt">
+  <p class="alignleft"><a href="/2010/09/23/github-powered-blogging">Read more...</a></p> 
+  <p class="alignright"><a href="/2010/09/23/github-powered-blogging#comments">Comments...</a></p>
+  <div style="clear: both;"></div>
+</div>
+<hr>
+
+
+<div class="blog-nav">
+  
+  <p class="alignleft"><a href="/page5">&larr; Previous Page</a></p>
+  
+  
+  <div style="clear: both;"></div>
+</div>
+
+<div>
+  <p><strong>Tag Cloud</strong>:</p>
+  <p>
+    
+    <a href="/tag/api">API</a>
+    
+    <a href="/tag/tux+paint">Tux Paint</a>
+    
+    <a href="/tag/java">Java</a>
+    
+    <a href="/tag/preforking">Preforking</a>
+    
+    <a href="/tag/design+pattern">Design Pattern</a>
+    
+    <a href="/tag/flask">Flask</a>
+    
+    <a href="/tag/gui">GUI</a>
+    
+    <a href="/tag/voldemort">Voldemort</a>
+    
+    <a href="/tag/app+engine">App Engine</a>
+    
+    <a href="/tag/magic+tool">Magic Tool</a>
+    
+    <a href="/tag/emacs">Emacs</a>
+    
+    <a href="/tag/service+mode">Service Mode</a>
+    
+    <a href="/tag/internet">Internet</a>
+    
+    <a href="/tag/borg">BORG</a>
+    
+    <a href="/tag/tips">Tips</a>
+    
+    <a href="/tag/qprogressdialog">QProgressDialog</a>
+    
+    <a href="/tag/android">Android</a>
+    
+    <a href="/tag/socket">Socket</a>
+    
+    <a href="/tag/regex">regex</a>
+    
+    <a href="/tag/gaming">Gaming</a>
+    
+    <a href="/tag/shell">Shell</a>
+    
+    <a href="/tag/lg+optimus+one">LG Optimus One</a>
+    
+    <a href="/tag/parallels">Parallels</a>
+    
+    <a href="/tag/borg+pattern">Borg Pattern</a>
+    
+    <a href="/tag/python">Python</a>
+    
+    <a href="/tag/org-mode">Org-mode</a>
+    
+    <a href="/tag/gaesessions">GAESessions</a>
+    
+    <a href="/tag/scalability">Scalability</a>
+    
+    <a href="/tag/regexmate">RegexMate</a>
+    
+    <a href="/tag/ubuntu">Ubuntu</a>
+    
+    <a href="/tag/raspberry+pi">Raspberry Pi</a>
+    
+    <a href="/tag/jinja2">Jinja2</a>
+    
+    <a href="/tag/custom+firmware">Custom Firmware</a>
+    
+    <a href="/tag/ide">IDE</a>
+    
+    <a href="/tag/qt">Qt</a>
+    
+    <a href="/tag/books">Books</a>
+    
+    <a href="/tag/blogging">Blogging</a>
+    
+    <a href="/tag/projects">Projects</a>
+    
+    <a href="/tag/c">C</a>
+    
+    <a href="/tag/nosql">NoSQL</a>
+    
+    <a href="/tag/mindmaps">Mindmaps</a>
+    
+    <a href="/tag/unix">Unix</a>
+    
+    <a href="/tag/cricinfo">Cricinfo</a>
+    
+    <a href="/tag/xargs">xargs</a>
+    
+    <a href="/tag/urllib2">urllib2</a>
+    
+    <a href="/tag/riak">Riak</a>
+    
+    <a href="/tag/github">GitHub</a>
+    
+    <a href="/tag/teensy">Teensy</a>
+    
+    <a href="/tag/debian">Debian</a>
+    
+    <a href="/tag/hypergae">HyperGAE</a>
+    
+    <a href="/tag/debug">Debug</a>
+    
+    <a href="/tag/firefox">Firefox</a>
+    
+    <a href="/tag/destructor">Destructor</a>
+    
+    <a href="/tag/multiprocessing">Multiprocessing</a>
+    
+    <a href="/tag/packaging">Packaging</a>
+    
+    <a href="/tag/stdeb">stdeb</a>
+    
+    <a href="/tag/singleton">Singleton</a>
+    
+    <a href="/tag/playstation+3">Playstation 3</a>
+    
+    <a href="/tag/stringio">StringIO</a>
+    
+    <a href="/tag/scratch">Scratch</a>
+    
+    <a href="/tag/variables">Variables</a>
+    
+    <a href="/tag/mac+osx">Mac OSX</a>
+    
+    <a href="/tag/pyqt">PyQt</a>
+    
+    <a href="/tag/hacks">Hacks</a>
+    
+    <a href="/tag/hardware">Hardware</a>
+    
+    <a href="/tag/lion">Lion</a>
+    
+    <a href="/tag/computer">Computer</a>
+    
+    <a href="/tag/ui">UI</a>
+    
+    <a href="/tag/setuptools">setuptools</a>
+    
+    <a href="/tag/linux">Linux</a>
+    
+    <a href="/tag/hypertable">Hypertable</a>
+    
+    <a href="/tag/system+calls">System Calls</a>
+    
+    <a href="/tag/garbage+collection">Garbage Collection</a>
+    
+    <a href="/tag/memory+management">Memory Management</a>
+    
+  </p>
+</div>
+
+<form action="//www.google.com/cse">
+	<div>
+		<input type="hidden" name="cx" value="008366686725858774687:1xm9cqc7b0c">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="search" name="q" size="25" placeholder="powered by Google™">&nbsp;
+		<input type="submit" name="sa" value="Search">
+	</div>
+</form>
+
+      </section>
+
+      <footer>
+  <ul>
+    <li><a href="http://github.com/semk">GitHub</a></li>
+    <li><a href="https://plus.google.com/104611340024244045831">Google+</a></li>
+    <li><a href="http://twitter.com/splusk">Twitter</a></li>
+    <li><a href="http://facebook.com/sreejithemk">Facebook</a></li>
+    <li><a href="http://www.linkedin.com/in/sreejithemk">LinkedIn</a></li>
+    <li><a href="http://feeds2.feedburner.com/foobarnbaz">Feed</a></li>
+  </ul>
+  <p class="c">&copy; 2011 <a href="mailto:sreejithemk@gmail.com">Sreejith Kesavan</a></p>
+  <p><small>Powered by <a href="https://github.com/semk/voldemort">Voldemort</a> &mdash; <a href="https://github.com/orderedlist/minimal">Minimal</a> theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+    </div>
+    <script src="/javascripts/scale.fix.js"></script>
+  </body>
+</html>
