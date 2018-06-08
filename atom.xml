@@ -4,7 +4,7 @@
     <title>Codeception</title>
     <link href="http://foobarnbaz.com/atom.xml" rel="self"/>
     <link href="http://foobarnbaz.com"/>
-    <updated>2017-04-09T00:00:00+5:30</updated>
+    <updated>2018-06-09T00:00:00+5:30</updated>
     <id></id>
     <author>
         <name>Sreejith Kesavan</name>
@@ -550,38 +550,38 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
 
 
 &lt;p&gt;You can think of it as putting the value assigned in a box with the variable name as shown below.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="int a =1;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1box.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="int a =1;" src="/images/posts/2012-07-08-understanding-python-variables/a1box.png" /&gt;&lt;/p&gt;
 &lt;p&gt;And for all the variables you create a new box is created with the variable name to hold the value. If you change the value of the variable the box will be updated with the new value. That means doing&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;will result in&lt;/p&gt;
-&lt;p&gt;&lt;img alt="a = 2;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="a = 2;" src="/images/posts/2012-07-08-understanding-python-variables/a2box.png" /&gt;&lt;/p&gt;
 &lt;p&gt;Assigning one variable to another makes a copy of the value and put that value in the new box.&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="b=2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/b2box.png" /&gt; &lt;img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="b=2" src="/images/posts/2012-07-08-understanding-python-variables/b2box_a2box.png" /&gt;&lt;/p&gt;
 &lt;p&gt;But in Python variables work more like tags unlike the boxes you have seen before. When you do an assignment in Python, it tags the value with the variable name.&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="a = 1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1tag.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="a = 1" src="/images/posts/2012-07-08-understanding-python-variables/a1tag.png" /&gt;&lt;/p&gt;
 &lt;p&gt;and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory.&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2tag.png" /&gt; &lt;img alt="1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="a = 2" src="/images/posts/2012-07-08-understanding-python-variables/a2tag_1.png" /&gt;&lt;/p&gt;
 &lt;p&gt;Assigning one variable to another makes a new tag bound to the same value as show below.&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="b = a" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/ab2tag.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="b = a" src="/images/posts/2012-07-08-understanding-python-variables/ab2tag.png" /&gt;&lt;/p&gt;
 &lt;p&gt;Other languages have 'variables'. Python has 'names'.&lt;/p&gt;
 &lt;h3&gt;A bit about Python's memory management&lt;/h3&gt;
 &lt;p&gt;As you have seen before, a value will have only one copy in memory and all the variables having this value will refer to this memory location. For example when you have variables &lt;code&gt;a&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;, &lt;code&gt;c&lt;/code&gt; having a value 10, it doesn't mean that there will be 3 copy of &lt;code&gt;10&lt;/code&gt;s in memory. There will be only one &lt;code&gt;10&lt;/code&gt; and all the variables &lt;code&gt;a&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;, &lt;code&gt;c&lt;/code&gt; will point to this value. Once a variable is updated, say you are doing &lt;code&gt;a += 1&lt;/code&gt; a new value &lt;code&gt;11&lt;/code&gt; will be allocated in memory and &lt;code&gt;a&lt;/code&gt; will be pointing to this.&lt;/p&gt;
@@ -662,6 +662,22 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
     </entry>
     
     <entry>
+        <title>Pagination, Tags and more in Voldemort</title>
+        <link href="http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort"/>
+        <updated>2012-04-06T00:00:00+5:30</updated>
+        <id>http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort</id>
+        <content type="html">&lt;p&gt;&lt;img alt="Voldemort" src="/images/posts/2012-04-06-pagination-tags-and-more-in-voldemort/term.png" /&gt;&lt;/p&gt;
+&lt;p&gt;I have been adding a few useul features to &lt;a href="https://github.com/semk/voldemort"&gt;Voldemort&lt;/a&gt; for the last few months and it did come out pretty good. It now sports automatic Atom Feed and sitemap generation, thanks to the contibutions from my friend &lt;a href="http://endlessinsomnia.com"&gt;Stanislav Yudin&lt;/a&gt;. Here are the highlights.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Generates Atom Feed automatically for your blog&lt;/li&gt;
+&lt;li&gt;Generates sitemap.xml&lt;/li&gt;
+&lt;li&gt;Pagination supported. Just add &lt;code&gt;paginate: True&lt;/code&gt; in the page metadata section.&lt;/li&gt;
+&lt;li&gt;You can tag posts using metadata. Eg: &lt;code&gt;tags: ['Python', 'Tips']&lt;/code&gt;. A special template file named &lt;code&gt;tag.html&lt;/code&gt; is used to generate tags on the fly.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.&lt;/p&gt;</content>
+    </entry>
+    
+    <entry>
         <title>New set of Developer Tools in Firefox</title>
         <link href="http://foobarnbaz.com/2012/04/06/firefox-developer-tools"/>
         <updated>2012-04-06T00:00:00+5:30</updated>
@@ -678,22 +694,6 @@ Wishing you all a prosperous and happy new year. Welcome 2K13.&lt;/p&gt;</conten
 &lt;p&gt;And finally for testing Javascript code snippets, there is Scratchpad which also sports code highlighting.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Scratchpad" src="/images/posts/2012-04-06-firefox-developer-tools/scratchpad.png" /&gt;&lt;/p&gt;
 &lt;p&gt;I find it quite useful and intuitive. How about you?&lt;/p&gt;</content>
-    </entry>
-    
-    <entry>
-        <title>Pagination, Tags and more in Voldemort</title>
-        <link href="http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort"/>
-        <updated>2012-04-06T00:00:00+5:30</updated>
-        <id>http://foobarnbaz.com/2012/04/06/pagination-tags-and-more-in-voldemort</id>
-        <content type="html">&lt;p&gt;&lt;img alt="Voldemort" src="/images/posts/2012-04-06-pagination-tags-and-more-in-voldemort/term.png" /&gt;&lt;/p&gt;
-&lt;p&gt;I have been adding a few useul features to &lt;a href="https://github.com/semk/voldemort"&gt;Voldemort&lt;/a&gt; for the last few months and it did come out pretty good. It now sports automatic Atom Feed and sitemap generation, thanks to the contibutions from my friend &lt;a href="http://endlessinsomnia.com"&gt;Stanislav Yudin&lt;/a&gt;. Here are the highlights.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Generates Atom Feed automatically for your blog&lt;/li&gt;
-&lt;li&gt;Generates sitemap.xml&lt;/li&gt;
-&lt;li&gt;Pagination supported. Just add &lt;code&gt;paginate: True&lt;/code&gt; in the page metadata section.&lt;/li&gt;
-&lt;li&gt;You can tag posts using metadata. Eg: &lt;code&gt;tags: ['Python', 'Tips']&lt;/code&gt;. A special template file named &lt;code&gt;tag.html&lt;/code&gt; is used to generate tags on the fly.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;You can see these changes live in this blog. Try clicking any of the tags below to see it yourself.&lt;/p&gt;</content>
     </entry>
     
     <entry>

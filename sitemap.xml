@@ -6,48 +6,48 @@
 
     
     <url>
-        <loc>/about</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/archive</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/atom</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/games</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
         <loc>/index</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
-    </url>
-    
-    <url>
-        <loc>/lab</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/not-found-404</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
     </url>
     
     <url>
-        <loc>/robots</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
+        <loc>/atom</loc>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/about</loc>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
     </url>
     
     <url>
         <loc>/sitemap</loc>
-        <lastmod>2017-04-09T00:00:00+5:30</lastmod>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/robots</loc>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/games</loc>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/lab</loc>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
+    </url>
+    
+    <url>
+        <loc>/archive</loc>
+        <lastmod>2018-06-09T00:00:00+5:30</lastmod>
     </url>
     
 
@@ -93,12 +93,12 @@
     </url>
     
     <url>
-        <loc>/2012/04/06/firefox-developer-tools</loc>
+        <loc>/2012/04/06/pagination-tags-and-more-in-voldemort</loc>
         <lastmod>2012-04-06T00:00:00+5:30</lastmod>
     </url>
     
     <url>
-        <loc>/2012/04/06/pagination-tags-and-more-in-voldemort</loc>
+        <loc>/2012/04/06/firefox-developer-tools</loc>
         <lastmod>2012-04-06T00:00:00+5:30</lastmod>
     </url>
     

@@ -73,38 +73,38 @@
 
 
 <p>You can think of it as putting the value assigned in a box with the variable name as shown below.</p>
-<p><img alt="int a =1;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1box.png" /></p>
+<p><img alt="int a =1;" src="/images/posts/2012-07-08-understanding-python-variables/a1box.png" /></p>
 <p>And for all the variables you create a new box is created with the variable name to hold the value. If you change the value of the variable the box will be updated with the new value. That means doing</p>
 <div class="codehilite"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
 </pre></div>
 
 
 <p>will result in</p>
-<p><img alt="a = 2;" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p><img alt="a = 2;" src="/images/posts/2012-07-08-understanding-python-variables/a2box.png" /></p>
 <p>Assigning one variable to another makes a copy of the value and put that value in the new box.</p>
 <div class="codehilite"><pre><span></span><span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
 </pre></div>
 
 
-<p><img alt="b=2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/b2box.png" /> <img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2box.png" /></p>
+<p><img alt="b=2" src="/images/posts/2012-07-08-understanding-python-variables/b2box_a2box.png" /></p>
 <p>But in Python variables work more like tags unlike the boxes you have seen before. When you do an assignment in Python, it tags the value with the variable name.</p>
 <div class="codehilite"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
 </pre></div>
 
 
-<p><img alt="a = 1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a1tag.png" /></p>
+<p><img alt="a = 1" src="/images/posts/2012-07-08-understanding-python-variables/a1tag.png" /></p>
 <p>and if you change the value of the varaible, it just changes the tag to the new value in memory. You dont need to do the housekeeping job of freeing the memory here. Python's Automatic Garbage Collection does it for you. When a value is without names/tags it is automatically removed from memory.</p>
 <div class="codehilite"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 
 
-<p><img alt="a = 2" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/a2tag.png" /> <img alt="1" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/1.png" /></p>
+<p><img alt="a = 2" src="/images/posts/2012-07-08-understanding-python-variables/a2tag_1.png" /></p>
 <p>Assigning one variable to another makes a new tag bound to the same value as show below.</p>
 <div class="codehilite"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
 </pre></div>
 
 
-<p><img alt="b = a" src="http://python.net/~goodger/projects/pycon/2007/idiomatic/ab2tag.png" /></p>
+<p><img alt="b = a" src="/images/posts/2012-07-08-understanding-python-variables/ab2tag.png" /></p>
 <p>Other languages have 'variables'. Python has 'names'.</p>
 <h3>A bit about Python's memory management</h3>
 <p>As you have seen before, a value will have only one copy in memory and all the variables having this value will refer to this memory location. For example when you have variables <code>a</code>, <code>b</code>, <code>c</code> having a value 10, it doesn't mean that there will be 3 copy of <code>10</code>s in memory. There will be only one <code>10</code> and all the variables <code>a</code>, <code>b</code>, <code>c</code> will point to this value. Once a variable is updated, say you are doing <code>a += 1</code> a new value <code>11</code> will be allocated in memory and <code>a</code> will be pointing to this.</p>
